@@ -62,11 +62,10 @@ export function Pricing() {
   const [mode, setMode] = useState<"monthly" | "setup">("monthly");
 
   return (
-    <section id="cijene" className="bg-sand py-24 sm:py-32">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="cijene" className="py-24 sm:py-32">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="eyebrow text-coral">Cijene</p>
-          <h2 className="mt-3 font-display text-4xl font-bold uppercase leading-none tracking-tight sm:text-6xl">
+                    <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Jednostavne cijene, bez iznenađenja
           </h2>
           <p className="mt-5 text-lg text-ink-soft">
@@ -77,7 +76,7 @@ export function Pricing() {
           <div
             role="radiogroup"
             aria-label="Model plaćanja"
-            className="mt-8 inline-flex rounded-full bg-white p-1 ring-1 ring-line"
+            className="mt-8 inline-flex rounded-full bg-fog p-1"
           >
             {(
               [
@@ -108,20 +107,20 @@ export function Pricing() {
                 key={p.name}
                 className={`relative flex flex-col rounded-2xl p-8 ${
                   p.highlight
-                    ? "bg-night text-white shadow-2xl lg:-my-4 lg:py-12"
-                    : "border border-line bg-white"
+                    ? "bg-ink text-white"
+                    : "bg-fog"
                 }`}
               >
                 {p.highlight && (
-                  <span className="eyebrow absolute -top-3 left-8 rounded-full bg-coral px-3 py-1 text-[11px] text-white">
+                  <span className="absolute right-6 top-6 rounded-full bg-coral px-3 py-1 text-xs font-semibold text-white">
                     Najpopularniji
                   </span>
                 )}
-                <h3 className="font-display text-3xl font-bold uppercase">{p.name}</h3>
+                <h3 className="text-2xl font-bold">{p.name}</h3>
                 <p className={`mt-1 ${p.highlight ? "text-white/60" : "text-ink-soft"}`}>
                   {p.tagline}
                 </p>
-                <p className="mt-8 font-display text-5xl font-bold">{price.price}</p>
+                <p className="mt-8 text-4xl font-bold tracking-tight">{price.price}</p>
                 <p className={`mt-1 text-sm ${p.highlight ? "text-white/60" : "text-muted"}`}>
                   {price.note}
                 </p>
@@ -129,8 +128,8 @@ export function Pricing() {
                   href="#demo"
                   className={`mt-8 rounded-full py-3.5 text-center font-semibold transition-colors ${
                     p.highlight
-                      ? "bg-coral text-white hover:bg-coral-dark"
-                      : "bg-ink text-white hover:bg-navy"
+                      ? "bg-white text-ink hover:bg-fog"
+                      : "bg-ink text-white hover:bg-ink-soft"
                   }`}
                 >
                   {p.name === "Premium" ? "Kontaktirajte nas" : "Zakaži demo"}

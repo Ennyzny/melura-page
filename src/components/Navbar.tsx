@@ -1,15 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, Store, X } from "lucide-react";
 import { Logo } from "./Logo";
 
 const links = [
+  { href: "#djelatnosti", label: "Djelatnosti" },
   { href: "#funkcije", label: "Funkcije" },
-  { href: "#kako-radi", label: "Kako radi" },
-  { href: "#aplikacija", label: "Vaša aplikacija" },
   { href: "#cijene", label: "Cijene" },
-  { href: "#faq", label: "Pitanja" },
+];
+
+const menuLinks = [
+  { href: "#zakazivanje", label: "Zakazivanje" },
+  { href: "#aplikacija", label: "Vlastita aplikacija" },
+  { href: "#online-booking", label: "Online booking" },
+  { href: "#klijenti", label: "Klijenti" },
+  { href: "#tim", label: "Tim i smjene" },
+  { href: "#obavijesti", label: "Obavijesti" },
+  { href: "#pregled", label: "Pregled poslovanja" },
+  { href: "#cijene", label: "Cijene" },
 ];
 
 export function Navbar() {
@@ -26,83 +35,74 @@ export function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 transition-colors ${
-        scrolled || open
-          ? "border-b border-line bg-paper/90 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent"
+        scrolled || open ? "bg-white/85 backdrop-blur-md" : "bg-fog"
       }`}
     >
-      <nav className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#" aria-label="Melura početna">
-          <Logo />
-        </a>
+      <nav className="flex h-[72px] items-center justify-between px-4 sm:px-8">
+        <div className="flex items-center gap-12">
+          <a href="#" aria-label="Melura početna">
+            <Logo />
+          </a>
+          <ul className="hidden items-center gap-10 lg:flex">
+            {links.map((l) => (
+              <li key={l.href}>
+                <a href={l.href} className="text-[17px] font-semibold hover:text-ink-soft">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        <ul className="hidden items-center gap-8 lg:flex">
-          {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                className="text-[15px] font-medium text-ink-soft transition-colors hover:text-ink"
-              >
-                {l.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="flex items-center gap-2 sm:gap-3">
           <a
-            href="#"
-            className="rounded-full px-4 py-2 text-[15px] font-semibold text-ink hover:bg-black/5"
+            href="#aplikacija"
+            className="hidden items-center gap-2 rounded-full border border-line bg-white px-5 py-2.5 text-[17px] font-semibold transition-colors hover:border-ink/30 md:inline-flex"
           >
-            Prijava za salone
+            <Store className="h-5 w-5" strokeWidth={1.75} />
+            Primjer aplikacije
           </a>
           <a
             href="#demo"
-            className="rounded-full bg-ink px-5 py-2.5 text-[15px] font-semibold text-white transition-colors hover:bg-navy"
+            className="rounded-full bg-ink px-5 py-2.5 text-[15px] font-semibold text-white transition-colors hover:bg-ink-soft sm:text-[17px]"
           >
-            Zakaži demo
+            Registracija
           </a>
+          <button
+            type="button"
+            aria-label={open ? "Zatvori meni" : "Otvori meni"}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="inline-flex items-center gap-3 rounded-full border border-line bg-white px-4 py-2.5 text-[17px] font-semibold transition-colors hover:border-ink/30 sm:px-5"
+          >
+            <span className="hidden sm:inline">Meni</span>
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
-
-        <button
-          type="button"
-          className="-mr-2 rounded-md p-2 lg:hidden"
-          aria-label={open ? "Zatvori meni" : "Otvori meni"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
       </nav>
 
       {open && (
-        <div className="border-t border-line bg-paper px-4 pb-6 pt-2 lg:hidden">
-          <ul className="flex flex-col">
-            {links.map((l) => (
+        <div className="absolute right-4 top-[76px] w-[calc(100%-2rem)] max-w-sm rounded-2xl border border-line bg-white p-3 shadow-2xl sm:right-8">
+          <p className="px-3 pb-1 pt-2 text-sm font-semibold text-muted">Funkcije</p>
+          <ul>
+            {menuLinks.map((l) => (
               <li key={l.href}>
                 <a
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="block border-b border-line py-3.5 text-lg font-medium"
+                  className="block rounded-lg px-3 py-2.5 text-[17px] font-semibold hover:bg-fog"
                 >
                   {l.label}
                 </a>
               </li>
             ))}
           </ul>
-          <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="mt-2 border-t border-line pt-3">
             <a
               href="#"
-              className="rounded-full border border-ink/20 py-3 text-center font-semibold"
+              className="block rounded-lg px-3 py-2.5 text-[17px] font-semibold hover:bg-fog"
             >
-              Prijava
-            </a>
-            <a
-              href="#demo"
-              onClick={() => setOpen(false)}
-              className="rounded-full bg-ink py-3 text-center font-semibold text-white"
-            >
-              Zakaži demo
+              Prijava za salone
             </a>
           </div>
         </div>

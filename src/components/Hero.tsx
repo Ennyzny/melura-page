@@ -1,110 +1,206 @@
-import { BellRing, Check, Star } from "lucide-react";
-import { BrowserFrame, PhoneFrame } from "./Frames";
+import Image from "next/image";
+import { BellRing, CalendarCheck2, Star } from "lucide-react";
+
+function Card({ className = "", children }: { className?: string; children: React.ReactNode }) {
+  return (
+    <div className={`rounded-2xl bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.06)] ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function RevenueCard({ className = "" }: { className?: string }) {
+  return (
+    <Card className={className}>
+      <p className="text-[13px] font-semibold">Prognoza dana</p>
+      <div className="mt-1 flex items-center gap-2">
+        <p className="whitespace-nowrap text-2xl font-bold">283 KM</p>
+        <span className="rounded-md bg-mint px-1.5 py-0.5 text-[11px] font-bold text-mint-dark">
+          16 termina
+        </span>
+      </div>
+      <div className="relative mx-auto mt-4 h-28 w-28">
+        <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
+          <circle cx="18" cy="18" r="14" fill="none" stroke="#e8edf4" strokeWidth="6" />
+          <circle cx="18" cy="18" r="14" fill="none" stroke="#3d5a80" strokeWidth="6" strokeDasharray="55 88" />
+          <circle cx="18" cy="18" r="14" fill="none" stroke="#ee6c4d" strokeWidth="6" strokeDasharray="19 88" strokeDashoffset="-55" />
+        </svg>
+      </div>
+      <ul className="mt-4 space-y-1 text-[11px]">
+        <li className="flex justify-between"><span className="text-muted">● Potvrđeno</span><span className="font-semibold">223 KM</span></li>
+        <li className="flex justify-between"><span className="text-coral">● Čeka potvrdu</span><span className="font-semibold">60 KM</span></li>
+      </ul>
+    </Card>
+  );
+}
+
+function StaffCard({ className = "" }: { className?: string }) {
+  const rows = [
+    ["Emir", 40],
+    ["Vedad", 44],
+    ["Amar", 29],
+  ] as const;
+  return (
+    <Card className={className}>
+      <p className="text-[13px] font-semibold">Zauzetost majstora</p>
+      <ul className="mt-3 space-y-2.5">
+        {rows.map(([name, pct]) => (
+          <li key={name}>
+            <div className="flex justify-between text-[11px]">
+              <span className="font-semibold">{name}</span>
+              <span className="text-muted">{pct} %</span>
+            </div>
+            <div className="mt-1 h-1.5 rounded-full bg-fog">
+              <div className="h-full rounded-full bg-navy" style={{ width: `${pct * 2}%` }} />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </Card>
+  );
+}
+
+function RequestCard({ className = "" }: { className?: string }) {
+  return (
+    <Card className={className}>
+      <div className="flex items-start gap-3">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-coral-soft text-coral">
+          <BellRing className="h-4 w-4" />
+        </span>
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">Novi zahtjev</p>
+          <p className="text-[14px] font-bold leading-snug">Amina Hadžić</p>
+          <p className="text-[12px] text-muted">Feniranje · danas 13:30</p>
+        </div>
+      </div>
+      <div className="mt-3 grid grid-cols-2 gap-2 text-[12px] font-semibold">
+        <span className="rounded-full border border-line py-1.5 text-center">Odbij</span>
+        <span className="rounded-full bg-ink py-1.5 text-center text-white">Potvrdi</span>
+      </div>
+    </Card>
+  );
+}
+
+function ServicesCard({ className = "" }: { className?: string }) {
+  const rows = [
+    ["Muško šišanje", "30 min", "15 KM"],
+    ["Fade šišanje", "40 min", "20 KM"],
+    ["Šišanje + brada", "45 min", "25 KM"],
+  ];
+  return (
+    <Card className={className}>
+      <p className="text-[13px] font-semibold">Cjenovnik</p>
+      <ul className="mt-3 space-y-3">
+        {rows.map(([n, d, p]) => (
+          <li key={n} className="flex items-center gap-3">
+            <span className="h-9 w-1 rounded-full bg-coral" />
+            <div className="flex-1">
+              <p className="text-[12px] font-semibold">{n}</p>
+              <p className="text-[11px] text-muted">{d}</p>
+            </div>
+            <span className="text-[12px] font-bold">{p}</span>
+          </li>
+        ))}
+      </ul>
+    </Card>
+  );
+}
+
+function PushCard({ className = "" }: { className?: string }) {
+  return (
+    <Card className={`!p-4 ${className}`}>
+      <div className="flex items-center gap-3">
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-night text-white">
+          <CalendarCheck2 className="h-4 w-4" />
+        </span>
+        <div>
+          <p className="text-[12px] font-bold">Barber Studio Vitez</p>
+          <p className="text-[11px] text-ink-soft">Vaš termin je potvrđen — 20.05. u 14:30</p>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function RatingCard({ className = "" }: { className?: string }) {
+  return (
+    <Card className={`bg-mint ${className}`}>
+      <p className="text-4xl font-bold">4,8</p>
+      <div className="mt-1 flex text-[#f5b301]">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star key={i} className="h-4 w-4 fill-current" />
+        ))}
+      </div>
+      <p className="mt-2 text-[12px] text-ink-soft">142 ocjene u aplikaciji salona</p>
+    </Card>
+  );
+}
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px] bg-[radial-gradient(60%_60%_at_80%_10%,#fdece7_0%,transparent_70%),radial-gradient(50%_50%_at_10%_30%,#e8edf4_0%,transparent_70%)]"
-      />
-      <div className="mx-auto max-w-7xl px-4 pb-20 pt-12 sm:px-6 sm:pt-20 lg:px-8">
-        <div className="mx-auto max-w-4xl text-center">
-          <span className="eyebrow inline-flex items-center gap-2 rounded-full border border-coral/30 bg-coral-soft px-4 py-1.5 text-coral-dark">
-            <span className="h-1.5 w-1.5 rounded-full bg-coral" />
-            Booking platforma za salone u BiH
-          </span>
-          <h1 className="mt-6 font-display text-5xl font-bold uppercase leading-[0.95] tracking-tight sm:text-7xl lg:text-[5.5rem]">
-            Vaš salon.
-            <br />
-            <span className="text-navy">Vaša aplikacija.</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft sm:text-xl">
-            Melura daje vašem salonu vlastitu aplikaciju u App Storeu i Google
-            Playu — s vašim imenom, ikonom i bojama. Klijenti se naručuju bez
-            poziva, a vi termine potvrđujete jednim dodirom.
-          </p>
-          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href="#demo"
-              className="w-full rounded-full bg-coral px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-coral/30 transition-colors hover:bg-coral-dark sm:w-auto"
-            >
-              Zakaži besplatan demo
-            </a>
-            <a
-              href="#funkcije"
-              className="w-full rounded-full border border-ink/15 bg-white px-8 py-4 text-lg font-semibold transition-colors hover:border-ink/40 sm:w-auto"
-            >
-              Pogledaj funkcije
-            </a>
+    <section className="overflow-hidden bg-fog">
+      <div className="mx-auto max-w-4xl px-4 pb-14 pt-16 text-center sm:pt-20">
+        <p className="text-lg font-semibold text-coral">Melura funkcije</p>
+        <h1 className="mt-4 text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+          Jedna platforma,
+          <br /> sve što vam treba
+        </h1>
+        <p className="mx-auto mt-6 max-w-xl text-lg sm:text-xl">
+          Upoznajte sve funkcije za vođenje i rast vašeg salona
+        </p>
+      </div>
+
+      {/* Kolaž — desktop */}
+      <div className="relative mx-auto hidden h-[560px] max-w-[1440px] lg:block">
+        <StaffCard className="absolute -left-24 top-24 w-52 opacity-90" />
+        <RevenueCard className="absolute left-[5%] top-6 w-52" />
+        <ServicesCard className="absolute left-[5%] top-[370px] w-52" />
+
+        <div className="absolute left-[19%] top-0 w-[220px] rounded-[2.2rem] border-[7px] border-ink bg-ink shadow-xl">
+          <div className="relative aspect-[402/874] overflow-hidden rounded-[1.7rem] bg-white">
+            <Image
+              src="/screens/admin-phone-danas.png"
+              alt="Melura admin na telefonu — današnji termini"
+              width={402}
+              height={874}
+              preload
+              className="absolute inset-0 h-full w-full object-cover object-top"
+            />
           </div>
-          <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted">
-            {["0 KM za postavljanje", "Android, iOS i web", "Bez SMS troškova"].map(
-              (t) => (
-                <li key={t} className="inline-flex items-center gap-1.5">
-                  <Check className="h-4 w-4 text-navy" strokeWidth={2.5} />
-                  {t}
-                </li>
-              ),
-            )}
-          </ul>
         </div>
 
-        <div className="relative mx-auto mt-16 max-w-6xl lg:mt-20">
-          <BrowserFrame
-            src="/screens/admin-danas.png"
-            alt="Melura admin — pregled današnjih termina i zahtjeva na odobrenju"
-            width={1440}
-            height={901}
+        <div className="absolute left-[36%] top-36 w-[720px] overflow-hidden rounded-t-2xl border-[7px] border-b-0 border-ink bg-ink shadow-2xl">
+          <Image
+            src="/screens/admin-kalendar.png"
+            alt="Melura kalendar dana sa kolonama po radniku"
+            width={2880}
+            height={1800}
             preload
-            className="lg:mr-28"
+            sizes="720px"
+            className="block h-auto w-full rounded-t-lg"
           />
-
-          <PhoneFrame
-            src="/screens/client-01-pocetna.png"
-            alt="Aplikacija salona — početni ekran sa cjenovnikom"
-            width={808}
-            height={4140}
-            className="absolute -bottom-10 right-0 hidden w-[230px] lg:block xl:w-[260px]"
-          />
-
-          <div className="animate-float absolute -left-4 top-1/3 hidden w-72 rounded-2xl border border-black/5 bg-white p-4 shadow-xl md:block xl:-left-12">
-            <div className="flex items-start gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-coral-soft text-coral">
-                <BellRing className="h-5 w-5" />
-              </span>
-              <div className="text-left">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted">
-                  Novi zahtjev · sada
-                </p>
-                <p className="mt-0.5 text-[15px] font-semibold leading-snug">
-                  Amina Hadžić, Feniranje
-                </p>
-                <p className="text-sm text-ink-soft">Danas u 13:30 · kod Lejle</p>
-              </div>
-            </div>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <span className="rounded-lg border border-line py-1.5 text-center text-sm font-semibold">
-                Odbij
-              </span>
-              <span className="rounded-lg bg-coral py-1.5 text-center text-sm font-semibold text-white">
-                Potvrdi
-              </span>
-            </div>
-          </div>
-
-          <div className="absolute -bottom-6 left-6 hidden items-center gap-3 rounded-2xl border border-black/5 bg-white px-4 py-3 shadow-xl sm:flex lg:left-24">
-            <div className="flex text-[#f5b301]">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-4 w-4 fill-current" />
-              ))}
-            </div>
-            <p className="text-sm">
-              <span className="font-semibold">4,8</span>{" "}
-              <span className="text-muted">ocjena salona u aplikaciji</span>
-            </p>
-          </div>
         </div>
+
+        <RequestCard className="absolute right-[5%] top-0 w-60" />
+        <PushCard className="absolute right-[3%] top-[188px] w-72" />
+        <RatingCard className="absolute right-[6%] top-[280px] w-48" />
+        <ServicesCard className="absolute -right-28 top-[400px] w-48 opacity-90" />
+      </div>
+
+      {/* Kolaž — mobilni i tablet */}
+      <div className="relative mx-auto h-[420px] max-w-xl px-4 lg:hidden">
+        <div className="absolute inset-x-4 top-14 overflow-hidden rounded-t-xl border-[5px] border-b-0 border-ink bg-ink shadow-2xl">
+          <Image
+            src="/screens/admin-kalendar.png"
+            alt="Melura kalendar dana"
+            width={2880}
+            height={1800}
+            sizes="100vw"
+            className="block h-auto w-full rounded-t-md"
+          />
+        </div>
+        <RequestCard className="absolute left-2 top-0 w-56 sm:left-4" />
+        <RatingCard className="absolute right-2 top-48 w-36 sm:right-4" />
       </div>
     </section>
   );

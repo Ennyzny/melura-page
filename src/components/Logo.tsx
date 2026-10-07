@@ -20,14 +20,14 @@ export function MeluraMark({ className = "h-8 w-8" }: { className?: string }) {
 
 export function Logo({ variant = "dark", className = "" }: LogoProps) {
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <MeluraMark className="h-8 w-8" />
+    <span className={`inline-flex items-center gap-1.5 ${className}`}>
+      <MeluraMark className="h-7 w-7" />
       <span
-        className={`font-display text-2xl font-bold tracking-[0.14em] ${
+        className={`text-[26px] font-bold tracking-tight ${
           variant === "light" ? "text-white" : "text-ink"
         }`}
       >
-        MELURA
+        melura
       </span>
     </span>
   );
