@@ -74,9 +74,12 @@ body {
   animation: blob 14s ease-in-out infinite;
 }
 
+/* Trake djelatnosti se kreću i uz smanjene animacije, samo sporije. */
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee-left,
-  .animate-marquee-right,
+  .animate-marquee-right {
+    animation-duration: 120s;
+  }
   .animate-blob {
     animation: none;
   }

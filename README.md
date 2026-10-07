@@ -8,6 +8,8 @@ Sadržaj (funkcije, booking flow, paketi i cijene) je preuzet iz
 [`htuco/salon-booking-platform`](https://github.com/htuco/salon-booking-platform) — `docs/01-mvp-spec.md`.
 Screenshotovi u `public/screens/` su iz `prototype/` istog repoa, a Melura znak iz
 `apps/admin/assets/brand/`.
+Fotografije djelatnosti u `public/industries/` su sa [Unsplasha](https://unsplash.com/license)
+(besplatne za komercijalnu upotrebu, bez obaveznog navođenja autora).
 
 ## Pokretanje
 
