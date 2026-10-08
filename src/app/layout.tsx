@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { DemoModal } from "@/components/DemoModal";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <Footer />
+        <DemoModal />
       </body>
     </html>
   );

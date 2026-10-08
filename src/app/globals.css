@@ -69,16 +69,6 @@ body {
   }
 }
 
-@keyframes blob {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(6%, -8%) scale(1.15);
-  }
-}
-
 .animate-marquee-left {
   animation: marquee-left 60s linear infinite;
 }
@@ -87,18 +77,11 @@ body {
   animation: marquee-right 60s linear infinite;
 }
 
-.animate-blob {
-  animation: blob 14s ease-in-out infinite;
-}
-
 /* Trake djelatnosti se kreću i uz smanjene animacije, samo sporije. */
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee-left,
   .animate-marquee-right {
     animation-duration: 120s;
-  }
-  .animate-blob {
-    animation: none;
   }
   html {
     scroll-behavior: auto;

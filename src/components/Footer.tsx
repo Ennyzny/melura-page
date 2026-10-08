@@ -1,23 +1,24 @@
-import Image from "next/image";
 import Link from "next/link";
-import { Globe } from "lucide-react";
-import { DemoForm } from "./DemoForm";
+import { ArrowRight, Globe } from "lucide-react";
+import { DevicePreview } from "./DevicePreview";
+import { LavaBackground } from "./LavaBackground";
 import { Logo, MeluraMark } from "./Logo";
 
 export function CtaBanner() {
   return (
-    <section id="demo" className="relative overflow-hidden bg-[#c24a33] text-white">
-      <div aria-hidden="true" className="absolute inset-0">
-        <div className="animate-blob absolute -left-[10%] -top-1/2 h-[160%] w-[60%] rounded-full bg-[#ee6c4d] blur-3xl" />
-        <div className="animate-blob absolute -right-[10%] -bottom-1/2 h-[160%] w-[60%] rounded-full bg-[#3d5a80] blur-3xl [animation-delay:-7s]" />
-        <div className="absolute left-1/3 top-0 h-full w-1/3 rounded-full bg-[#f29a7f] opacity-60 blur-3xl" />
-      </div>
+    <section id="demo" className="relative overflow-hidden bg-night text-white">
+      <LavaBackground />
       <div className="relative px-4 py-20 text-center sm:py-24">
         <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">Zakažite demo</h2>
         <p className="mx-auto mt-4 max-w-2xl text-xl font-bold">
           Ostavite podatke i javićemo vam se da dogovorimo kratak prikaz Melure za vaš salon
         </p>
-        <DemoForm />
+        <a
+          href="#demo"
+          className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-7 text-[17px] font-semibold text-ink transition-colors hover:bg-fog"
+        >
+          Zakaži demo <ArrowRight className="h-5 w-5" aria-hidden="true" />
+        </a>
       </div>
     </section>
   );
@@ -53,8 +54,8 @@ export function Apps() {
     {
       title: "Aplikacija vašeg salona",
       text: "Vaši klijenti se naručuju u aplikaciji koja nosi ime i boje vašeg salona",
-      src: "/screens/client-01-pocetna.png",
-      h: 4140,
+      src: "/screens/phone/client-home.png",
+      alt: "Početni ekran aplikacije salona Amko Barbershop",
       icon: (
         <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-night text-lg font-bold text-white">
           B
@@ -64,8 +65,8 @@ export function Apps() {
     {
       title: "Melura admin za vlasnike",
       text: "Vodite termine, tim i usluge sa iOS i Android aplikacije ili iz preglednika",
-      src: "/screens/admin-phone-danas.png",
-      h: 874,
+      src: "/screens/phone/admin-today.png",
+      alt: "Melura admin — pregled dana za Barber Studio Vitez",
       icon: (
         <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white">
           <MeluraMark className="h-8 w-8" />
@@ -95,17 +96,8 @@ export function Apps() {
                   <StoreBadge store="google" />
                 </div>
               </div>
-              <div className="absolute -right-10 top-10 w-[46%] max-w-[230px] sm:right-6 sm:w-[40%] rounded-[2.2rem] border-[7px] border-ink bg-ink shadow-xl sm:right-8">
-                <div className="relative aspect-[402/874] overflow-hidden rounded-[1.7rem] bg-white">
-                  <Image
-                    src={c.src}
-                    alt={c.title}
-                    width={804}
-                    height={c.h}
-                    sizes="240px"
-                    className="absolute inset-0 h-full w-full object-cover object-top"
-                  />
-                </div>
+              <div className="absolute -right-10 top-10 w-[46%] max-w-[230px] sm:right-8 sm:w-[40%]">
+                <DevicePreview src={c.src} alt={c.alt} />
               </div>
             </div>
           ))}

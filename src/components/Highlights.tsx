@@ -14,8 +14,8 @@ const items = [
   },
   {
     icon: BellRing,
-    title: "Zahtjeve potvrđujete jednim dodirom",
-    text: "Za svaki novi zahtjev stiže vam obavijest. Kalendar nudi samo slobodne termine, pa nema preklapanja.",
+    title: "Automatska ili ručna potvrda",
+    text: "Termin se potvrdi odmah, ili vam stiže obavijest pa odobrite jednim dodirom. Nude se samo slobodni termini, pa nema preklapanja.",
   },
   {
     icon: CalendarCheck2,
@@ -34,7 +34,7 @@ export function Highlights() {
           </h2>
           <p className="mt-5 text-lg sm:text-xl">
             Booking sistem za salone: aplikacija vašeg salona za klijente i Melura admin za vas.
-            Klijenti se naručuju sami, a vi samo potvrđujete. Postavljanje, objavu u storeu i obuku
+            Klijenti se naručuju sami, a termin se potvrđuje automatski ili jednim vašim dodirom. Postavljanje, objavu u storeu i obuku
             radimo mi.
           </p>
         </div>
