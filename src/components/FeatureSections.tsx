@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
-type Feature = { title: string; text: string };
+type Feature = { title: string; text: string; planned?: boolean };
 
 type Media =
   | { kind: "phone"; src: string; alt: string; width: number; height: number; position?: string; tint?: string }
@@ -29,11 +29,11 @@ const sections: Section[] = [
       },
       {
         title: "Zahtjevi na odobrenju",
-        text: "Svaki novi zahtjev stiže kao obavijest. Potvrdite ili odbijte jednim dodirom — za 30 sekundi, ne za 4 sata.",
+        text: "Svaki novi zahtjev stiže kao obavijest. Potvrdite ili odbijte jednim dodirom, čim zahtjev stigne.",
       },
       {
         title: "Ručni unos termina",
-        text: "Klijent je zvao telefonom? Dodajte termin ručno — sve je u istom kalendaru, pa nema preklapanja.",
+        text: "Klijent je zvao telefonom? Dodajte termin ručno — sistem prvo provjeri da je vrijeme slobodno.",
       },
       {
         title: "Usluge i cjenovnik",
@@ -44,8 +44,8 @@ const sections: Section[] = [
         text: "Pauze, neradni dani i blokade. Blokirano vrijeme se klijentu nikad ne prikazuje kao slobodno.",
       },
       {
-        title: "Nula duplih termina",
-        text: "Dostupnost poštuje radno vrijeme, pauze i razmak između termina. Dupli termin jednostavno nije moguć.",
+        title: "Zaštita od duplih termina",
+        text: "Dostupnost poštuje radno vrijeme, pauze i razmak između termina. Ako dvoje izabere isti termin u isto vrijeme, drugi dobija poruku da je upravo zauzet i bira novi.",
       },
       {
         title: "Pravila naručivanja",
@@ -96,8 +96,8 @@ const sections: Section[] = [
         text: "Logo, cover slika, primarna i sekundarna boja, tema i tekstovi po vašem ukusu.",
       },
       {
-        title: "Galerija i recenzije",
-        text: "Pokažite radove i ocjene klijenata direktno u svojoj aplikaciji.",
+        title: "Galerija radova",
+        text: "Pokažite svoje radove direktno u aplikaciji salona (Pro paket).",
       },
     ],
   },
@@ -110,14 +110,14 @@ const sections: Section[] = [
       kind: "phones",
       tint: "bg-coral-soft",
       items: [
-        { src: "/screens/client-05-korak3-vrijeme.png", alt: "Korak 3 — izbor vremena", width: 808, height: 1214 },
+        { src: "/screens/client-03-korak1-usluga.png", alt: "Korak 1 — izbor usluge", width: 808, height: 1706 },
         { src: "/screens/client-07-zahtjev-poslan.png", alt: "Zahtjev poslan", width: 808, height: 1562 },
       ],
     },
     features: [
       {
         title: "Termin u 4 koraka",
-        text: "Usluga, majstor, vrijeme, potvrda — za manje od minute.",
+        text: "Usluga, majstor, vrijeme i prijava — četiri kratka koraka.",
       },
       {
         title: "\"Bilo ko od nas\"",
@@ -165,7 +165,7 @@ const sections: Section[] = [
       },
       {
         title: "Kontakt jednim dodirom",
-        text: "Poziv, Viber ili WhatsApp direktno iz detalja termina.",
+        text: "Poziv, Viber ili WhatsApp iz detalja termina, za klijente kojima ste upisali broj.",
       },
       {
         title: "Oznaka nedolaska",
@@ -197,6 +197,7 @@ const sections: Section[] = [
       },
       {
         title: "Redovni raspored",
+        planned: true,
         text: "Sedmične smjene po radniku, sa pauzama i slobodnim danima.",
       },
       {
@@ -208,7 +209,8 @@ const sections: Section[] = [
         text: "Koliko termina i koji procenat dana svaki majstor ima popunjen.",
       },
       {
-        title: "Uskoro: pristup za radnike",
+        title: "Pristup za radnike",
+        planned: true,
         text: "Svaki radnik dobija svoj login i vidi samo svoje termine.",
       },
     ],
@@ -309,14 +311,21 @@ const sections: Section[] = [
       },
       {
         title: "Masaža i fizioterapija",
+        planned: true,
         text: "Terapeuti, terapije i smirena svijetla tema.",
       },
       {
         title: "Stomatologija",
+        planned: true,
         text: "Ordinacije, pacijenti i pravila prilagođena zdravstvu.",
       },
     ],
   },
+];
+
+export const sectionLinks = [
+  { id: "rezervacija", title: "Jedna rezervacija" },
+  ...sections.map(({ id, title }) => ({ id, title })),
 ];
 
 function SectionHeader({ title, subtitle }: { title: string; subtitle: string }) {
@@ -330,16 +339,23 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle: string })
         href="#demo"
         className="inline-flex w-fit shrink-0 items-center gap-2 rounded-full bg-ink px-6 py-3 text-[17px] font-semibold text-white transition-colors hover:bg-ink-soft"
       >
-        Saznaj više <ArrowRight className="h-5 w-5" />
+        Zakaži demo <ArrowRight className="h-5 w-5" />
       </a>
     </div>
   );
 }
 
-function FeatureItem({ title, text }: Feature) {
+function FeatureItem({ title, text, planned }: Feature) {
   return (
     <div>
-      <h3 className="text-xl font-semibold">{title}</h3>
+      <h3 className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xl font-semibold">
+        {title}
+        {planned && (
+          <span className="rounded-full bg-navy-soft px-2.5 py-0.5 text-[13px] font-semibold text-navy">
+            Uskoro
+          </span>
+        )}
+      </h3>
       <p className="mt-2 text-[17px] leading-relaxed text-ink-soft">{text}</p>
     </div>
   );
@@ -396,7 +412,7 @@ function MediaCard({ media }: { media: Media }) {
 
 export function FeatureSections() {
   return (
-    <div id="funkcije">
+    <div>
       {sections.map((s) => (
         <section key={s.id} id={s.id} className="py-16 sm:py-24">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6">

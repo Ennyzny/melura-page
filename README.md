@@ -25,7 +25,16 @@ Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · lucide-react · Plus Ja
 
 ## Sekcije
 
-`src/components/` — Navbar · Hero (kolaž UI kartica) · FeatureSections (8 kategorija funkcija) ·
-Industries (djelatnosti) · Pricing · CtaBanner · Apps · Footer.
+- `/` — Hero · Highlights (šta je Melura) · Industries · Pricing · Faq · CtaBanner (forma za demo)
+- `/funkcije` — BookingStory (jedna rezervacija, korak po korak) · FeatureSections · Apps · CtaBanner
 
-> Demo: forma za demo i linkovi u footeru još nigdje ne vode.
+Navbar i Footer su u `src/app/layout.tsx`.
+
+Forma „Zakaži demo“ (`src/components/DemoForm.tsx`) otvara klijentov email program s popunjenim
+zahtjevom — bez backenda. Adresa primaoca je u `src/lib/site.ts` (`DEMO_EMAIL`).
+
+Na produkciji postaviti `NEXT_PUBLIC_SITE_URL` (npr. `https://melura.ba`) — koristi se za
+preview pri dijeljenju linka, `sitemap.xml` i `robots.txt`.
+
+Tvrdnje na stranici prate `docs/01-mvp-spec.md`: funkcije, djelatnosti i stavke paketa koje
+specifikacija stavlja u Fazu 2 ili kasnije označene su sa „Uskoro“.

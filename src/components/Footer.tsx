@@ -1,5 +1,7 @@
 import Image from "next/image";
-import { ArrowRight, Globe } from "lucide-react";
+import Link from "next/link";
+import { Globe } from "lucide-react";
+import { DemoForm } from "./DemoForm";
 import { Logo, MeluraMark } from "./Logo";
 
 export function CtaBanner() {
@@ -11,16 +13,11 @@ export function CtaBanner() {
         <div className="absolute left-1/3 top-0 h-full w-1/3 rounded-full bg-[#f29a7f] opacity-60 blur-3xl" />
       </div>
       <div className="relative px-4 py-20 text-center sm:py-24">
-        <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">Šta čekate?</h2>
-        <p className="mt-4 text-lg font-medium sm:text-xl">
-          Pridružite se Meluri i dajte svom salonu vlastitu aplikaciju
+        <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">Zakažite demo</h2>
+        <p className="mx-auto mt-4 max-w-2xl text-xl font-bold">
+          Ostavite podatke i javićemo vam se da dogovorimo kratak prikaz Melure za vaš salon
         </p>
-        <a
-          href="#"
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-[17px] font-semibold text-ink transition-transform hover:scale-[1.03]"
-        >
-          Započni odmah <ArrowRight className="h-5 w-5" />
-        </a>
+        <DemoForm />
       </div>
     </section>
   );
@@ -118,10 +115,12 @@ export function Apps() {
   );
 }
 
-const columns = [
-  { title: "O Meluri", links: ["O nama", "Kontakt", "Blog", "Pomoć"] },
-  { title: "Za salone", links: ["Funkcije", "Cijene", "Djelatnosti", "Zakaži demo"] },
-  { title: "Pravno", links: ["Politika privatnosti", "Uslovi korištenja", "Kolačići"] },
+const links = [
+  { href: "/funkcije", label: "Funkcije" },
+  { href: "/#cijene", label: "Cijene" },
+  { href: "/#djelatnosti", label: "Djelatnosti" },
+  { href: "/#pitanja", label: "Česta pitanja" },
+  { href: "#demo", label: "Zakaži demo" },
 ];
 
 export function Footer() {
@@ -130,28 +129,25 @@ export function Footer() {
       <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
           <div>
-            <Logo />
-            <div className="mt-6 flex gap-2">
-              <StoreBadge store="apple" />
-              <StoreBadge store="google" />
-            </div>
+            <Link href="/" aria-label="Melura početna" className="inline-block">
+              <Logo />
+            </Link>
+            <p className="mt-4 max-w-xs text-ink-soft">
+              Vlastita booking aplikacija za frizerske, barber i beauty salone.
+            </p>
           </div>
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-            {columns.map((c) => (
-              <div key={c.title}>
-                <p className="text-lg font-bold">{c.title}</p>
-                <ul className="mt-4 space-y-3">
-                  {c.links.map((l) => (
-                    <li key={l}>
-                      <a href="#" className="text-ink-soft hover:text-ink">
-                        {l}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+          <nav aria-label="Footer">
+            <p className="text-lg font-bold">Za salone</p>
+            <ul className="mt-2 grid grid-cols-2 gap-x-6 sm:grid-cols-3">
+              {links.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
         <div className="mt-14 flex flex-col gap-4 border-t border-line pt-8 text-sm text-ink-soft sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 Melura · Vitez, Bosna i Hercegovina</p>

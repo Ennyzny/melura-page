@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BellRing, CalendarCheck2, Star } from "lucide-react";
+import { BellRing, CalendarCheck2 } from "lucide-react";
 
 function Card({ className = "", children }: { className?: string; children: React.ReactNode }) {
   return (
@@ -122,16 +122,12 @@ function PushCard({ className = "" }: { className?: string }) {
   );
 }
 
-function RatingCard({ className = "" }: { className?: string }) {
+function ReminderCard({ className = "" }: { className?: string }) {
   return (
     <Card className={`bg-mint ${className}`}>
-      <p className="text-4xl font-bold">4,8</p>
-      <div className="mt-1 flex text-[#f5b301]">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star key={i} className="h-4 w-4 fill-current" />
-        ))}
-      </div>
-      <p className="mt-2 text-[12px] text-ink-soft">142 ocjene u aplikaciji salona</p>
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-mint-dark">Podsjetnik</p>
+      <p className="mt-1 text-4xl font-bold">14:30</p>
+      <p className="mt-2 text-[12px] text-ink-soft">Sutra · Fade šišanje kod Emira</p>
     </Card>
   );
 }
@@ -183,7 +179,7 @@ export function Hero() {
 
         <RequestCard className="absolute right-[5%] top-0 w-60" />
         <PushCard className="absolute right-[3%] top-[188px] w-72" />
-        <RatingCard className="absolute right-[6%] top-[280px] w-48" />
+        <ReminderCard className="absolute right-[6%] top-[280px] w-48" />
         <ServicesCard className="absolute -right-28 top-[400px] w-48 opacity-90" />
       </div>
 
@@ -200,7 +196,7 @@ export function Hero() {
           />
         </div>
         <RequestCard className="absolute left-2 top-0 w-56 sm:left-4" />
-        <RatingCard className="absolute right-2 top-48 w-36 sm:right-4" />
+        <ReminderCard className="absolute right-2 top-48 w-36 sm:right-4" />
       </div>
     </section>
   );

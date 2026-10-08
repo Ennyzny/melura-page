@@ -13,6 +13,7 @@
   --color-coral: #ee6c4d;
   --color-coral-dark: #d9583a;
   --color-coral-soft: #fdece7;
+  --color-coral-text: #b23f2a;
   --color-mint: #e0f1ef;
   --color-mint-dark: #1f6f5c;
 
@@ -32,6 +33,22 @@ body {
 ::selection {
   background: var(--color-coral);
   color: white;
+}
+
+/* Jasan fokus za tastaturu, i na svijetloj i na tamnoj pozadini. */
+:focus-visible {
+  outline: 3px solid var(--color-navy);
+  outline-offset: 3px;
+}
+
+.bg-ink :focus-visible,
+.bg-night :focus-visible {
+  outline-color: white;
+}
+
+.marquee-paused .animate-marquee-left,
+.marquee-paused .animate-marquee-right {
+  animation-play-state: paused;
 }
 
 @keyframes marquee-left {
