@@ -11,7 +11,9 @@ const fields = [
   { name: "grad", label: "Grad", type: "text", autoComplete: "address-level2", required: false },
 ] as const;
 
-export function DemoForm() {
+export function DemoForm({
+  className = "mx-auto mt-10 grid max-w-xl gap-4 rounded-3xl bg-white p-6 text-left text-ink shadow-2xl sm:grid-cols-2 sm:p-8",
+}: { className?: string }) {
   const [sent, setSent] = useState(false);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -35,7 +37,7 @@ export function DemoForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="mx-auto mt-10 grid max-w-xl gap-4 rounded-3xl bg-white p-6 text-left text-ink shadow-2xl sm:grid-cols-2 sm:p-8"
+      className={className}
     >
       {fields.map((f) => (
         <label key={f.name} className="grid gap-1.5 text-[15px] font-semibold">

@@ -28,8 +28,8 @@ const sections: Section[] = [
         text: "Dnevni kalendar sa kolonom za svakog majstora, bojama po statusu i linijom trenutnog vremena. Radi na telefonu i računaru.",
       },
       {
-        title: "Zahtjevi na odobrenju",
-        text: "Svaki novi zahtjev stiže kao obavijest. Potvrdite ili odbijte jednim dodirom, čim zahtjev stigne.",
+        title: "Automatska ili ručna potvrda",
+        text: "Termini se potvrđuju odmah, ili svaki zahtjev stiže kao obavijest pa ga potvrdite ili odbijete jednim dodirom.",
       },
       {
         title: "Ručni unos termina",

@@ -1,129 +1,114 @@
-import Image from "next/image";
-import { BellRing } from "lucide-react";
+import { BellRing, CalendarCheck2, Clock } from "lucide-react";
+import { DevicePreview } from "./DevicePreview";
+import { Reveal } from "./Reveal";
 
-type Step = {
-  title: string;
-  text: string;
-  who: "Klijent" | "Salon";
-  screen?: { src: string; alt: string; width: number; height: number };
-};
-
-// Isti termin kroz cijeli tok: Fade šišanje kod Emira, srijeda 20.05. u 14:30.
-const steps: Step[] = [
+// Isti termin kroz klijentski tok: Šišanje + brada kod Amka, četvrtak 15.10. u 09:00.
+const steps = [
   {
-    who: "Klijent",
     title: "Bira uslugu",
-    text: "Usluge sa cijenom i trajanjem, iz vašeg cjenovnika. Klijent bira Fade šišanje.",
-    screen: { src: "/screens/client-03-korak1-usluga.png", alt: "Korak 1 — izbor usluge, označeno Fade šišanje 20 KM", width: 808, height: 1706 },
+    text: "Usluge sa cijenom i trajanjem, iz vašeg cjenovnika. Sve je jasno prije zakazivanja.",
+    image: "service-choice",
+    alt: "Korak 1 — odabrana usluga Šišanje + brada u aplikaciji Amko Barbershop",
   },
   {
-    who: "Klijent",
     title: "Bira majstora",
-    text: "Konkretnog majstora ili „Bilo ko od nas“ za najviše slobodnih termina.",
-    screen: { src: "/screens/client-04-korak2-majstor.png", alt: "Korak 2 — izbor majstora, označen Emir", width: 808, height: 1484 },
+    text: "Rezerviše kod osobe kojoj se želi vratiti, ili kod bilo koga ko je slobodan.",
+    image: "staff-choice",
+    alt: "Korak 2 — izbor majstora, označen Amko",
   },
   {
-    who: "Klijent",
-    title: "Bira vrijeme i prijavljuje se",
-    text: "Nude se samo stvarno slobodni termini. Prijava (Apple, Google ili email) traži se tek na kraju, a izabrani termin se čuva. Broj telefona se ne traži.",
-    screen: { src: "/screens/client-06-korak4-prijava.png", alt: "Korak 4 — prijava, sačuvan termin srijeda 20. maj u 14:30", width: 808, height: 1436 },
+    title: "Bira slobodno vrijeme",
+    text: "Nude se samo stvarno slobodni termini — bez preklapanja i bez dopisivanja.",
+    image: "time-choice",
+    alt: "Korak 3 — izbor termina 15. oktobra u 09:00",
   },
   {
-    who: "Klijent",
-    title: "Šalje zahtjev",
-    text: "Termin je na čekanju dok ga salon ne potvrdi, i za to vrijeme ga niko drugi ne može zauzeti.",
-    screen: { src: "/screens/client-07-zahtjev-poslan.png", alt: "Zahtjev poslan — status na čekanju", width: 808, height: 1562 },
-  },
-  {
-    who: "Salon",
-    title: "Vi potvrđujete",
-    text: "Na telefon vam stiže obavijest o novom zahtjevu. Potvrdite ili odbijte jednim dodirom u Melura adminu.",
-  },
-  {
-    who: "Klijent",
-    title: "Stiže potvrda",
-    text: "Klijent odmah dobija push obavijest da je termin potvrđen.",
-    screen: { src: "/screens/client-10-obavijesti.png", alt: "Obavijesti — termin je potvrđen", width: 808, height: 1262 },
-  },
-  {
-    who: "Klijent",
-    title: "Podsjetnici same stižu",
-    text: "Termin je u „Moji termini“, a podsjetnik stiže dan ranije i tri sata prije termina.",
-    screen: { src: "/screens/client-08-moji-termini.png", alt: "Moji termini — potvrđen termin", width: 808, height: 1502 },
+    title: "Dobija potvrdu",
+    text: "Uz automatsku potvrdu termin je odmah upisan u raspored. Prijava se traži tek na kraju, a broj telefona nikako.",
+    image: "booking-confirmed",
+    alt: "Termin je potvrđen — Šišanje + brada, četvrtak 15.10. u 09:00",
   },
 ];
 
-function Phone({ screen }: { screen: NonNullable<Step["screen"]> }) {
-  return (
-    <div className="rounded-[2rem] border-[6px] border-ink bg-ink shadow-xl">
-      <Image
-        src={screen.src}
-        alt={screen.alt}
-        width={screen.width}
-        height={screen.height}
-        sizes="(min-width: 1024px) 260px, 70vw"
-        className="block h-auto w-full rounded-[1.6rem]"
-      />
-    </div>
-  );
-}
-
-// Korak salona nema snimak iste rezervacije, pa je nacrtan sa istim podacima.
-function SalonCard() {
-  return (
-    <div className="flex aspect-[808/1500] flex-col justify-center gap-4 rounded-[2rem] bg-coral-soft p-5">
-      <div className="rounded-2xl bg-white p-4 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-        <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-coral-soft text-coral-text">
-            <BellRing className="h-4 w-4" aria-hidden="true" />
-          </span>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">Novi zahtjev</p>
-            <p className="text-[15px] font-bold">Fade šišanje · Emir</p>
-          </div>
-        </div>
-        <p className="mt-3 text-[14px] text-ink-soft">Srijeda, 20.05. u 14:30 · 40 min · 20 KM</p>
-        <div className="mt-4 grid grid-cols-2 gap-2 text-[13px] font-semibold" aria-hidden="true">
-          <span className="rounded-full border border-line py-2 text-center">Odbij</span>
-          <span className="rounded-full bg-ink py-2 text-center text-white">Potvrdi</span>
-        </div>
-      </div>
-      <p className="text-center text-[13px] text-ink-soft">Melura admin na vašem telefonu</p>
-    </div>
-  );
-}
+const after = [
+  { icon: BellRing, title: "Push umjesto SMS-a", text: "Klijent dobija obavijest čim je termin potvrđen ili odbijen." },
+  { icon: Clock, title: "Podsjetnici same stižu", text: "Dan ranije i tri sata prije termina, bez troška po poruci." },
+  { icon: CalendarCheck2, title: "Moji termini", text: "Klijent vidi status i može otkazati do roka koji vi odredite." },
+];
 
 export function BookingStory() {
   return (
-    <section id="rezervacija" aria-labelledby="rezervacija-naslov" className="py-16 sm:py-24">
+    <section id="rezervacija" aria-labelledby="rezervacija-naslov" className="bg-fog py-16 sm:py-24">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <div className="border-b border-line pb-8">
-          <h2 id="rezervacija-naslov" className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Jedna rezervacija, od početka do kraja
+          <p className="text-sm font-semibold uppercase tracking-widest text-coral-text">Iz ugla klijenta</p>
+          <h2 id="rezervacija-naslov" className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
+            Jedna rezervacija, od izbora do termina
           </h2>
           <p className="mt-3 max-w-2xl text-lg">
-            Ovako izgleda isti termin — Fade šišanje kod Emira, srijeda u 14:30 — iz ugla klijenta i
-            salona. Snimci su iz aplikacije demo salona Barber Studio Vitez.
+            Četiri kratka koraka u aplikaciji vašeg salona. Snimci su iz stvarne aplikacije salona
+            Amko Barbershop.
           </p>
         </div>
 
         <ol
           tabIndex={0}
           aria-label="Koraci rezervacije"
-          className="-mx-4 mt-12 flex snap-x snap-mandatory scroll-px-4 gap-6 overflow-x-auto px-4 sm:scroll-px-6 pb-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-4 lg:gap-x-8 lg:gap-y-14 lg:overflow-visible lg:px-0 lg:pb-0"
+          className="-mx-4 mt-12 flex snap-x snap-mandatory scroll-px-4 gap-5 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:scroll-px-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-4 lg:gap-6 lg:overflow-visible lg:px-0 lg:pb-0"
         >
           {steps.map((s, i) => (
-            <li key={s.title} className="w-[68%] max-w-[280px] shrink-0 snap-start sm:w-[40%] lg:w-auto lg:max-w-none">
-              {s.screen ? <Phone screen={s.screen} /> : <SalonCard />}
-              <p className="mt-5 text-sm font-semibold text-muted">
-                {i + 1}. korak · {s.who}
-              </p>
-              <h3 className="mt-1 text-xl font-semibold">{s.title}</h3>
-              <p className="mt-2 text-[16px] leading-relaxed text-ink-soft">{s.text}</p>
+            <li key={s.image} className="w-[72%] max-w-[290px] shrink-0 snap-start sm:w-[42%] lg:w-auto lg:max-w-none">
+              <Reveal>
+                <div className="h-full rounded-3xl border border-line bg-white px-6 pb-8 pt-7">
+                  <p className="text-sm font-semibold text-coral-text">{i + 1}. korak</p>
+                  <h3 className="mt-2 text-xl font-semibold">{s.title}</h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-ink-soft lg:min-h-[7.5rem]">{s.text}</p>
+                  <div className="mx-auto mt-6 w-full max-w-[220px]">
+                    <DevicePreview src={`/screens/phone/${s.image}.png`} alt={s.alt} />
+                  </div>
+                </div>
+              </Reveal>
             </li>
           ))}
         </ol>
         <p className="mt-4 text-sm text-muted lg:hidden">Povucite u stranu za sljedeći korak.</p>
+
+        <Reveal>
+          <div className="mt-12 grid items-center gap-10 rounded-3xl bg-white p-8 sm:p-12 md:grid-cols-[1fr_240px] lg:gap-20">
+            <div className="max-w-xl">
+              <p className="text-sm font-semibold uppercase tracking-widest text-navy">Iz ugla salona</p>
+              <h3 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+                Želite odobriti svaki zahtjev?
+              </h3>
+              <p className="mt-5 text-lg leading-relaxed text-ink-soft">
+                Umjesto automatske potvrde uključite ručno odobravanje. Na telefon vam stiže obavijest,
+                a zahtjev čeka u Melura adminu — s uslugom, majstorom i vremenom.
+              </p>
+              <p className="mt-4 leading-relaxed text-ink-soft">
+                Prihvatite ili odbijte jednim dodirom. Dok čeka, termin niko drugi ne može zauzeti, a
+                zaboravljeni zahtjevi sami istječu i oslobađaju kalendar.
+              </p>
+            </div>
+            <div className="mx-auto w-full max-w-[240px]">
+              <DevicePreview
+                src="/screens/phone/admin-request.png"
+                alt="Novi zahtjev za termin u 10:00, s opcijama Prihvati i Odbij u Melura adminu"
+              />
+            </div>
+          </div>
+        </Reveal>
+
+        <ul className="mt-12 grid gap-8 sm:grid-cols-3">
+          {after.map(({ icon: Icon, title, text }) => (
+            <li key={title}>
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white">
+                <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+              </span>
+              <h3 className="mt-4 text-xl font-semibold">{title}</h3>
+              <p className="mt-2 text-[16px] leading-relaxed text-ink-soft">{text}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
