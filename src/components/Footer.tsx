@@ -1,15 +1,12 @@
 import Image from "next/image";
 import { ArrowRight, Globe } from "lucide-react";
 import { Logo, MeluraMark } from "./Logo";
+import { LavaBackground } from "./LavaBackground";
 
 export function CtaBanner() {
   return (
-    <section id="demo" className="relative overflow-hidden bg-[#c24a33] text-white">
-      <div aria-hidden="true" className="absolute inset-0">
-        <div className="animate-blob absolute -left-[10%] -top-1/2 h-[160%] w-[60%] rounded-full bg-[#ee6c4d] blur-3xl" />
-        <div className="animate-blob absolute -right-[10%] -bottom-1/2 h-[160%] w-[60%] rounded-full bg-[#3d5a80] blur-3xl [animation-delay:-7s]" />
-        <div className="absolute left-1/3 top-0 h-full w-1/3 rounded-full bg-[#f29a7f] opacity-60 blur-3xl" />
-      </div>
+    <section id="demo" className="relative overflow-hidden bg-night text-white">
+      <LavaBackground />
       <div className="relative px-4 py-20 text-center sm:py-24">
         <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">Šta čekate?</h2>
         <p className="mt-4 text-lg font-medium sm:text-xl">

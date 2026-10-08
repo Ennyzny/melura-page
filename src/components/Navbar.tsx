@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { Menu, Store, X } from "lucide-react";
 import { Logo } from "./Logo";
+import Link from "next/link";
 
 const links = [
-  { href: "#djelatnosti", label: "Djelatnosti" },
-  { href: "#funkcije", label: "Funkcije" },
-  { href: "#cijene", label: "Cijene" },
+  { href: "/funkcije#djelatnosti", label: "Djelatnosti" },
+  { href: "/funkcije", label: "Funkcije" },
+  { href: "/#cijene", label: "Cijene" },
 ];
 
 const menuLinks = [
@@ -40,28 +41,28 @@ export function Navbar() {
     >
       <nav className="flex h-[72px] items-center justify-between px-4 sm:px-8">
         <div className="flex items-center gap-12">
-          <a href="#" aria-label="Melura početna">
+          <Link href="/" aria-label="Melura početna">
             <Logo />
-          </a>
+          </Link>
           <ul className="hidden items-center gap-10 lg:flex">
             {links.map((l) => (
               <li key={l.href}>
-                <a href={l.href} className="text-[17px] font-semibold hover:text-ink-soft">
+                <Link href={l.href} className="text-[17px] font-semibold hover:text-ink-soft">
                   {l.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <a
-            href="#aplikacija"
+          <Link
+            href="/funkcije#aplikacije"
             className="hidden items-center gap-2 rounded-full border border-line bg-white px-5 py-2.5 text-[17px] font-semibold transition-colors hover:border-ink/30 md:inline-flex"
           >
             <Store className="h-5 w-5" strokeWidth={1.75} />
             Primjer aplikacije
-          </a>
+          </Link>
           <a
             href="#demo"
             className="rounded-full bg-ink px-5 py-2.5 text-[15px] font-semibold text-white transition-colors hover:bg-ink-soft sm:text-[17px]"
@@ -88,7 +89,7 @@ export function Navbar() {
             {menuLinks.map((l) => (
               <li key={l.href}>
                 <a
-                  href={l.href}
+                  href={l.href === "#cijene" ? "/#cijene" : `/funkcije${l.href}`}
                   onClick={() => setOpen(false)}
                   className="block rounded-lg px-3 py-2.5 text-[17px] font-semibold hover:bg-fog"
                 >
