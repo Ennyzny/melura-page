@@ -86,7 +86,7 @@ export function Apps() {
         </div>
         <div className="mt-14 grid gap-6 lg:grid-cols-2">
           {cards.map((c) => (
-            <div key={c.title} className="relative flex h-[480px] overflow-hidden rounded-3xl bg-fog p-8 sm:p-10">
+            <div key={c.title} className="relative flex h-[540px] overflow-hidden rounded-3xl bg-fog p-8 sm:p-10">
               <div className="relative z-10 flex max-w-[52%] flex-col justify-end">
                 {c.icon}
                 <h3 className="mt-5 text-2xl font-bold leading-tight sm:text-3xl">{c.title}</h3>
@@ -96,7 +96,7 @@ export function Apps() {
                   <StoreBadge store="google" />
                 </div>
               </div>
-              <div className="absolute -right-10 top-10 w-[46%] max-w-[230px] sm:right-8 sm:w-[40%]">
+              <div className="absolute -right-10 top-1/2 w-[46%] max-w-[230px] -translate-y-1/2 sm:right-8 sm:w-[40%]">
                 <DevicePreview src={c.src} alt={c.alt} />
               </div>
             </div>
@@ -125,7 +125,7 @@ export function Footer() {
               <Logo />
             </Link>
             <p className="mt-4 max-w-xs text-ink-soft">
-              Vlastita booking aplikacija za frizerske, barber i beauty salone.
+              Vlastita booking aplikacija za frizerske salone, barber shopove i beauty salone.
             </p>
           </div>
           <nav aria-label="Footer">

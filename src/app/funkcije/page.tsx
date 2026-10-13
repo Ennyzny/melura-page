@@ -49,7 +49,7 @@ export default function FunkcijePage() {
           <ol className="mt-12 grid gap-5 text-left sm:grid-cols-3">
             {howItWorks.map(([title, text], i) => (
               <li key={title}>
-                <Reveal>
+                <Reveal className="h-full">
                   <div className="h-full rounded-3xl bg-fog p-7">
                     <span className="font-semibold text-coral-text">0{i + 1}</span>
                     <h2 className="mt-3 text-xl font-bold">{title}</h2>
