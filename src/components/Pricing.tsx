@@ -153,7 +153,7 @@ export function Pricing() {
         </div>
 
         <p className="mt-10 text-center text-sm text-muted">
-          Cijene su za frizerske, barber i beauty salone. Paketi za masažu,
+          Cijene su za frizerske salone, barber shopove i beauty salone. Paketi za masažu,
           fizioterapiju i stomatologiju su u pripremi.
         </p>
       </div>

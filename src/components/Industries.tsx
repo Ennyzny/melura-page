@@ -71,7 +71,7 @@ export function Industries() {
           Napravljeno za salone poput vašeg
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-lg">
-          Danas za frizerske, barber i beauty salone. Ostale uslužne djelatnosti dolaze uskoro.
+          Danas za frizerske salone, barber shopove i beauty salone. Ostale uslužne djelatnosti dolaze uskoro.
         </p>
       </div>
       <div className={`mt-14 space-y-6 ${paused ? "marquee-paused" : ""}`}>

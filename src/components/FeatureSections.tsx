@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 type Feature = { title: string; text: string; planned?: boolean };
 
 type Media =
-  | { kind: "phone"; src: string; alt: string; width: number; height: number; position?: string; tint?: string }
+  | { kind: "phone"; src: string; alt: string; width: number; height: number; position?: string; tint?: string; fullScreen?: boolean }
   | { kind: "desktop"; src: string; alt: string; width: number; height: number; tint?: string }
   | { kind: "phones"; items: { src: string; alt: string; width: number; height: number; position?: string }[]; tint?: string };
 
@@ -227,6 +227,7 @@ const sections: Section[] = [
       width: 808,
       height: 1262,
       tint: "bg-mint",
+      fullScreen: true,
     },
     features: [
       {
@@ -361,12 +362,16 @@ function FeatureItem({ title, text, planned }: Feature) {
   );
 }
 
-function Phone({ src, alt, width, height, position = "50% 0%", className = "" }: {
-  src: string; alt: string; width: number; height: number; position?: string; className?: string;
+// fullScreen: okvir prati proporcije slike pa se vidi cijeli ekran, bez rezanja.
+function Phone({ src, alt, width, height, position = "50% 0%", fullScreen = false, className = "" }: {
+  src: string; alt: string; width: number; height: number; position?: string; fullScreen?: boolean; className?: string;
 }) {
   return (
     <div className={`rounded-[2.6rem] border-[8px] border-ink bg-ink shadow-2xl ${className}`}>
-      <div className="relative aspect-[402/874] overflow-hidden rounded-[2rem] bg-white">
+      <div
+        className={`relative overflow-hidden rounded-[2rem] bg-white ${fullScreen ? "" : "aspect-[402/874]"}`}
+        style={fullScreen ? { aspectRatio: `${width} / ${height}` } : undefined}
+      >
         <Image
           src={src}
           alt={alt}
@@ -386,7 +391,12 @@ function MediaCard({ media }: { media: Media }) {
   return (
     <div className={`relative h-[460px] overflow-hidden rounded-3xl sm:h-[620px] ${tint}`}>
       {media.kind === "phone" && (
-        <Phone {...media} className="absolute left-1/2 top-16 w-[62%] max-w-[330px] -translate-x-1/2" />
+        <Phone
+          {...media}
+          className={`absolute left-1/2 w-[62%] max-w-[330px] -translate-x-1/2 ${
+            media.fullScreen ? "top-1/2 -translate-y-1/2" : "top-16"
+          }`}
+        />
       )}
       {media.kind === "phones" && (
         <>
