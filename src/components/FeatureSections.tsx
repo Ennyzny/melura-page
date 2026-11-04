@@ -68,10 +68,10 @@ const sections: Section[] = [
     mediaSide: "right",
     media: {
       kind: "phone",
-      src: "/screens/client-01-pocetna.png",
-      alt: "Aplikacija Barber Studio Vitez — početni ekran",
-      width: 808,
-      height: 4140,
+      src: "/screens/phone/o-pocetna.webp",
+      alt: "Aplikacija Oštrica Barber Studio — početni ekran",
+      width: 1290,
+      height: 2796,
       tint: "bg-fog",
     },
     features: [
@@ -88,8 +88,8 @@ const sections: Section[] = [
         text: "Link za Instagram bio i Google Maps — naručivanje i bez instaliranja aplikacije.",
       },
       {
-        title: "QR kod",
-        text: "Na pultu, ogledalu ili vizitki. Klijent skenira i naruči se za par sekundi.",
+        title: "Link za klijente",
+        text: "Melura vam daje link aplikacije u App Storeu i Google Playu — pošaljite ga porukom ili stavite na Instagram.",
       },
       {
         title: "Potpun branding",
@@ -110,8 +110,8 @@ const sections: Section[] = [
       kind: "phones",
       tint: "bg-coral-soft",
       items: [
-        { src: "/screens/client-05-korak3-vrijeme.png", alt: "Korak 3 — izbor vremena", width: 808, height: 1214 },
-        { src: "/screens/client-07-zahtjev-poslan.png", alt: "Zahtjev poslan", width: 808, height: 1562 },
+        { src: "/screens/phone/o-vrijeme.webp", alt: "Korak 3 — izbor vremena", width: 1290, height: 2796 },
+        { src: "/screens/phone/o-potvrda.webp", alt: "Zahtjev poslan", width: 1290, height: 2796 },
       ],
     },
     features: [
@@ -148,7 +148,7 @@ const sections: Section[] = [
     mediaSide: "right",
     media: {
       kind: "desktop",
-      src: "/screens/admin-klijenti.png",
+      src: "/screens/o-klijenti.webp",
       alt: "Adresar klijenata u Melura adminu",
       width: 2880,
       height: 1800,
@@ -180,7 +180,7 @@ const sections: Section[] = [
     mediaSide: "left",
     media: {
       kind: "desktop",
-      src: "/screens/admin-osoblje.png",
+      src: "/screens/o-osoblje.webp",
       alt: "Osoblje i smjene u Melura adminu",
       width: 2880,
       height: 1800,
@@ -220,28 +220,28 @@ const sections: Section[] = [
     mediaSide: "right",
     media: {
       kind: "phone",
-      src: "/screens/client-10-obavijesti.png",
-      alt: "Obavijesti u aplikaciji salona",
-      width: 808,
-      height: 1262,
+      src: "/screens/phone/o-potvrda.webp",
+      alt: "Zahtjev poslan — klijent čeka obavijest o potvrdi",
+      width: 1290,
+      height: 2796,
       tint: "bg-mint",
     },
     features: [
       {
         title: "Potvrda termina",
-        text: "Klijent odmah dobija push: \"Vaš termin je potvrđen — 20.05. u 14:30\".",
+        text: "Čim salon potvrdi, klijent dobija push: \"Zahtjev je potvrđen\".",
       },
       {
         title: "Podsjetnik dan ranije",
-        text: "\"Sutra u 14:30 — Muško šišanje kod Emira.\"",
+        text: "\"Termin je sutra. Detalji su u aplikaciji.\" — 24 sata prije termina.",
       },
       {
-        title: "Podsjetnik 3 sata prije",
-        text: "Posljednji podsjetnik da niko ne zaboravi doći.",
+        title: "Podsjetnik nekoliko sati prije",
+        text: "\"Termin počinje za 3 sata.\" Salon bira koliko sati ranije (1–12).",
       },
       {
         title: "Obavijesti za vlasnika",
-        text: "\"Novi zahtjev: Amina Hadžić, Feniranje, 13:30\" — čim klijent pošalje.",
+        text: "\"Novi zahtjev\" stiže vama i timu čim klijent pošalje — bez imena na zaključanom ekranu.",
       },
       {
         title: "Odbijeni termini",
@@ -260,10 +260,10 @@ const sections: Section[] = [
     mediaSide: "left",
     media: {
       kind: "desktop",
-      src: "/screens/admin-danas.png",
+      src: "/screens/o-danas.webp",
       alt: "Melura — pregled današnjeg dana",
-      width: 1440,
-      height: 901,
+      width: 2880,
+      height: 1800,
       tint: "bg-coral-soft",
     },
     features: [
@@ -294,8 +294,8 @@ const sections: Section[] = [
       kind: "phones",
       tint: "bg-fog",
       items: [
-        { src: "/screens/client-01-pocetna.png", alt: "Barber aplikacija — tamna tema", width: 808, height: 4140 },
-        { src: "/screens/fizio-light-pocetna.png", alt: "Fizioterapija — svijetla tema", width: 804, height: 6104, position: "50% 27.5%" },
+        { src: "/screens/phone/o-pocetna.webp", alt: "Barber aplikacija — tamna tema", width: 1290, height: 2796 },
+        { src: "/screens/o-fizio-pocetna.webp", alt: "Fizioterapija — svijetla tema", width: 804, height: 1748 },
       ],
     },
     features: [

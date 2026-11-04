@@ -2,10 +2,10 @@ import { DevicePreview } from "@/components/DevicePreview";
 import { Reveal } from "@/components/Reveal";
 
 const steps = [
-  { title: "Odabere uslugu", text: "Cijena i trajanje su jasni prije zakazivanja.", image: "service-choice", alt: "Odabrana usluga Šišanje + brada u aplikaciji Amko Barbershop" },
-  { title: "Izabere majstora", text: "Rezerviše kod osobe kojoj se želi vratiti.", image: "staff-choice", alt: "Izbor majstora Amko u klijentskoj aplikaciji" },
-  { title: "Pronađe svoje vrijeme", text: "Bira datum i jedan od dostupnih termina.", image: "time-choice", alt: "Izbor termina 15. oktobra u 09:00" },
-  { title: "Dobije potvrdu", text: "Uz automatsku potvrdu, termin je odmah rezervisan.", image: "booking-confirmed", alt: "Automatski potvrđen termin za Šišanje + brada u 09:00" },
+  { title: "Odabere uslugu", text: "Cijena i trajanje su jasni prije zakazivanja.", image: "o-usluga", alt: "Odabrana usluga Šišanje + brada u aplikaciji Oštrica Barber Studio" },
+  { title: "Izabere majstora", text: "Rezerviše kod osobe kojoj se želi vratiti.", image: "o-majstor", alt: "Izbor majstora Kenan u klijentskoj aplikaciji" },
+  { title: "Pronađe svoje vrijeme", text: "Bira datum i jedan od dostupnih termina.", image: "o-vrijeme", alt: "Izbor termina 10. novembra" },
+  { title: "Pošalje zahtjev", text: "Salon potvrđuje jednim dodirom, a klijent dobije obavijest. Uz automatsku potvrdu termin je odmah rezervisan.", image: "o-potvrda", alt: "Zahtjev poslan za Šišanje + brada u 12:30, čeka potvrdu salona" },
 ];
 
 export function BookingFlow() {
@@ -26,7 +26,7 @@ export function BookingFlow() {
                   <h3 className="mt-3 text-xl font-bold">{step.title}</h3>
                   <p className="mt-2 min-h-12 text-sm leading-6 text-ink-soft">{step.text}</p>
                   <div className="mx-auto mt-7 w-full max-w-[230px]">
-                    <DevicePreview src={`/screens/phone/${step.image}.png`} alt={step.alt} />
+                    <DevicePreview src={`/screens/phone/${step.image}.webp`} alt={step.alt} />
                   </div>
                 </div>
               </Reveal>
@@ -43,7 +43,7 @@ export function BookingFlow() {
                 <p className="mt-4 leading-relaxed text-ink-soft">Vidite uslugu, majstora i vrijeme. Prihvatite ili odbijte zahtjev direktno s telefona.</p>
               </div>
               <div className="mx-auto w-full max-w-[240px]">
-                <DevicePreview src="/screens/phone/admin-request.png" alt="Zaseban zahtjev za termin u 10:00, s opcijama Prihvati i Odbij u Melura adminu" />
+                <DevicePreview src="/screens/phone/o-melura-zahtjevi.webp" alt="Zahtjevi na čekanju u Meluri, sa dugmadi Odbij i Potvrdi" />
               </div>
             </div>
           </Reveal>

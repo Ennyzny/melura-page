@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, CalendarCheck2, Smartphone, Users } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
+import { ScrollScenes } from "@/components/ScrollScenes";
 import { Pricing } from "@/components/Pricing";
 import { CtaBanner, Footer } from "@/components/Footer";
 
@@ -11,6 +12,7 @@ export default function Home() {
       <Navbar />
       <main className="flex-1">
         <Hero />
+        <ScrollScenes />
         <section className="mx-auto max-w-[1200px] px-6 py-20 sm:py-24">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Vaš salon, jednostavnije organizovan.</h2>

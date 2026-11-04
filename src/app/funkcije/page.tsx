@@ -38,8 +38,8 @@ export default function FeaturesPage() {
     <section id="aplikacije" className="mx-auto max-w-3xl px-6 py-16">
       <h2 className="mb-10 text-center text-3xl font-bold">Dvije aplikacije, jedan sistem</h2>
       <div className="flex justify-center gap-6 sm:gap-12">
-        <div className="w-[44%] max-w-[280px]"><Reveal><DevicePreview src="/screens/phone/client-home.png" alt="Klijentska aplikacija Amko Barbershop" /><p className="mt-4 text-center text-sm text-muted">Aplikacija vašeg salona</p></Reveal></div>
-        <div className="w-[44%] max-w-[280px]"><Reveal><DevicePreview src="/screens/phone/admin-today.png" alt="Melura admin za Barber Studio Vitez" /><p className="mt-4 text-center text-sm text-muted">Melura admin za vaš tim</p></Reveal></div>
+        <div className="w-[44%] max-w-[280px]"><Reveal><DevicePreview src="/screens/phone/o-pocetna.webp" alt="Aplikacija salona Oštrica Barber Studio — početna" /><p className="mt-4 text-center text-sm text-muted">Aplikacija vašeg salona</p></Reveal></div>
+        <div className="w-[44%] max-w-[280px]"><Reveal><DevicePreview src="/screens/phone/o-melura-danas.webp" alt="Melura za Oštrica Barber Studio — današnji dan" /><p className="mt-4 text-center text-sm text-muted">Melura admin za vaš tim</p></Reveal></div>
       </div>
     </section>
     <BookingFlow />
