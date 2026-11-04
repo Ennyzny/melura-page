@@ -54,8 +54,8 @@ export function Apps() {
     {
       title: "Aplikacija vašeg salona",
       text: "Vaši klijenti se naručuju u aplikaciji koja nosi ime i boje vašeg salona",
-      src: "/screens/phone/client-home.png",
-      alt: "Početni ekran aplikacije salona Amko Barbershop",
+      src: "/screens/phone/o-pocetna.webp",
+      alt: "Početni ekran aplikacije salona Oštrica Barber Studio",
       icon: (
         <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-night text-lg font-bold text-white">
           B
@@ -65,8 +65,8 @@ export function Apps() {
     {
       title: "Melura admin za vlasnike",
       text: "Vodite termine, tim i usluge sa iOS i Android aplikacije ili iz preglednika",
-      src: "/screens/phone/admin-today.png",
-      alt: "Melura admin — pregled dana za Barber Studio Vitez",
+      src: "/screens/phone/o-melura-danas.webp",
+      alt: "Melura — pregled dana za Oštrica Barber Studio",
       icon: (
         <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white">
           <MeluraMark className="h-8 w-8" />
@@ -142,7 +142,19 @@ export function Footer() {
           </nav>
         </div>
         <div className="mt-14 flex flex-col gap-4 border-t border-line pt-8 text-sm text-ink-soft sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 Melura · Vitez, Bosna i Hercegovina</p>
+          <div className="space-y-1">
+            <p>© 2026 Melura · Vitez, Bosna i Hercegovina</p>
+            {/* CC-BY 4.0 traži navođenje autora modela */}
+            <p className="text-xs text-muted">
+              3D model MacBooka:{" "}
+              <a className="underline" href="https://sketchfab.com/3d-models/macbook-pro-m3-16-inch-2024-8e34fc2b303144f78490007d91ff57c4">
+                „MacBook Pro M3 16-inch 2024“
+              </a>{" "}
+              (jackbaeten,{" "}
+              <a className="underline" href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a>), prilagođen u
+              rigged-macbook-3d.
+            </p>
+          </div>
           <span className="inline-flex w-fit items-center gap-2 rounded-full border border-line px-4 py-2 font-semibold text-ink">
             <Globe className="h-4 w-4" /> Bosanski
           </span>
