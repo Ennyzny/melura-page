@@ -7,6 +7,8 @@ import {
   Macbook, MacbookLighting, MacbookStage, journeyState, resolvePoses, resolveTimeline, smoothDamp, useCapabilityGate,
 } from "rigged-macbook-3d";
 import type { Korak } from "@/components/ScrollScene";
+import { pratiElement } from "@/lib/mjera";
+import { zagrijScenu } from "@/lib/zagrij";
 
 /*
  * Melura na pravom 3D MacBooku (rigged-macbook-3d, MIT; model "MacBook Pro M3
@@ -70,15 +72,45 @@ function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; sl
   // Kad je model učitan, par kadrova van ekrana kompajlira shadere, napravi
   // okolinu i pošalje teksture GPU-u — prije nego korisnik dođe do sekcije.
   const advance = useThree((st) => st.advance);
+  const grije = useRef(0);
+  // Pauziranje van ekrana radimo sami, direktno na platnu: paketovo pauziranje
+  // (pauseWhenOffscreen) mijenja React stanje, pa se pri ulasku u sekciju
+  // ponovo iscrta i svjetlo (Environment) — mapa okoline se pravi iznova, svi
+  // materijali se rekompajliraju i kadar trzne ~200 ms.
+  const setFrameloop = useThree((st) => st.setFrameloop);
+  const platno = useThree((st) => st.gl.domElement);
+  useEffect(() => {
+    const io = new IntersectionObserver(([e]) => setFrameloop(e.isIntersecting ? "always" : "never"), { rootMargin: "200px 0px" });
+    io.observe(platno);
+    return () => io.disconnect();
+  }, [setFrameloop, platno]);
+  const { gl, scene: scene3, camera } = useThree();
   const zagrij = useCallback(() => {
     onSpreman();
-    let n = 0;
-    const kadar = () => {
-      advance(performance.now());
-      if (++n < 3) requestAnimationFrame(kadar);
+    // Okolina (Environment) se napravi u prvom kadru i tada materijali dobiju
+    // novi shader; zato zagrijavanje ide u tri talasa, da se i ti shaderi
+    // kompajliraju prije nego sekcija naiđe.
+    const talas = () => {
+      zagrijScenu(gl, scene3, camera);
+      let n = 0;
+      // Metal/ANGLE pravi stanje crtanja tek pri prvom stvarnom crtanju u kadru,
+      // pa tokom ovih kadrova uređaj stoji u kadru
+      grije.current++;
+      const kadar = () => {
+        advance(performance.now());
+        if (++n < 3) requestAnimationFrame(kadar);
+        else grije.current--;
+      };
+      requestAnimationFrame(kadar);
     };
-    requestAnimationFrame(kadar);
-  }, [onSpreman, advance]);
+    talas();
+    const t1 = setTimeout(talas, 400);
+    const t2 = setTimeout(talas, 1500);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [onSpreman, advance, gl, scene3, camera]);
   const grupa = useRef<THREE.Group>(null);
   const [ekran] = useState(() => {
     const c = document.createElement("canvas");
@@ -97,6 +129,34 @@ function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; sl
     }),
   );
   const zadnje = useRef(-1);
+  // Svaki screenshot jednom složen u platno veličine ekrana (traka gore za
+  // notch + slika ispod). Slaganje (skaliranje 2880 → 1600) je skupo, pa ide
+  // kad browser odahne čim slika stigne — ne u prvom kadru kad sekcija naiđe.
+  const gotovi = useRef<(HTMLCanvasElement | null)[]>(slike.map(() => null));
+  const gotoviEkrani = () => gotovi.current;
+  const invalidate = useThree((st) => st.invalidate);
+  useEffect(() => {
+    const slozi = (img: HTMLImageElement, k: number) => {
+      if (gotovi.current[k] || !img.naturalWidth) return;
+      const c = document.createElement("canvas");
+      c.width = TW;
+      c.height = TH;
+      const g = c.getContext("2d")!;
+      g.drawImage(img, 0, TRAKA, TW, TH - TRAKA);
+      // traka iznad (gdje je notch) produžava gornji red aplikacije, pa tamni
+      // bočni meni ide do vrha ekrana, a ostatak je bijel
+      g.drawImage(img, 0, 0, img.naturalWidth, 2, 0, 0, TW, TRAKA);
+      gotovi.current[k] = c;
+      invalidate();
+    };
+    const idle = (cb: () => void) =>
+      "requestIdleCallback" in window ? window.requestIdleCallback(cb, { timeout: 2000 }) : setTimeout(cb, 200);
+    slikeEl.forEach((img, k) => {
+      const kad = () => idle(() => slozi(img, k));
+      if (img.complete && img.naturalWidth) kad();
+      else img.addEventListener("load", kad, { once: true });
+    });
+  }, [slikeEl, invalidate]);
 
   useFrame(() => {
     const s = stanje.current;
@@ -104,7 +164,8 @@ function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; sl
     if (!s || !g) return;
     const j = journeyState(s.p, TIMELINE, s.siroko ? POZE_SIROKO : POZE_USKO);
     // ulaz sa strane: iz desna, okrenut prema sredini
-    const u = glatko(s.ulaz);
+    // pri zagrijavanju uređaj u kadru (sekcija je tada nevidljiva)
+    const u = grije.current > 0 ? 1 : glatko(s.ulaz);
     // jedan spor, ravnomjeran okret kroz cijelu sekciju (kao kamera koja
     // polako kruži), bez ljuljanja
     const okret = lerp(0.14, -0.1, s.p);
@@ -131,24 +192,23 @@ function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; sl
     // pretapanje između susjednih ekrana
     const n = slike.length;
     const x = clamp((s.p - EKRANI[0]) / (EKRANI[1] - EKRANI[0])) * (n - 1);
-    const ucitano = slikeEl.filter((i) => i.complete && i.naturalWidth).length;
-    const kljuc = Math.round(x * 200) + ucitano * 10000;
+    // Kanvas se crta samo dok traje pretapanje (i kad stigne nova slika), a ne
+    // u svakom kadru skrola; slike su unaprijed složene u punu veličinu ekrana,
+    // pa je pretapanje samo kopiranje bez skaliranja.
+    const a = Math.floor(x);
+    const prelaz = clamp((x - a - 0.4) / 0.2);
+    const gotove = gotoviEkrani();
+    const kljuc = a * 1000 + Math.round(prelaz * 120) + gotove.filter(Boolean).length * 100000;
     if (kljuc === zadnje.current) return;
     zadnje.current = kljuc;
     const ctx = ekran.c.getContext("2d")!;
-    // macOS traka gore (u nju upadne notch), screenshot cijeli ispod nje
     ctx.fillStyle = "#f6f6f7";
     ctx.fillRect(0, 0, TW, TH);
-    const a = Math.floor(x);
-    const prelaz = clamp((x - a - 0.4) / 0.2);
     [[a, 1], [a + 1, prelaz]].forEach(([k, alfa]) => {
-      const img = slikeEl[k];
-      if (!img || !alfa || !img.complete || !img.naturalWidth) return;
+      const gotov = gotove[k];
+      if (!gotov || !alfa) return;
       ctx.globalAlpha = alfa;
-      ctx.drawImage(img, 0, TRAKA, TW, TH - TRAKA);
-      // traka iznad (gdje je notch) produžava gornji red aplikacije, pa tamni
-      // bočni meni ide do vrha ekrana, a ostatak je bijel
-      ctx.drawImage(img, 0, 0, img.naturalWidth, 2, 0, 0, TW, TRAKA);
+      ctx.drawImage(gotov, 0, 0);
     });
     ctx.globalAlpha = 1;
     osvjezi(ekran.t);
@@ -181,24 +241,24 @@ export function MacbookScene({ slike, koraci }: Props) {
     let raf = 0;
     let last = performance.now();
     const brzina = { current: 0 };
+    const mjera = omotac.current ? pratiElement(omotac.current) : null;
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
-      const el = omotac.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
+      if (!mjera) return;
+      const r = mjera.citaj();
       // daleko od sekcije petlja samo čeka (bez upisa u DOM)
-      if (r.bottom < -window.innerHeight || r.top > window.innerHeight * 2) return;
-      const cilj = clamp(-r.top / Math.max(1, el.offsetHeight - window.innerHeight));
+      if (r.bottom < -r.vh || r.top > r.vh * 2) return;
+      const cilj = clamp(-r.top / Math.max(1, r.visina - r.vh));
       const s = stanje.current;
-      s.siroko = window.innerWidth >= 900;
-      s.prostor = clamp((window.innerWidth / window.innerHeight - 1.2) / 0.4);
+      s.siroko = r.vw >= 900;
+      s.prostor = clamp((r.vw / r.vh - 1.2) / 0.4);
       // ista prigušena vožnja kao u paketu: točkić miša postaje glatki pokret
       s.p = Math.abs(s.p - cilj) < 1e-4 ? cilj : smoothDamp(s.p, cilj, brzina, 0.35, dt, 1.2);
 
       // ulaz: dok vrh sekcije ide od dna prozora do vrha
-      s.ulaz = clamp(1 - r.top / window.innerHeight);
+      s.ulaz = clamp(1 - r.top / r.vh);
       if (pozornica.current) pozornica.current.style.opacity = String(clamp(s.ulaz * 2) * (1 - clamp((s.p - 0.94) / 0.06)));
       const n = koraci.length;
       const x = s.p < EKRANI[0] ? (s.p / EKRANI[0]) * 0.5 : 0.5 + ((s.p - EKRANI[0]) / (EKRANI[1] - EKRANI[0])) * (n - 1.5);
@@ -217,7 +277,10 @@ export function MacbookScene({ slike, koraci }: Props) {
       });
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      mjera?.prestani();
+    };
   }, [capable, koraci]);
 
   if (capable === false) {
@@ -249,7 +312,7 @@ export function MacbookScene({ slike, koraci }: Props) {
             <img src="/scroll/laptop/ekran-0-0-mala.webp" alt="" className="block w-full" />
           </div>
           {capable && (
-            <MacbookStage dpr={[1, 1.5]} className={`transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`}>
+            <MacbookStage dpr={[1, 1.5]} pauseWhenOffscreen={false} className={`transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`}>
               {/* neutralno bijelo svjetlo (preseti paketa su plavkasti) */}
               <MacbookLighting>
                 <ambientLight intensity={0.45} />

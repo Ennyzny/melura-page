@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Store, X } from "lucide-react";
 import { Logo } from "./Logo";
+import { pratiElement, skrolY } from "@/lib/mjera";
 
 const links = [
   { href: "/#djelatnosti", label: "Djelatnosti" },
@@ -34,20 +35,25 @@ export function Navbar() {
   const menuButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    let mjere: ReturnType<typeof pratiElement>[] | null = null;
+    const tamni = () => (mjere ??= [...document.querySelectorAll("[data-tamno]")].map((el) => pratiElement(el)));
     const onScroll = () => {
-      setScrolled(window.scrollY > 8);
+      setScrolled(skrolY() > 8);
       const visina = 72;
-      setTamno(
-        [...document.querySelectorAll("[data-tamno]")].some((el) => {
-          const r = el.getBoundingClientRect();
-          return r.top < visina / 2 && r.bottom > visina / 2;
-        }),
-      );
+      // pozicije tamnih blokova su izmjerene jednom (pratiElement), ne u svakom kadru
+      setTamno(tamni().some((m) => {
+        const r = m.citaj();
+        return r.top < visina / 2 && r.bottom > visina / 2;
+      }));
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      mjere?.forEach((m) => m.prestani());
+    };
+    // nova stranica = drugi tamni blokovi
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
