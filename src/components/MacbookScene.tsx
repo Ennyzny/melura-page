@@ -10,7 +10,7 @@ import type { Korak } from "@/components/ScrollScene";
 
 /*
  * Melura na pravom 3D MacBooku (rigged-macbook-3d, MIT; model "MacBook Pro M3
- * 16-inch 2024" od jackbaeten, CC-BY 4.0 — autor naveden u footeru). Laptop je
+ * 16-inch 2024" od jackbaeten, CC-BY 4.0 — autor naveden u README-u). Laptop je
  * otvoren od početka, blago se približi i stane desno od teksta; dok se skrola,
  * na ekranu se smjenjuju pravi screenshoti Melure.
  *

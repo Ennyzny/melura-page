@@ -48,6 +48,6 @@ specifikacija stavlja u Fazu 2 ili kasnije označene su sa „Uskoro“.
 koraku teksta, a na užim ekranima zum je blaži ili ga nema.
 
 Modeli su u `public/models/`, Draco dekoder u `public/draco/`:
-- MacBook — "MacBook Pro M3 16-inch 2024", jackbaeten, CC-BY 4.0 (autor naveden u footeru).
+- MacBook — "MacBook Pro M3 16-inch 2024", jackbaeten, CC-BY 4.0.
 - iPhone — iz `anna-abadi/iphone-3d`; licenca modela nije navedena, provjeriti prije objave.
 
