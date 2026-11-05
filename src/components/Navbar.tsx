@@ -67,7 +67,7 @@ export function Navbar() {
       data-tema={tamno && !open ? "tamna" : "svijetla"}
       className={`group/nav sticky top-0 z-50 transition-colors duration-300 ${
         tamno && !open
-          ? "bg-night/95 text-white"
+          ? "bg-night/55 text-white backdrop-blur-md"
           : scrolled || open
             ? "bg-white/85 backdrop-blur-md"
             : "bg-fog"

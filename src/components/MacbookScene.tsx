@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Environment, Lightformer } from "@react-three/drei";
 import {
@@ -66,9 +66,7 @@ function osvjezi(t: THREE.Texture) {
   t.needsUpdate = true;
 }
 
-function Rig({ stanje, slike, onSpreman, onInvalidate }: {
-  stanje: React.RefObject<Stanje>; slike: string[]; onSpreman: () => void; onInvalidate: (f: () => void) => void;
-}) {
+function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; slike: string[]; onSpreman: () => void }) {
   const grupa = useRef<THREE.Group>(null);
   const [ekran] = useState(() => {
     const c = document.createElement("canvas");
@@ -87,10 +85,6 @@ function Rig({ stanje, slike, onSpreman, onInvalidate }: {
     }),
   );
   const zadnje = useRef(-1);
-
-  // canvas crta na zahtjev; petlja sekcije poziva invalidate kad se stanje mijenja
-  const invalidate = useThree((st) => st.invalidate);
-  useEffect(() => onInvalidate(invalidate), [invalidate, onInvalidate]);
 
   useFrame(() => {
     const s = stanje.current;
@@ -168,10 +162,6 @@ export function MacbookScene({ slike, koraci }: Props) {
   const tekstovi = useRef<(HTMLDivElement | null)[]>([]);
   const [spreman, setSpreman] = useState(false);
   const naSpreman = useCallback(() => setSpreman(true), []);
-  const crtanje = useRef<(() => void) | null>(null);
-  const naInvalidate = useCallback((f: () => void) => {
-    crtanje.current = f;
-  }, []);
   const stanje = useRef<Stanje>({ p: 0, ulaz: 0, korak: 0, siroko: true, prostor: 1 });
 
   useEffect(() => {
@@ -179,10 +169,6 @@ export function MacbookScene({ slike, koraci }: Props) {
     let raf = 0;
     let last = performance.now();
     const brzina = { current: 0 };
-    // prvi kadar i promjena veličine prozora uvijek crtaju
-    let promjena = true;
-    const naResize = () => (promjena = true);
-    window.addEventListener("resize", naResize);
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
       const dt = Math.min((now - last) / 1000, 0.05);
@@ -197,15 +183,10 @@ export function MacbookScene({ slike, koraci }: Props) {
       s.siroko = window.innerWidth >= 900;
       s.prostor = clamp((window.innerWidth / window.innerHeight - 1.2) / 0.4);
       // ista prigušena vožnja kao u paketu: točkić miša postaje glatki pokret
-      const prije = s.p + s.ulaz * 7;
       s.p = Math.abs(s.p - cilj) < 1e-4 ? cilj : smoothDamp(s.p, cilj, brzina, 0.35, dt, 1.2);
 
       // ulaz: dok vrh sekcije ide od dna prozora do vrha
       s.ulaz = clamp(1 - r.top / window.innerHeight);
-      // ništa se nije pomaklo: bez upisa u DOM i bez novog 3D kadra
-      if (Math.abs(s.p + s.ulaz * 7 - prije) < 1e-5 && !promjena) return;
-      promjena = false;
-      crtanje.current?.();
       if (pozornica.current) pozornica.current.style.opacity = String(clamp(s.ulaz * 2) * (1 - clamp((s.p - 0.94) / 0.06)));
       const n = koraci.length;
       const x = s.p < EKRANI[0] ? (s.p / EKRANI[0]) * 0.5 : 0.5 + ((s.p - EKRANI[0]) / (EKRANI[1] - EKRANI[0])) * (n - 1.5);
@@ -224,10 +205,7 @@ export function MacbookScene({ slike, koraci }: Props) {
       });
     };
     raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", naResize);
-    };
+    return () => cancelAnimationFrame(raf);
   }, [capable, koraci]);
 
   if (capable === false) {
@@ -259,7 +237,7 @@ export function MacbookScene({ slike, koraci }: Props) {
             <img src="/scroll/laptop/ekran-0-0-mala.webp" alt="" className="block w-full" />
           </div>
           {capable && (
-            <MacbookStage dpr={[1, typeof window !== "undefined" && window.innerWidth < 900 ? 1.25 : 1.5]} frameloop="demand" className={`transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`}>
+            <MacbookStage dpr={[1, 1.5]} className={`transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`}>
               {/* neutralno bijelo svjetlo (preseti paketa su plavkasti) */}
               <MacbookLighting>
                 <ambientLight intensity={0.45} />
@@ -270,7 +248,7 @@ export function MacbookScene({ slike, koraci }: Props) {
                   <Lightformer form="rect" intensity={0.25} position={[0, 9, -2]} rotation={[Math.PI / 2, 0, 0]} scale={[10, 3, 1]} />
                 </Environment>
               </MacbookLighting>
-              <Rig stanje={stanje} slike={slike} onSpreman={naSpreman} onInvalidate={naInvalidate} />
+              <Rig stanje={stanje} slike={slike} onSpreman={naSpreman} />
             </MacbookStage>
           )}
         </div>
@@ -280,7 +258,7 @@ export function MacbookScene({ slike, koraci }: Props) {
           {koraci.map((k, j) => (
             <div key={k.naslov} ref={(d) => { tekstovi.current[j] = d; }} className={`col-start-1 row-start-1 opacity-0 ${
                 // zadnji kadar je zum na profil klijenta, pa je ispod teksta bijeli ekran
-                j === koraci.length - 1 ? "-mx-7 rounded-3xl bg-night/95 px-7 py-6 shadow-2xl" : ""
+                j === koraci.length - 1 ? "-mx-7 rounded-3xl bg-night/85 px-7 py-6 shadow-2xl backdrop-blur-md" : ""
               }`}>
               <Tekst korak={k} />
             </div>
