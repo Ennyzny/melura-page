@@ -154,23 +154,39 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
       }
       if (mat.name === "Screen") {
         // dvostrano kao u originalu — normale ekrana u modelu gledaju unutra
-        mesh.material = new THREE.MeshBasicMaterial({ map: tekstura, toneMapped: false, side: THREE.DoubleSide });
-        // Ekran u modelu ima zaobljen rub preko okvira čije UV koordinate gađaju
-        // sredinu slike, pa je rub svijetlio bojom screenshota. Tjemena čija
-        // normala nije u smjeru lica ekrana dobijaju UV u crnom rubu teksture.
-        const geo = mesh.geometry.clone();
-        const nor = geo.attributes.normal;
-        const uv = geo.attributes.uv;
-        const lice = new THREE.Vector3();
-        for (let i = 0; i < nor.count; i++) lice.add(new THREE.Vector3(nor.getX(i), nor.getY(i), nor.getZ(i)));
-        lice.normalize();
-        const n = new THREE.Vector3();
-        for (let i = 0; i < nor.count; i++) {
-          n.set(nor.getX(i), nor.getY(i), nor.getZ(i));
-          if (Math.abs(n.dot(lice)) < 0.97) uv.setXY(i, 0.004, 0.5);
-        }
-        uv.needsUpdate = true;
-        mesh.geometry = geo;
+        // Ekran u modelu ima zaobljen rub preko okvira, a UV tog ruba gađa sredinu
+        // slike, pa je rub svijetlio bojom screenshota (dugme, fotografija).
+        // Shader zato po pikselu gleda koliko površina gleda u smjeru lica
+        // ekrana: ravni dio prikazuje sliku, a sve što se savija ka rubu ide u
+        // crno — glatko, i bez obzira na UV.
+        // smjer lica = najtanja osa ploče ekrana
+        mesh.geometry.computeBoundingBox();
+        const vel = mesh.geometry.boundingBox!.getSize(new THREE.Vector3());
+        const najtanja = vel.x <= vel.y && vel.x <= vel.z ? 0 : vel.y <= vel.z ? 1 : 2;
+        const lice = new THREE.Vector3().setComponent(najtanja, 1);
+        mesh.material = new THREE.ShaderMaterial({
+          uniforms: { map: { value: tekstura }, uLice: { value: lice } },
+          side: THREE.DoubleSide,
+          toneMapped: false,
+          vertexShader: `
+            varying vec2 vUv;
+            varying float vLice;
+            uniform vec3 uLice;
+            void main() {
+              vUv = uv;
+              vLice = abs(dot(normalize(normal), uLice));
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }`,
+          fragmentShader: `
+            uniform sampler2D map;
+            varying vec2 vUv;
+            varying float vLice;
+            void main() {
+              vec4 c = texture2D(map, vUv);
+              gl_FragColor = vec4(c.rgb * smoothstep(0.95, 0.99, vLice), 1.0);
+              #include <colorspace_fragment>
+            }`,
+        });
       }
     });
   }, [model]);
