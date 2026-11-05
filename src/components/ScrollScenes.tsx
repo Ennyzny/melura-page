@@ -1,8 +1,17 @@
 import { MacbookScene } from "@/components/MacbookScene";
 import { Phone3D } from "@/components/Phone3D";
 import { ScrollScene, type SceneData } from "@/components/ScrollScene";
+import { Preducitaj } from "@/components/Preducitaj";
 import laptop from "../../public/scroll/laptop/scene.json";
 import saloni from "../../public/scroll/saloni/scene.json";
+
+const IPHONE = [1, 2, 3, 4].map((n) => `/scroll/lebdi/iphone-${n}.webp?v=3`);
+const SVE_SLIKE = [
+  ...IPHONE,
+  ...(laptop as SceneData).ekrani[0].slike.map((s) => s.src),
+  (saloni as SceneData).bg.uredjaj,
+  ...(saloni as SceneData).ekrani.flatMap((e) => e.slike.map((s) => s.src)),
+];
 
 export function ScrollScenes() {
   // Tamni blok sa svim scenama, zaobljen gore i dole prema svijetlim sekcijama;
@@ -10,9 +19,10 @@ export function ScrollScenes() {
   // data-tamno čita Navbar da pređe u tamnu varijantu.
   return (
     <div data-tamno className="relative overflow-clip rounded-[2.5rem] bg-night">
+      <Preducitaj slike={SVE_SLIKE} />
       <div aria-hidden className="h-[14svh]" />
       <Phone3D
-        slike={[1, 2, 3, 4].map((n) => `/scroll/lebdi/iphone-${n}.webp?v=3`)}
+        slike={IPHONE}
         duzina={5}
         koraci={[
           { kicker: "Za vaše klijente", naslov: "Vaš salon u njihovom džepu.", tekst: "Vlastita aplikacija sa imenom, bojama i cijenama vašeg salona — bez poziva i poruka." },

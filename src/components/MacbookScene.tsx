@@ -1,8 +1,8 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { Environment, Lightformer } from "@react-three/drei";
+import { Environment, Lightformer, useGLTF } from "@react-three/drei";
 import {
   Macbook, MacbookLighting, MacbookStage, journeyState, resolvePoses, resolveTimeline, smoothDamp, useCapabilityGate,
 } from "rigged-macbook-3d";
@@ -67,6 +67,18 @@ function osvjezi(t: THREE.Texture) {
 }
 
 function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; slike: string[]; onSpreman: () => void }) {
+  // Kad je model učitan, par kadrova van ekrana kompajlira shadere, napravi
+  // okolinu i pošalje teksture GPU-u — prije nego korisnik dođe do sekcije.
+  const advance = useThree((st) => st.advance);
+  const zagrij = useCallback(() => {
+    onSpreman();
+    let n = 0;
+    const kadar = () => {
+      advance(performance.now());
+      if (++n < 3) requestAnimationFrame(kadar);
+    };
+    requestAnimationFrame(kadar);
+  }, [onSpreman, advance]);
   const grupa = useRef<THREE.Group>(null);
   const [ekran] = useState(() => {
     const c = document.createElement("canvas");
@@ -149,7 +161,7 @@ function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; sl
         modelSrc="/models/macbook.glb"
         open={1}
         brightness={1}
-        onLoad={onSpreman}
+        onLoad={zagrij}
       />
     </group>
   );
@@ -278,3 +290,7 @@ function Tekst({ korak }: { korak: Korak }) {
     </div>
   );
 }
+
+// Model MacBooka se skida čim se učita kod stranice, ne tek kad sekcija naiđe
+// (isti ključ keša kao useGLTF(url) u paketu).
+useGLTF.preload("/models/macbook.glb");

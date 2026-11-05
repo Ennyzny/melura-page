@@ -65,8 +65,19 @@ function dynamicIsland(g: CanvasRenderingContext2D) {
 
 function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; slike: string[]; onSpreman: () => void }) {
   const { scene } = useGLTF(MODEL, "/draco/");
-  // model je učitan čim se ova komponenta prvi put iscrta (Suspense)
-  useEffect(() => onSpreman(), [onSpreman]);
+  // Model je učitan čim se ova komponenta prvi put iscrta (Suspense). Odmah
+  // "zagrijemo" GPU: par kadrova van ekrana kompajlira shadere, napravi okolinu
+  // (Environment) i pošalje teksture — da prvi pravi kadar na skrolu ne trzne.
+  const advance = useThree((st) => st.advance);
+  useEffect(() => {
+    onSpreman();
+    let n = 0;
+    const kadar = () => {
+      advance(performance.now());
+      if (++n < 3) requestAnimationFrame(kadar);
+    };
+    requestAnimationFrame(kadar);
+  }, [onSpreman, advance]);
   const grupa = useRef<THREE.Group>(null);
   const { viewport, size } = useThree();
 
@@ -291,6 +302,13 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) setVidljivo(true);
     }, { rootMargin: "200% 0px" });
+    // Ne čekamo skrol: čim se stranica učita i browser odahne, canvas se napravi
+    // i model krene da se skida i priprema (dok korisnik još gleda hero).
+    const pripremi = () => setVidljivo(true);
+    const idle = (cb: () => void) =>
+      "requestIdleCallback" in window ? window.requestIdleCallback(cb, { timeout: 2500 }) : setTimeout(cb, 1200);
+    if (document.readyState === "complete") idle(pripremi);
+    else window.addEventListener("load", () => idle(pripremi), { once: true });
     const blizu = new IntersectionObserver(([e]) => setAktivno(e.isIntersecting), { rootMargin: "25% 0px" });
     blizu.observe(el);
     io.observe(el);
