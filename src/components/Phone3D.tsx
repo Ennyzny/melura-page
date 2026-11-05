@@ -16,6 +16,7 @@ type Props = { slike: string[]; koraci: Korak[]; duzina?: number };
 
 const MODEL = "/models/iphone.glb";
 const CRNO = new THREE.MeshBasicMaterial({ color: 0x000000 });
+const OKVIR = new THREE.MeshStandardMaterial({ color: 0x232326, metalness: 0.6, roughness: 0.55, envMapIntensity: 0.35 });
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const glatko = (t: number) => t * t * (3 - 2 * t);
@@ -41,7 +42,7 @@ const KADROVI = [
 // u omjeru pravog iPhonea (1290x2796). Uglovi stakla su zaobljeniji nego na
 // iPhoneu, pa screenshot ide cijeli, neskaliran po omjeru, sa jednakim crnim
 // rubom okolo (3,5 % širine = 1,6 % visine), da ništa ne bude odsječeno.
-const RUB = 0.035;
+const RUB = 0.045;
 // Spušteno 1 % visine, da status bar ne ide pod zaobljeni vrh stakla.
 const SPUST = 0.01;
 const EKRAN = { x: RUB, w: 1 - 2 * RUB, vrh: RUB * (1290 / 2796) + SPUST, dno: 1 - RUB * (1290 / 2796) + SPUST };
@@ -94,6 +95,11 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
       t.colorSpace = THREE.SRGBColorSpace;
       t.flipY = true; // tekstura ekrana u modelu je okrenuta po vertikali
       t.anisotropy = 8;
+      // Bez mipmapa: zaobljene ivice stakla se gledaju iskosa, pa bi GPU uzimao
+      // zamućenu manju verziju i boja sadržaja bi se razlila preko crnog ruba
+      // (ivice bi „svijetlile" bojom screenshota).
+      t.generateMipmaps = false;
+      t.minFilter = THREE.LinearFilter;
       ekran.current = { platno: cv, tekstura: t };
     }
     return ekran.current;
@@ -126,17 +132,45 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
         mesh.parent!.userData.zatvoreno = true;
         mesh.parent!.add(new THREE.Mesh(new THREE.SphereGeometry(1.6, 24, 16), CRNO));
       }
-      // metalni okvir i poleđina: matiraniji, da ne bljesnu kad se telefon okrene
-      if (mat.name === "Side_Rails" || mat.name === "Back_Glass") {
+      // Model nosi KHR_materials_iridescence: sedefasti odsjaj koji pod oštrim
+      // uglom daje zlatnu liniju po ivici telefona. Gasimo ga svuda.
+      const fiz = mesh.material as THREE.MeshPhysicalMaterial;
+      if (fiz.isMeshPhysicalMaterial) {
+        fiz.iridescence = 0;
+        fiz.sheen = 0;
+      }
+      // Metalni okvir (Side_Rails) je u originalu jako sjajan pa pod uglom
+      // svijetli kao zlatna linija oko ekrana; ovdje je običan tamni metal.
+      if (mat.name === "Side_Rails") {
+        mesh.material = OKVIR;
+      }
+      // poleđina: matiranija, da ne bljesne kad se telefon okrene
+      if (mat.name === "Back_Glass") {
         const m = (mesh.material as THREE.MeshStandardMaterial).clone();
         m.roughness = Math.max(m.roughness ?? 0, 0.55);
-        m.envMapIntensity = mat.name === "Side_Rails" ? 0.25 : 0.45;
-        m.color.multiplyScalar(mat.name === "Side_Rails" ? 0.35 : 0.55);
+        m.envMapIntensity = 0.45;
+        m.color.multiplyScalar(0.55);
         mesh.material = m;
       }
       if (mat.name === "Screen") {
         // dvostrano kao u originalu — normale ekrana u modelu gledaju unutra
         mesh.material = new THREE.MeshBasicMaterial({ map: tekstura, toneMapped: false, side: THREE.DoubleSide });
+        // Ekran u modelu ima zaobljen rub preko okvira čije UV koordinate gađaju
+        // sredinu slike, pa je rub svijetlio bojom screenshota. Tjemena čija
+        // normala nije u smjeru lica ekrana dobijaju UV u crnom rubu teksture.
+        const geo = mesh.geometry.clone();
+        const nor = geo.attributes.normal;
+        const uv = geo.attributes.uv;
+        const lice = new THREE.Vector3();
+        for (let i = 0; i < nor.count; i++) lice.add(new THREE.Vector3(nor.getX(i), nor.getY(i), nor.getZ(i)));
+        lice.normalize();
+        const n = new THREE.Vector3();
+        for (let i = 0; i < nor.count; i++) {
+          n.set(nor.getX(i), nor.getY(i), nor.getZ(i));
+          if (Math.abs(n.dot(lice)) < 0.97) uv.setXY(i, 0.004, 0.5);
+        }
+        uv.needsUpdate = true;
+        mesh.geometry = geo;
       }
     });
   }, [model]);
