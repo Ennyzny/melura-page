@@ -15,6 +15,8 @@ import type { Korak } from "@/components/ScrollScene";
 type Props = { slike: string[]; koraci: Korak[]; duzina?: number };
 
 const MODEL = "/models/iphone.glb";
+// Rezolucija crtanja: na uskim ekranima (telefoni, slabiji GPU) niža.
+const DPR = typeof window !== "undefined" && window.innerWidth < 900 ? 1.25 : 1.5;
 const CRNO = new THREE.MeshBasicMaterial({ color: 0x000000 });
 const OKVIR = new THREE.MeshStandardMaterial({ color: 0x232326, metalness: 0.6, roughness: 0.55, envMapIntensity: 0.35 });
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -193,6 +195,18 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
 
   // Prikazano stanje prigušeno prati skrol (točkić miša ne trza telefon).
   const glatko_ = useRef<Stanje | null>(null);
+  // Canvas crta na zahtjev: skrol pozove invalidate, a dok prigušeno stanje
+  // još klizi ka cilju, svaki kadar traži sljedeći. Kad sve stane, GPU miruje.
+  const invalidate = useThree((st) => st.invalidate);
+  useEffect(() => {
+    const k = () => invalidate();
+    window.addEventListener("scroll", k, { passive: true });
+    window.addEventListener("resize", k);
+    return () => {
+      window.removeEventListener("scroll", k);
+      window.removeEventListener("resize", k);
+    };
+  }, [invalidate]);
   useFrame((_, dt) => {
     const cilj = stanje.current;
     if (!cilj || !grupa.current) return;
@@ -201,7 +215,9 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
     s.u += (cilj.u - s.u) * k;
     s.p += (cilj.p - s.p) * k;
     s.pozicija += (cilj.pozicija - s.pozicija) * k;
-    if (Math.abs(cilj.pozicija - s.pozicija) < 0.0005) s.pozicija = cilj.pozicija;
+    const mirno = Math.abs(cilj.u - s.u) + Math.abs(cilj.p - s.p) + Math.abs(cilj.pozicija - s.pozicija) < 0.0004;
+    if (mirno) Object.assign(s, cilj);
+    else invalidate();
     const siroko = size.width >= 900;
 
     // Kadar po ekranu: telefon priđe dijelu ekrana o kojem tekst govori
@@ -359,7 +375,7 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
           <img src="/scroll/lebdi/iphone-1-mala.webp" alt="" className="h-full w-full" />
         </div>
         {vidljivo && (
-          <Canvas className={`!absolute inset-0 transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`} camera={{ position: [0, 0, 8], fov: 30 }} dpr={[1, 1.5]} gl={{ antialias: true, powerPreference: "high-performance" }} frameloop={aktivno ? "always" : "never"}>
+          <Canvas className={`!absolute inset-0 transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`} camera={{ position: [0, 0, 8], fov: 30 }} dpr={[1, DPR]} gl={{ antialias: true, powerPreference: "high-performance" }} frameloop={aktivno ? "demand" : "never"}>
             <Suspense fallback={null}>
               <Model stanje={stanje} slike={slike} onSpreman={naSpreman} />
               {/* svjetlo bez preuzimanja HDR-a: nekoliko svjetlećih ploha */}
