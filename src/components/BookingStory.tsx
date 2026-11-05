@@ -2,31 +2,32 @@ import { BellRing, CalendarCheck2, Clock } from "lucide-react";
 import { DevicePreview } from "./DevicePreview";
 import { Reveal } from "./Reveal";
 
-// Isti termin kroz klijentski tok: Šišanje + brada kod Amka, četvrtak 15.10. u 09:00.
+// Isti termin kroz klijentski tok: Šišanje + brada kod Kenana u Oštrici, 10.11. u 12:30
+// (demo salon; pravi screenshoti sa iPhonea 14 Pro Max).
 const steps = [
   {
     title: "Bira uslugu",
     text: "Usluge sa cijenom i trajanjem, iz vašeg cjenovnika. Sve je jasno prije zakazivanja.",
-    image: "service-choice",
-    alt: "Korak 1 — odabrana usluga Šišanje + brada u aplikaciji Amko Barbershop",
+    image: "o-usluga",
+    alt: "Korak 1 — odabrana usluga Šišanje + brada u aplikaciji Oštrica Barber Studio",
   },
   {
     title: "Bira majstora",
     text: "Rezerviše kod osobe kojoj se želi vratiti, ili kod bilo koga ko je slobodan.",
-    image: "staff-choice",
-    alt: "Korak 2 — izbor majstora, označen Amko",
+    image: "o-majstor",
+    alt: "Korak 2 — izbor majstora, označen Kenan",
   },
   {
     title: "Bira slobodno vrijeme",
     text: "Nude se samo stvarno slobodni termini — bez preklapanja i bez dopisivanja.",
-    image: "time-choice",
-    alt: "Korak 3 — izbor termina 15. oktobra u 09:00",
+    image: "o-vrijeme",
+    alt: "Korak 3 — izbor termina 10. novembra",
   },
   {
-    title: "Dobija potvrdu",
-    text: "Uz automatsku potvrdu termin je odmah upisan u raspored. Prijava se traži tek na kraju, a broj telefona nikako.",
-    image: "booking-confirmed",
-    alt: "Termin je potvrđen — Šišanje + brada, četvrtak 15.10. u 09:00",
+    title: "Šalje zahtjev",
+    text: "Salon potvrđuje jednim dodirom, a klijent dobija obavijest. Uz automatsku potvrdu termin je odmah upisan u raspored.",
+    image: "o-potvrda",
+    alt: "Zahtjev poslan — Šišanje + brada, utorak 10.11. u 12:30, čeka potvrdu salona",
   },
 ];
 
@@ -46,8 +47,8 @@ export function BookingStory() {
             Jedna rezervacija, od izbora do termina
           </h2>
           <p className="mt-3 max-w-2xl text-lg">
-            Četiri kratka koraka u aplikaciji vašeg salona. Snimci su iz stvarne aplikacije salona
-            Amko Barbershop.
+            Četiri kratka koraka u aplikaciji vašeg salona. Snimci su iz stvarne aplikacije, sa
+            demo salonom Oštrica Barber Studio.
           </p>
         </div>
 
@@ -64,7 +65,7 @@ export function BookingStory() {
                   <h3 className="mt-2 text-xl font-semibold">{s.title}</h3>
                   <p className="mt-2 text-[15px] leading-relaxed text-ink-soft lg:min-h-[7.5rem]">{s.text}</p>
                   <div className="mx-auto mt-6 w-full max-w-[220px]">
-                    <DevicePreview src={`/screens/phone/${s.image}.png`} alt={s.alt} />
+                    <DevicePreview src={`/screens/phone/${s.image}.webp`} alt={s.alt} />
                   </div>
                 </div>
               </Reveal>
@@ -91,8 +92,8 @@ export function BookingStory() {
             </div>
             <div className="mx-auto w-full max-w-[240px]">
               <DevicePreview
-                src="/screens/phone/admin-request.png"
-                alt="Novi zahtjev za termin u 10:00, s opcijama Prihvati i Odbij u Melura adminu"
+                src="/screens/phone/o-melura-zahtjevi.webp"
+                alt="Zahtjevi na čekanju u Meluri, sa dugmadi Odbij i Potvrdi"
               />
             </div>
           </div>

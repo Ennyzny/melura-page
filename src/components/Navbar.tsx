@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Store, X } from "lucide-react";
 import { Logo } from "./Logo";
+import { pratiElement, skrolY } from "@/lib/mjera";
 
 const links = [
   { href: "/#djelatnosti", label: "Djelatnosti" },
@@ -29,14 +30,30 @@ export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // tamno: ispod navigacije je tamni blok (element sa data-tamno)
+  const [tamno, setTamno] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    let mjere: ReturnType<typeof pratiElement>[] | null = null;
+    const tamni = () => (mjere ??= [...document.querySelectorAll("[data-tamno]")].map((el) => pratiElement(el)));
+    const onScroll = () => {
+      setScrolled(skrolY() > 8);
+      const visina = 72;
+      // pozicije tamnih blokova su izmjerene jednom (pratiElement), ne u svakom kadru
+      setTamno(tamni().some((m) => {
+        const r = m.citaj();
+        return r.top < visina / 2 && r.bottom > visina / 2;
+      }));
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      mjere?.forEach((m) => m.prestani());
+    };
+    // nova stranica = drugi tamni blokovi
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -53,14 +70,19 @@ export function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-colors ${
-        scrolled || open ? "bg-white/85 backdrop-blur-md" : "bg-fog"
+      data-tema={tamno && !open ? "tamna" : "svijetla"}
+      className={`group/nav sticky top-0 z-50 transition-colors duration-300 ${
+        tamno && !open
+          ? "bg-night/55 text-white backdrop-blur-md"
+          : scrolled || open
+            ? "bg-white/85 backdrop-blur-md"
+            : "bg-fog"
       }`}
     >
       <nav className="flex h-[72px] items-center justify-between px-4 sm:px-8">
         <div className="flex items-center gap-12">
           <Link href="/" aria-label="Melura početna" onClick={close}>
-            <Logo />
+            <Logo variant={tamno && !open ? "light" : "dark"} />
           </Link>
           <ul className="hidden items-center gap-10 lg:flex">
             {links.map((l) => (
@@ -68,7 +90,7 @@ export function Navbar() {
                 <Link
                   href={l.href}
                   aria-current={pathname === l.href ? "page" : undefined}
-                  className="text-[17px] font-semibold hover:text-ink-soft aria-[current=page]:underline aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8"
+                  className="text-[17px] font-semibold transition-colors hover:text-ink-soft group-data-[tema=tamna]/nav:hover:text-white/70 aria-[current=page]:underline aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8"
                 >
                   {l.label}
                 </Link>
@@ -80,7 +102,7 @@ export function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/funkcije#aplikacija"
-            className="hidden min-h-11 items-center gap-2 rounded-full border border-line bg-white px-5 py-2.5 text-[17px] font-semibold transition-colors hover:border-ink/30 md:inline-flex"
+            className="hidden min-h-11 items-center gap-2 rounded-full border border-line bg-white px-5 py-2.5 text-[17px] font-semibold transition-colors hover:border-ink/30 group-data-[tema=tamna]/nav:border-white/15 group-data-[tema=tamna]/nav:bg-white/10 group-data-[tema=tamna]/nav:hover:border-white/40 md:inline-flex"
           >
             <Store className="h-5 w-5" strokeWidth={1.75} />
             Primjer aplikacije
@@ -88,7 +110,7 @@ export function Navbar() {
           <a
             href="#demo"
             onClick={close}
-            className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 py-2.5 text-[15px] sm:px-5 font-semibold text-white transition-colors hover:bg-ink-soft sm:text-[17px]"
+            className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 py-2.5 text-[15px] sm:px-5 font-semibold text-white transition-colors hover:bg-ink-soft group-data-[tema=tamna]/nav:bg-white group-data-[tema=tamna]/nav:text-ink group-data-[tema=tamna]/nav:hover:bg-white/85 sm:text-[17px]"
           >
             Zakaži demo
           </a>
@@ -99,7 +121,7 @@ export function Navbar() {
             aria-expanded={open}
             aria-controls="glavni-meni"
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex min-h-11 items-center gap-3 rounded-full border border-line bg-white px-3.5 py-2.5 text-[17px] font-semibold transition-colors hover:border-ink/30 sm:px-5"
+            className="inline-flex min-h-11 items-center gap-3 rounded-full border border-line bg-white px-3.5 py-2.5 text-[17px] font-semibold transition-colors hover:border-ink/30 group-data-[tema=tamna]/nav:border-white/15 group-data-[tema=tamna]/nav:bg-white/10 group-data-[tema=tamna]/nav:hover:border-white/40 sm:px-5"
           >
             <span className="hidden sm:inline">Meni</span>
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

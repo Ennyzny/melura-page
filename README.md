@@ -6,7 +6,9 @@ salone, masere i stomatološke ordinacije). Struktura i stil su po uzoru na
 
 Sadržaj (funkcije, booking flow, paketi i cijene) je preuzet iz
 [`htuco/salon-booking-platform`](https://github.com/htuco/salon-booking-platform) — `docs/01-mvp-spec.md`.
-Screenshotovi u `public/screens/` su iz `prototype/` istog repoa, a Melura znak iz
+Screenshotovi u `public/screens/` su iz prave aplikacije sa izmišljenim demo salonima
+(Oštrica Barber Studio, Lumière Beauty Studio, Kinetika Fizio Centar) — nikad podaci pravih
+salona. Telefonski ekrani su sa iPhonea 14 Pro Max (1290×2796), a Melura znak iz
 `apps/admin/assets/brand/`.
 Fotografije djelatnosti u `public/industries/` su sa [Unsplasha](https://unsplash.com/license)
 (besplatne za komercijalnu upotrebu, bez obaveznog navođenja autora).
@@ -25,7 +27,7 @@ Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · lucide-react · Plus Ja
 
 ## Sekcije
 
-- `/` — Hero · Highlights (šta je Melura) · Industries · Pricing · Faq · CtaBanner (forma za demo)
+- `/` — Hero · ScrollScenes (3D iPhone, MacBook i tri salona) · Highlights (šta je Melura) · Industries · Pricing · Faq · CtaBanner (forma za demo)
 - `/funkcije` — BookingStory (jedna rezervacija, korak po korak) · FeatureSections · Apps · CtaBanner
 
 Navbar i Footer su u `src/app/layout.tsx`.
@@ -38,3 +40,14 @@ preview pri dijeljenju linka, `sitemap.xml` i `robots.txt`.
 
 Tvrdnje na stranici prate `docs/01-mvp-spec.md`: funkcije, djelatnosti i stavke paketa koje
 specifikacija stavlja u Fazu 2 ili kasnije označene su sa „Uskoro“.
+
+## 3D scene
+
+`src/components/ScrollScenes.tsx` slaže tri scene na početnoj: 3D iPhone (`Phone3D`), 3D MacBook
+(`MacbookScene`, paket `rigged-macbook-3d`) i tri telefona (`ScrollScene`). Kadrovi idu po
+koraku teksta, a na užim ekranima zum je blaži ili ga nema.
+
+Modeli su u `public/models/`, Draco dekoder u `public/draco/`:
+- MacBook — "MacBook Pro M3 16-inch 2024", jackbaeten, CC-BY 4.0.
+- iPhone — iz `anna-abadi/iphone-3d`; licenca modela nije navedena, provjeriti prije objave.
+

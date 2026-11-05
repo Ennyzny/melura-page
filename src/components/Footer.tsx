@@ -54,8 +54,8 @@ export function Apps() {
     {
       title: "Aplikacija vašeg salona",
       text: "Vaši klijenti se naručuju u aplikaciji koja nosi ime i boje vašeg salona",
-      src: "/screens/phone/client-home.png",
-      alt: "Početni ekran aplikacije salona Amko Barbershop",
+      src: "/screens/phone/o-pocetna.webp",
+      alt: "Početni ekran aplikacije salona Oštrica Barber Studio",
       icon: (
         <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-night text-lg font-bold text-white">
           B
@@ -65,8 +65,8 @@ export function Apps() {
     {
       title: "Melura admin za vlasnike",
       text: "Vodite termine, tim i usluge sa iOS i Android aplikacije ili iz preglednika",
-      src: "/screens/phone/admin-today.png",
-      alt: "Melura admin — pregled dana za Barber Studio Vitez",
+      src: "/screens/phone/o-melura-danas.webp",
+      alt: "Melura — pregled dana za Oštrica Barber Studio",
       icon: (
         <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white">
           <MeluraMark className="h-8 w-8" />

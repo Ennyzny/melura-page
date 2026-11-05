@@ -1,0 +1,93 @@
+{
+ "bg": {
+  "src": "/scroll/saloni/bg.webp?v=2",
+  "blur": "/scroll/saloni/bg-blur.webp?v=2",
+  "uredjaj": "/scroll/saloni/uredjaj.webp?v=2",
+  "w": 3344,
+  "h": 1882
+ },
+ "uredjaj": "telefon",
+ "ekrani": [
+  {
+   "uglovi": [
+    [
+     371.8,
+     169.0
+    ],
+    [
+     1082.0,
+     169.0
+    ],
+    [
+     1082.0,
+     1656.0
+    ],
+    [
+     372.1,
+     1656.0
+    ]
+   ],
+   "slike": [
+    {
+     "src": "/scroll/saloni/ekran-0-0.webp?v=2",
+     "w": 804,
+     "h": 1684
+    }
+   ]
+  },
+  {
+   "uglovi": [
+    [
+     1318.0,
+     169.0
+    ],
+    [
+     2023.0,
+     169.0
+    ],
+    [
+     2023.0,
+     1656.0
+    ],
+    [
+     1318.0,
+     1656.0
+    ]
+   ],
+   "slike": [
+    {
+     "src": "/scroll/saloni/ekran-1-0.webp?v=2",
+     "w": 804,
+     "h": 1696
+    }
+   ]
+  },
+  {
+   "uglovi": [
+    [
+     2259.0,
+     169.0
+    ],
+    [
+     2968.0,
+     169.0
+    ],
+    [
+     2968.0,
+     1656.0
+    ],
+    [
+     2259.0,
+     1656.0
+    ]
+   ],
+   "slike": [
+    {
+     "src": "/scroll/saloni/ekran-2-0.webp?v=2",
+     "w": 804,
+     "h": 1686
+    }
+   ]
+  }
+ ]
+}
