@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
@@ -60,8 +60,10 @@ function dynamicIsland(g: CanvasRenderingContext2D) {
   g.fill();
 }
 
-function Model({ stanje, slike }: { stanje: React.RefObject<Stanje>; slike: string[] }) {
+function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; slike: string[]; onSpreman: () => void }) {
   const { scene } = useGLTF(MODEL, "/draco/");
+  // model je učitan čim se ova komponenta prvi put iscrta (Suspense)
+  useEffect(() => onSpreman(), [onSpreman]);
   const grupa = useRef<THREE.Group>(null);
   const { viewport, size } = useThree();
 
@@ -213,12 +215,14 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
   const tekstovi = useRef<(HTMLDivElement | null)[]>([]);
   const tacke = useRef<(HTMLSpanElement | null)[]>([]);
   const [vidljivo, setVidljivo] = useState(false);
+  const [spreman, setSpreman] = useState(false);
+  const naSpreman = useCallback(() => setSpreman(true), []);
 
   // Canvas se pali tek kad je sekcija blizu, da ne troši GPU iznad nje.
   useEffect(() => {
     const el = sekcija.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setVidljivo(e.isIntersecting), { rootMargin: "50% 0px" });
+    const io = new IntersectionObserver(([e]) => setVidljivo(e.isIntersecting), { rootMargin: "200% 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -269,10 +273,22 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
     <section ref={sekcija} className="relative bg-night" style={{ height: `${duzina * 100}svh` }}>
       <div ref={pozornica} className="sticky top-0 h-svh overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_55%_at_67%_52%,rgba(238,108,77,0.2),transparent_70%)] max-[899px]:bg-[radial-gradient(ellipse_70%_40%_at_50%_35%,rgba(238,108,77,0.2),transparent_70%)]" />
+        {/* Dok model ne stigne (spora mreža), na mjestu telefona stoji obični
+            screenshot u okviru; 3D se pretopi preko njega. */}
+        <div
+          aria-hidden
+          className={`pointer-events-none absolute left-1/2 top-1/2 aspect-[1290/2796] h-[50svh] -translate-x-1/2 -translate-y-[calc(50%+10svh)] overflow-hidden rounded-[2.2rem] border-[8px] border-[#1c1b1d] bg-black shadow-2xl transition-opacity duration-700 min-[900px]:h-[78svh] min-[900px]:translate-x-[calc(-50%+17vw)] min-[900px]:-translate-y-[calc(50%-2svh)] min-[900px]:rounded-[3rem] min-[900px]:border-[11px] ${
+            spreman ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          {/* mala verzija prvog ekrana (~20 KB) stiže odmah i na sporoj mreži */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/scroll/lebdi/iphone-1-mala.webp" alt="" className="h-full w-full" />
+        </div>
         {vidljivo && (
-          <Canvas className="!absolute inset-0" camera={{ position: [0, 0, 8], fov: 30 }} dpr={[1, 2]} gl={{ antialias: true }}>
+          <Canvas className={`!absolute inset-0 transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`} camera={{ position: [0, 0, 8], fov: 30 }} dpr={[1, 2]} gl={{ antialias: true }}>
             <Suspense fallback={null}>
-              <Model stanje={stanje} slike={slike} />
+              <Model stanje={stanje} slike={slike} onSpreman={naSpreman} />
               {/* svjetlo bez preuzimanja HDR-a: nekoliko svjetlećih ploha */}
               {/* mekano studijsko svjetlo: velika bijela ploha odozgo i dvije
                   slabe bočne, bez obojenih odsjaja */}

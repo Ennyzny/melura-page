@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Environment, Lightformer } from "@react-three/drei";
@@ -66,7 +66,7 @@ function osvjezi(t: THREE.Texture) {
   t.needsUpdate = true;
 }
 
-function Rig({ stanje, slike }: { stanje: React.RefObject<Stanje>; slike: string[] }) {
+function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; slike: string[]; onSpreman: () => void }) {
   const grupa = useRef<THREE.Group>(null);
   const [ekran] = useState(() => {
     const c = document.createElement("canvas");
@@ -149,6 +149,7 @@ function Rig({ stanje, slike }: { stanje: React.RefObject<Stanje>; slike: string
         modelSrc="/models/macbook.glb"
         open={1}
         brightness={1}
+        onLoad={onSpreman}
       />
     </group>
   );
@@ -159,6 +160,8 @@ export function MacbookScene({ slike, koraci }: Props) {
   const omotac = useRef<HTMLDivElement>(null);
   const pozornica = useRef<HTMLDivElement>(null);
   const tekstovi = useRef<(HTMLDivElement | null)[]>([]);
+  const [spreman, setSpreman] = useState(false);
+  const naSpreman = useCallback(() => setSpreman(true), []);
   const stanje = useRef<Stanje>({ p: 0, ulaz: 0, korak: 0, siroko: true, prostor: 1 });
 
   useEffect(() => {
@@ -219,8 +222,20 @@ export function MacbookScene({ slike, koraci }: Props) {
     <section ref={omotac} className="relative bg-night" style={{ height: "550svh" }}>
       <div className="sticky top-0 h-svh overflow-hidden">
         <div ref={pozornica} className="absolute inset-0 opacity-0">
+          {/* Dok model ne stigne (spora mreža), na mjestu laptopa stoji obični
+              screenshot u okviru; 3D se pretopi preko njega. */}
+          <div
+            aria-hidden
+            className={`pointer-events-none absolute left-1/2 top-[30%] w-[88vw] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl border-[7px] border-[#111214] bg-black shadow-2xl transition-opacity duration-700 min-[900px]:left-auto min-[900px]:right-[5vw] min-[900px]:top-1/2 min-[900px]:w-[54vw] min-[900px]:translate-x-0 min-[900px]:rounded-2xl min-[900px]:border-[12px] ${
+              spreman ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            {/* mala verzija prvog ekrana stiže odmah i na sporoj mreži */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/scroll/laptop/ekran-0-0-mala.webp" alt="" className="block w-full" />
+          </div>
           {capable && (
-            <MacbookStage>
+            <MacbookStage className={`transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`}>
               {/* neutralno bijelo svjetlo (preseti paketa su plavkasti) */}
               <MacbookLighting>
                 <ambientLight intensity={0.45} />
@@ -231,7 +246,7 @@ export function MacbookScene({ slike, koraci }: Props) {
                   <Lightformer form="rect" intensity={0.25} position={[0, 9, -2]} rotation={[Math.PI / 2, 0, 0]} scale={[10, 3, 1]} />
                 </Environment>
               </MacbookLighting>
-              <Rig stanje={stanje} slike={slike} />
+              <Rig stanje={stanje} slike={slike} onSpreman={naSpreman} />
             </MacbookStage>
           )}
         </div>
