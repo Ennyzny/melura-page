@@ -126,6 +126,14 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
         mesh.parent!.userData.zatvoreno = true;
         mesh.parent!.add(new THREE.Mesh(new THREE.SphereGeometry(1.6, 24, 16), CRNO));
       }
+      // metalni okvir i poleđina: matiraniji, da ne bljesnu kad se telefon okrene
+      if (mat.name === "Side_Rails" || mat.name === "Back_Glass") {
+        const m = (mesh.material as THREE.MeshStandardMaterial).clone();
+        m.roughness = Math.max(m.roughness ?? 0, 0.55);
+        m.envMapIntensity = mat.name === "Side_Rails" ? 0.25 : 0.45;
+        m.color.multiplyScalar(mat.name === "Side_Rails" ? 0.35 : 0.55);
+        mesh.material = m;
+      }
       if (mat.name === "Screen") {
         // dvostrano kao u originalu — normale ekrana u modelu gledaju unutra
         mesh.material = new THREE.MeshBasicMaterial({ map: tekstura, toneMapped: false, side: THREE.DoubleSide });
@@ -193,15 +201,10 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
       g.fillStyle = "#000";
       g.fillRect(pomak, 0, TW, TH);
       const [x, y, w, h] = [TW * EKRAN.x + pomak, TH * EKRAN.vrh, TW * EKRAN.w, TH * (EKRAN.dno - EKRAN.vrh)];
-      // rub stakla oko slike puni se krajnjim redom/kolonom screenshota, da nema
-      // crne trake; sama slika ostaje neskalirana po omjeru
-      const iw = img.naturalWidth;
-      const ih = img.naturalHeight;
-      g.drawImage(img, 0, 0, iw, 1, x, 0, w, y + 1);
-      g.drawImage(img, 0, ih - 1, iw, 1, x, y + h - 1, w, TH - (y + h) + 1);
-      g.drawImage(img, 0, 0, 1, ih, pomak, y, x - pomak + 1, h);
-      g.drawImage(img, iw - 1, 0, 1, ih, x + w - 1, y, TW + pomak - (x + w) + 1, h);
-      g.drawImage(img, 0, 0, iw, ih, x, y, w, h);
+      // rub stakla oko slike ostaje crn, kao rub ekrana na iPhoneu — ranije je
+      // punjen krajnjim pikselima slike, pa je svijetla fotografija na vrhu
+      // obasjavala zaobljene ivice
+      g.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, x, y, w, h);
       if (d < 0) {
         g.fillStyle = `rgba(0,0,0,${Math.min(-d, 1) * 0.35})`;
         g.fillRect(pomak, 0, TW, TH);
