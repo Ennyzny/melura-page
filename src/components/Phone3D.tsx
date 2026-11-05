@@ -1,11 +1,9 @@
 "use client";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer, useGLTF, useTexture } from "@react-three/drei";
+import { Environment, Lightformer, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import type { Korak } from "@/components/ScrollScene";
-import { pratiElement } from "@/lib/mjera";
-import { zagrijScenu } from "@/lib/zagrij";
 
 /*
  * Pravi 3D telefon (GLB model, three.js). Stoji licem prema gledaocu i blago
@@ -26,8 +24,8 @@ const glatko = (t: number) => t * t * (3 - 2 * t);
 // Teksture ekrana u modelu su 1:2; naš ekran se uklopi bez sječenja.
 // Tekstura ekrana: dovoljno oštra za telefon na ~80 % visine prozora, a manja
 // za upload na GPU pri svakoj smjeni ekrana (isti omjer 1:2 kao prije).
-// Tekstura ekrana u modelu je 1:2 (širina:visina), pa je omjer piksela x/y 0,5.
-const ASPEKT = 0.5;
+const TW = 1536;
+const TH = 3072;
 
 type Stanje = { u: number; pozicija: number; p: number };
 
@@ -49,52 +47,37 @@ const RUB = 0.045;
 const SPUST = 0.01;
 const EKRAN = { x: RUB, w: 1 - 2 * RUB, vrh: RUB * (1290 / 2796) + SPUST, dno: 1 - RUB * (1290 / 2796) + SPUST };
 
+// Dynamic Island je dio hardvera: crta se jednom, preko svih ekrana, na
+// mjestu kao na iPhoneu 14 Pro Max (126x37 pt na 11 pt od vrha, ekran 430x932).
+// Širi je od originala da pokrije rupu prednje kamere u ekranu modela (na ~1/3
+// širine, ne u sredini kao na pravom iPhoneu).
+function dynamicIsland(g: CanvasRenderingContext2D) {
+  const sh = TH * (EKRAN.dno - EKRAN.vrh);
+  const sw = TW * EKRAN.w;
+  const iw = sw * 0.37;
+  const ih = sh * (37 / 932);
+  g.fillStyle = "#000";
+  g.beginPath();
+  // island je dio stakla, ne slike: ne pomjera se sa SPUST
+  g.roundRect(TW / 2 - iw / 2, TH * (EKRAN.vrh - SPUST) + sh * (11 / 932), iw, ih, ih / 2);
+  g.fill();
+}
+
 function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; slike: string[]; onSpreman: () => void }) {
   const { scene } = useGLTF(MODEL, "/draco/");
   // Model je učitan čim se ova komponenta prvi put iscrta (Suspense). Odmah
   // "zagrijemo" GPU: par kadrova van ekrana kompajlira shadere, napravi okolinu
   // (Environment) i pošalje teksture — da prvi pravi kadar na skrolu ne trzne.
   const advance = useThree((st) => st.advance);
-  const grije = useRef(0);
-  // Pauza van ekrana direktno na platnu (setFrameloop), bez React stanja: promjena
-  // stanja bi ponovo iscrtala i svjetlo (Environment) — nova mapa okoline,
-  // rekompajliranje materijala i trzaj pri ulasku u sekciju.
-  const setFrameloop = useThree((st) => st.setFrameloop);
-  const platno = useThree((st) => st.gl.domElement);
-  useEffect(() => {
-    const io = new IntersectionObserver(([e]) => setFrameloop(e.isIntersecting ? "always" : "never"), { rootMargin: "25% 0px" });
-    io.observe(platno);
-    return () => io.disconnect();
-  }, [setFrameloop, platno]);
-  const { gl, scene: scene3, camera } = useThree();
   useEffect(() => {
     onSpreman();
-    // Okolina (Environment) se napravi u prvom kadru i tada materijali dobiju
-    // novi shader; zato zagrijavanje ide u tri talasa, da se i ti shaderi
-    // kompajliraju prije nego sekcija naiđe.
-    const talas = () => {
-      // telefon je pri zagrijavanju van kadra (ulijeće sa strane), pa ga obični
-      // kadar preskoči; compile kompajlira sve materijale bez obzira na kadar
-      zagrijScenu(gl, scene3, camera);
-      let n = 0;
-      // Metal/ANGLE pravi stanje crtanja tek pri prvom stvarnom crtanju u kadru,
-      // pa tokom ovih kadrova uređaj stoji u kadru
-      grije.current++;
-      const kadar = () => {
-        advance(performance.now());
-        if (++n < 3) requestAnimationFrame(kadar);
-        else grije.current--;
-      };
-      requestAnimationFrame(kadar);
+    let n = 0;
+    const kadar = () => {
+      advance(performance.now());
+      if (++n < 3) requestAnimationFrame(kadar);
     };
-    talas();
-    const t1 = setTimeout(talas, 400);
-    const t2 = setTimeout(talas, 1500);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, [onSpreman, advance, gl, scene3, camera]);
+    requestAnimationFrame(kadar);
+  }, [onSpreman, advance]);
   const grupa = useRef<THREE.Group>(null);
   const { viewport, size } = useThree();
 
@@ -111,17 +94,40 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
     return { model: m, visina: box.getSize(new THREE.Vector3()).y };
   }, [scene]);
 
-  // Sva četiri screenshota idu na GPU jednom (useTexture, pod istim Suspense
-  // kao model, pa ih "zagrijavanje" pošalje prije skrola). Smjenu ekrana radi
-  // shader — u toku skrola nema crtanja ni slanja tekstura.
-  const teksture = useTexture(slike);
-  const materijal = useRef<THREE.ShaderMaterial | null>(null);
-  useEffect(() => {
-    teksture.forEach((t) => {
+  // Ekran: platno na koje crtamo screenshote + Dynamic Island. U refu, jer se
+  // tekstura mijenja svaki kadar (needsUpdate), a to nije React stanje.
+  const ekran = useRef<{ platno: HTMLCanvasElement; tekstura: THREE.CanvasTexture } | null>(null);
+  const dajEkran = () => {
+    if (!ekran.current) {
+      const cv = document.createElement("canvas");
+      cv.width = TW;
+      cv.height = TH;
+      const t = new THREE.CanvasTexture(cv);
       t.colorSpace = THREE.SRGBColorSpace;
-      t.anisotropy = 8;
-      t.needsUpdate = true;
-    });
+      t.flipY = true; // tekstura ekrana u modelu je okrenuta po vertikali
+      t.anisotropy = 16;
+      // Mipmape za čist tekst kad je ekran manji od teksture; rub ekrana je
+      // maskiran u shaderu, pa se boja više ne razlije po ivici.
+      t.generateMipmaps = true;
+      t.minFilter = THREE.LinearMipmapLinearFilter;
+      ekran.current = { platno: cv, tekstura: t };
+    }
+    return ekran.current;
+  };
+
+  const slikeEl = useMemo(
+    () =>
+      slike.map((src) => {
+        const i = new Image();
+        i.src = src;
+        return i;
+      }),
+    [slike],
+  );
+  const zadnja = useRef(-1);
+
+  useEffect(() => {
+    const { tekstura } = dajEkran();
     model.traverse((o) => {
       const mesh = o as THREE.Mesh;
       if (!mesh.isMesh) return;
@@ -168,18 +174,8 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
         const vel = mesh.geometry.boundingBox!.getSize(new THREE.Vector3());
         const najtanja = vel.x <= vel.y && vel.x <= vel.z ? 0 : vel.y <= vel.z ? 1 : 2;
         const lice = new THREE.Vector3().setComponent(najtanja, 1);
-        const sh = EKRAN.dno - EKRAN.vrh;
-        const mat2 = new THREE.ShaderMaterial({
-          uniforms: {
-            t0: { value: teksture[0] }, t1: { value: teksture[1] }, t2: { value: teksture[2] }, t3: { value: teksture[3] },
-            uPoz: { value: 0 },
-            uLice: { value: lice },
-            // pravougaonik slike u ekranu (udjeli, y odozgo)
-            uRect: { value: new THREE.Vector4(EKRAN.x, EKRAN.vrh, EKRAN.w, sh) },
-            // Dynamic Island: centar x, gornji y, širina, visina (udjeli), omjer ekrana
-            uIsland: { value: new THREE.Vector4(0.5, EKRAN.vrh - SPUST + sh * (11 / 932), EKRAN.w * 0.37, sh * (37 / 932)) },
-            uOmjer: { value: ASPEKT },
-          },
+        mesh.material = new THREE.ShaderMaterial({
+          uniforms: { map: { value: tekstura }, uLice: { value: lice } },
           side: THREE.DoubleSide,
           toneMapped: false,
           vertexShader: `
@@ -192,48 +188,18 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
               gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
             }`,
           fragmentShader: `
-            uniform sampler2D t0, t1, t2, t3;
-            uniform float uPoz, uOmjer;
-            uniform vec4 uRect, uIsland;
+            uniform sampler2D map;
             varying vec2 vUv;
             varying float vLice;
-            vec3 uzmi(int i, vec2 uv) {
-              if (i <= 0) return texture2D(t0, uv).rgb;
-              if (i == 1) return texture2D(t1, uv).rgb;
-              if (i == 2) return texture2D(t2, uv).rgb;
-              return texture2D(t3, uv).rgb;
-            }
-            // ekran i, pomaknut za o (udio širine): boja ili crno van slike
-            vec3 ekran(int i, float x, float y) {
-              vec2 u = vec2((x - uRect.x) / uRect.z, (y - uRect.y) / uRect.w);
-              if (u.x < 0.0 || u.x > 1.0 || u.y < 0.0 || u.y > 1.0) return vec3(0.0);
-              return uzmi(i, vec2(u.x, 1.0 - u.y));
-            }
             void main() {
-              float x = vUv.x;
-              float y = 1.0 - vUv.y; // odozgo, kao na platnu ranije
-              int a = int(floor(uPoz));
-              float f = uPoz - float(a);
-              vec3 c;
-              float ob = 1.0 - f; // novi ekran ulazi s desna
-              if (f > 0.0001 && x >= ob) c = ekran(a + 1, x - ob, y);
-              else c = ekran(a, x + f * 0.3, y) * (1.0 - f * 0.35); // stari se odmiče i tamni
-              // Dynamic Island (zaobljen pravougaonik, u pikselima omjera ekrana)
-              vec2 p = vec2((x - uIsland.x) * uOmjer, y - (uIsland.y + uIsland.w * 0.5));
-              vec2 hb = vec2(uIsland.z * 0.5 * uOmjer, uIsland.w * 0.5);
-              float r = hb.y;
-              vec2 q = abs(p) - hb + vec2(r);
-              float sd = length(max(q, 0.0)) - r;
-              c *= smoothstep(-0.0008, 0.0008, sd);
-              gl_FragColor = vec4(c * smoothstep(0.95, 0.99, vLice), 1.0);
+              vec4 c = texture2D(map, vUv);
+              gl_FragColor = vec4(c.rgb * smoothstep(0.95, 0.99, vLice), 1.0);
               #include <colorspace_fragment>
             }`,
         });
-        materijal.current = mat2;
-        mesh.material = mat2;
       }
     });
-  }, [model, teksture]);
+  }, [model]);
 
   // Prikazano stanje prigušeno prati skrol (točkić miša ne trza telefon).
   const glatko_ = useRef<Stanje | null>(null);
@@ -269,8 +235,7 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
     const yFokus = (fokus - 0.5) * visina * vel * (zum > 1 ? 1 : 0);
     // ulaz kao kod laptopa: dok sekcija dolazi u prozor, telefon uđe sa
     // desne strane, blago okrenut, i stane licem prema gledaocu
-    // pri zagrijavanju telefon u kadru (sekcija je tada nevidljiva)
-    const ulaz = grije.current > 0 ? 1 : glatko(s.u);
+    const ulaz = glatko(s.u);
     grupa.current.position.set(
       (siroko ? viewport.width * 0.17 : 0) + (1 - ulaz) * viewport.width * 0.45,
       (siroko ? -0.02 * viewport.height : viewport.height * 0.1) + yFokus,
@@ -279,7 +244,34 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
     const njihanje = (s.pozicija / Math.max(1, n - 1) - 0.5) * -0.3;
     grupa.current.rotation.set(0.05 + Math.sin(s.p * Math.PI * 2) * 0.015, njihanje - (1 - ulaz) * 0.6, (1 - ulaz) * 0.08);
 
-    if (materijal.current) materijal.current.uniforms.uPoz.value = clamp(s.pozicija, 0, slike.length - 1);
+    // crta se ponovo kad se pozicija promijeni ili kad se učita nova slika
+    const ucitano = slikeEl.filter((i) => i.complete && i.naturalWidth).length;
+    const kljuc = s.pozicija + ucitano * 1000;
+    if (Math.abs(zadnja.current - kljuc) < 0.0005) return;
+    zadnja.current = kljuc;
+    const { platno, tekstura } = dajEkran();
+    const g = platno.getContext("2d")!;
+    g.fillStyle = "#000";
+    g.fillRect(0, 0, TW, TH);
+    slikeEl.forEach((img, j) => {
+      const d = j - s.pozicija;
+      if (d > 1 || d < -1 || !img.complete || !img.naturalWidth) return;
+      const pomak = d >= 0 ? d * TW : d * TW * 0.3;
+      // cijela širina pripada ovom ekranu, da ispod ne proviri prethodni
+      g.fillStyle = "#000";
+      g.fillRect(pomak, 0, TW, TH);
+      const [x, y, w, h] = [TW * EKRAN.x + pomak, TH * EKRAN.vrh, TW * EKRAN.w, TH * (EKRAN.dno - EKRAN.vrh)];
+      // rub stakla oko slike ostaje crn, kao rub ekrana na iPhoneu — ranije je
+      // punjen krajnjim pikselima slike, pa je svijetla fotografija na vrhu
+      // obasjavala zaobljene ivice
+      g.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, x, y, w, h);
+      if (d < 0) {
+        g.fillStyle = `rgba(0,0,0,${Math.min(-d, 1) * 0.35})`;
+        g.fillRect(pomak, 0, TW, TH);
+      }
+    });
+    dynamicIsland(g);
+    tekstura.needsUpdate = true;
   });
 
   return (
@@ -296,6 +288,7 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
   const tekstovi = useRef<(HTMLDivElement | null)[]>([]);
   const tacke = useRef<(HTMLSpanElement | null)[]>([]);
   const [vidljivo, setVidljivo] = useState(false);
+  const [aktivno, setAktivno] = useState(false);
   const [spreman, setSpreman] = useState(false);
   const naSpreman = useCallback(() => setSpreman(true), []);
 
@@ -315,22 +308,25 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
       "requestIdleCallback" in window ? window.requestIdleCallback(cb, { timeout: 2500 }) : setTimeout(cb, 1200);
     if (document.readyState === "complete") idle(pripremi);
     else window.addEventListener("load", () => idle(pripremi), { once: true });
+    const blizu = new IntersectionObserver(([e]) => setAktivno(e.isIntersecting), { rootMargin: "25% 0px" });
+    blizu.observe(el);
     io.observe(el);
     return () => {
       io.disconnect();
+      blizu.disconnect();
     };
   }, []);
 
   useEffect(() => {
     let id = 0;
     const n = slike.length;
-    const mjera = sekcija.current ? pratiElement(sekcija.current) : null;
     const crtaj = () => {
       id = 0;
-      if (!mjera) return;
-      const r = mjera.citaj();
-      const p = clamp(-r.top / Math.max(1, r.visina - r.vh));
-      const u = glatko(clamp(1 - r.top / r.vh));
+      const el = sekcija.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const p = clamp(-r.top / Math.max(1, r.height - window.innerHeight));
+      const u = glatko(clamp(1 - r.top / window.innerHeight));
       // pretapanje na izlazu, da se sljedeća scena nadoveže bez reza
       if (pozornica.current) pozornica.current.style.opacity = String(clamp(u * 2) * (1 - clamp((p - 0.94) / 0.06)));
       // ekrani se smjenjuju preko cijele sekcije
@@ -358,7 +354,6 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
     window.addEventListener("resize", zakazi);
     return () => {
       cancelAnimationFrame(id);
-      mjera?.prestani();
       window.removeEventListener("scroll", zakazi);
       window.removeEventListener("resize", zakazi);
     };
@@ -381,7 +376,7 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
           <img src="/scroll/lebdi/iphone-1-mala.webp" alt="" className="h-full w-full" />
         </div>
         {vidljivo && (
-          <Canvas className={`!absolute inset-0 transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`} camera={{ position: [0, 0, 8], fov: 30 }} dpr={[1, 1.5]} gl={{ antialias: true, powerPreference: "high-performance" }} frameloop="never">
+          <Canvas className={`!absolute inset-0 transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`} camera={{ position: [0, 0, 8], fov: 30 }} dpr={[1, 2]} gl={{ antialias: true, powerPreference: "high-performance" }} frameloop={aktivno ? "always" : "never"}>
             <Suspense fallback={null}>
               <Model stanje={stanje} slike={slike} onSpreman={naSpreman} />
               {/* svjetlo bez preuzimanja HDR-a: nekoliko svjetlećih ploha */}
