@@ -37,8 +37,8 @@ const clamp = (v: number) => Math.min(1, Math.max(0, v));
 
 // Tekstura pokriva cijeli ekran (provjereno probnom mrežom). Ekran je ~1,55:1,
 // pa traka od 3,5 % gore ostavi tačno 16:10 za screenshot Melure (1440x900).
-const TW = 2048;
-const TH = 1322;
+const TW = 1600;
+const TH = 1033;
 const TRAKA = Math.round(TH * 0.035);
 
 type Stanje = { p: number; ulaz: number; korak: number; siroko: boolean; prostor: number };
@@ -176,6 +176,8 @@ export function MacbookScene({ slike, koraci }: Props) {
       const el = omotac.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
+      // daleko od sekcije petlja samo čeka (bez upisa u DOM)
+      if (r.bottom < -window.innerHeight || r.top > window.innerHeight * 2) return;
       const cilj = clamp(-r.top / Math.max(1, el.offsetHeight - window.innerHeight));
       const s = stanje.current;
       s.siroko = window.innerWidth >= 900;
@@ -235,7 +237,7 @@ export function MacbookScene({ slike, koraci }: Props) {
             <img src="/scroll/laptop/ekran-0-0-mala.webp" alt="" className="block w-full" />
           </div>
           {capable && (
-            <MacbookStage className={`transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`}>
+            <MacbookStage dpr={[1, 1.5]} className={`transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`}>
               {/* neutralno bijelo svjetlo (preseti paketa su plavkasti) */}
               <MacbookLighting>
                 <ambientLight intensity={0.45} />

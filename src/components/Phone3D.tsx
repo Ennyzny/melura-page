@@ -21,8 +21,10 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const glatko = (t: number) => t * t * (3 - 2 * t);
 
 // Teksture ekrana u modelu su 1:2; naš ekran se uklopi bez sječenja.
-const TW = 1024;
-const TH = 2048;
+// Tekstura ekrana: dovoljno oštra za telefon na ~80 % visine prozora, a manja
+// za upload na GPU pri svakoj smjeni ekrana (isti omjer 1:2 kao prije).
+const TW = 768;
+const TH = 1536;
 
 type Stanje = { u: number; pozicija: number; p: number };
 
@@ -131,19 +133,27 @@ function Model({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; 
     });
   }, [model]);
 
-  useFrame(() => {
-    const s = stanje.current;
-    if (!s || !grupa.current) return;
+  // Prikazano stanje prigušeno prati skrol (točkić miša ne trza telefon).
+  const glatko_ = useRef<Stanje | null>(null);
+  useFrame((_, dt) => {
+    const cilj = stanje.current;
+    if (!cilj || !grupa.current) return;
+    const s = (glatko_.current ??= { ...cilj });
+    const k = 1 - Math.exp(-Math.min(dt, 0.05) * 9);
+    s.u += (cilj.u - s.u) * k;
+    s.p += (cilj.p - s.p) * k;
+    s.pozicija += (cilj.pozicija - s.pozicija) * k;
+    if (Math.abs(cilj.pozicija - s.pozicija) < 0.0005) s.pozicija = cilj.pozicija;
     const siroko = size.width >= 900;
 
     // Kadar po ekranu: telefon priđe dijelu ekrana o kojem tekst govori
     // (lista majstora, kalendar), a na zahtjevu se udalji. Između kadrova
     // pretapanje prati smjenu ekrana.
     const n = slike.length;
-    const k = clamp(s.pozicija, 0, KADROVI.length - 1);
-    const a = Math.floor(k);
+    const kk = clamp(s.pozicija, 0, KADROVI.length - 1);
+    const a = Math.floor(kk);
     const b = Math.min(a + 1, KADROVI.length - 1);
-    const f = glatko(k - a);
+    const f = glatko(kk - a);
     // Zum treba prostor pored teksta: pun na 16:10 i širem, blaži na 4:3,
     // na uskom ekranu (tekst ispod telefona) telefon samo stoji i smjenjuje ekrane.
     const prostor = siroko ? Math.min(1, Math.max(0, (size.width / size.height - 1.2) / 0.4)) : 0;
@@ -215,6 +225,7 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
   const tekstovi = useRef<(HTMLDivElement | null)[]>([]);
   const tacke = useRef<(HTMLSpanElement | null)[]>([]);
   const [vidljivo, setVidljivo] = useState(false);
+  const [aktivno, setAktivno] = useState(false);
   const [spreman, setSpreman] = useState(false);
   const naSpreman = useCallback(() => setSpreman(true), []);
 
@@ -222,9 +233,18 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
   useEffect(() => {
     const el = sekcija.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setVidljivo(e.isIntersecting), { rootMargin: "200% 0px" });
+    // Dvije visine ekrana prije sekcije canvas se napravi (i model krene da se
+    // skida); poslije ostaje, a van ekrana samo ne crta (frameloop "never").
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) setVidljivo(true);
+    }, { rootMargin: "200% 0px" });
+    const blizu = new IntersectionObserver(([e]) => setAktivno(e.isIntersecting), { rootMargin: "25% 0px" });
+    blizu.observe(el);
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      blizu.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -286,13 +306,14 @@ export function Phone3D({ slike, koraci, duzina = 5 }: Props) {
           <img src="/scroll/lebdi/iphone-1-mala.webp" alt="" className="h-full w-full" />
         </div>
         {vidljivo && (
-          <Canvas className={`!absolute inset-0 transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`} camera={{ position: [0, 0, 8], fov: 30 }} dpr={[1, 2]} gl={{ antialias: true }}>
+          <Canvas className={`!absolute inset-0 transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`} camera={{ position: [0, 0, 8], fov: 30 }} dpr={[1, 1.5]} gl={{ antialias: true, powerPreference: "high-performance" }} frameloop={aktivno ? "always" : "never"}>
             <Suspense fallback={null}>
               <Model stanje={stanje} slike={slike} onSpreman={naSpreman} />
               {/* svjetlo bez preuzimanja HDR-a: nekoliko svjetlećih ploha */}
               {/* mekano studijsko svjetlo: velika bijela ploha odozgo i dvije
                   slabe bočne, bez obojenih odsjaja */}
-              <Environment resolution={256}>
+              {/* frames={1}: okolina se izračuna jednom, ne u svakom kadru */}
+              <Environment resolution={256} frames={1}>
                 <Lightformer form="rect" intensity={1.1} position={[0, 5, 3]} rotation-x={Math.PI / 2.5} scale={[12, 6, 1]} />
                 <Lightformer form="rect" intensity={0.45} position={[-6, 1, 2]} rotation-y={Math.PI / 2} scale={[4, 10, 1]} />
                 <Lightformer form="rect" intensity={0.3} position={[6, 0, 1]} rotation-y={-Math.PI / 2} scale={[4, 10, 1]} />
