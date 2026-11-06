@@ -104,6 +104,9 @@ export const studioMaestro: Pozivnica = {
     tel("app-book-success", "4. Poslano", "Vi potvrđujete, klijent dobija obavijest."),
   ],
 
+  zastoVi:
+    "Sanine, Studiju Maestro se javljamo prvom. Barberski seminari, edukacije i certifikati vaših polaznika pokazuju da u frizerstvu ovog kraja vi postavljate trend — i želimo da novi način zakazivanja u Vitezu i regiji krene upravo od vas.",
+
   napomena:
     "Ime, logo, boje, fotografije i telefon su sa javnih profila Studija Maestro. Cjenovnik, imena radnika osim vlasnika, klijenti i termini na snimcima su primjer — sve to upisujete vi.",
 };

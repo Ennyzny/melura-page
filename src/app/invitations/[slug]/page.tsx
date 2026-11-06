@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowDown, ArrowRight, CalendarCheck, Mail, Phone, Smartphone, Video } from "lucide-react";
 import { pozivnica, sviSlugovi } from "@/invitations";
+import { oNama, tim } from "@/invitations/tim";
 import { Ekran } from "@/components/pozivnica/Ekran";
 import { Cjenovnik } from "@/components/pozivnica/Cjenovnik";
 import { Logo } from "@/components/Logo";
@@ -216,6 +217,41 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
         </ol>
       </section>
 
+      {/* A ko smo to mi? — zajedničko za sve pozivnice, osim pasusa `zastoVi`. */}
+      <section className="border-t border-line bg-[#fafafa]">
+        <div className="mx-auto grid max-w-[1200px] gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
+          <div>
+            <p className="font-semibold text-coral-text">A ko smo to mi?</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{oNama.naslov}</h2>
+            {oNama.prica.map((t) => (
+              <p key={t} className="mt-4 text-lg leading-relaxed text-ink-soft">
+                {t}
+              </p>
+            ))}
+            <p className="mt-6 border-l-4 pl-4 text-lg font-medium leading-relaxed" style={{ borderColor: boje.primarna }}>
+              {p.zastoVi}
+            </p>
+          </div>
+          <ul className="grid grid-cols-2 gap-5">
+            {tim.map((c) => (
+              <li key={c.ime}>
+                <Image
+                  src={c.slika}
+                  alt={c.ime}
+                  width={600}
+                  height={600}
+                  sizes="(min-width: 1024px) 260px, 45vw"
+                  className="aspect-square w-full object-cover"
+                />
+                <p className="mt-3 text-lg font-bold">{c.ime}</p>
+                <p className="text-[14px] font-semibold text-coral-text">{c.uloga}</p>
+                <p className="mt-1 text-[15px] leading-relaxed text-ink-soft">{c.opis}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* Završni poziv */}
       <section className="relative overflow-hidden text-white" style={{ background: boje.tamna }}>
         <div className="mx-auto max-w-[1200px] px-4 py-20 text-center sm:px-6">
@@ -262,7 +298,8 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
             Play, Google Maps i Facebook pripadaju njihovim vlasnicima.
           </li>
           <li>
-            Objava aplikacije u App Storeu i Google Playu podliježe pravilima i pregledu Applea i Googlea.
+            Aplikacija je u završnoj fazi isporuke. Objava u App Storeu i Google Playu, pa time i datum isporuke,
+            zavise od pregleda i odobrenja Applea i Googlea.
           </li>
           <li>
             Cjenovnik koji upišete na ovoj stranici čuva se samo u vašem browseru i šalje se tek kad kliknete

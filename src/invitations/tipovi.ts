@@ -86,6 +86,12 @@ export type Pozivnica = {
   /** „Kako klijent zakazuje" — koraci booking flowa, redom. */
   zakazivanje: Snimak[];
 
+  /**
+   * „A ko smo to mi?" — jedini lični pasus u inače zajedničkoj sekciji: zašto se javljamo
+   * baš ovom salonu. Činjenica sa javnih izvora, bez laskanja koje ne možemo potkrijepiti.
+   */
+  zastoVi: string;
+
   /** Šta je na snimcima izmišljeno — ide u podnožje, da pitch ne tvrdi ništa netačno. */
   napomena: string;
 };
