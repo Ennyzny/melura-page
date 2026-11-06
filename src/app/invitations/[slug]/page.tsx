@@ -19,7 +19,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/invitations/[slug]">): Promise<Metadata> {
   const p = pozivnica((await params).slug);
   if (!p) return {};
-  const naslov = `${p.salon.ime} — vaša aplikacija`;
+  const naslov = `${p.salon.ime}: vaša aplikacija`;
   return {
     title: naslov,
     description: p.uvod,
@@ -41,7 +41,7 @@ const koraci = [
   {
     ikona: Video,
     naslov: "Dogovorimo detalje",
-    tekst: "Uživo u salonu ili preko Google Meet poziva — usluge, tim, radno vrijeme, fotografije i sve što želite drugačije.",
+    tekst: "Uživo u salonu ili preko Google Meet poziva: usluge, tim, radno vrijeme, fotografije i sve što želite drugačije.",
   },
   {
     ikona: Smartphone,
@@ -57,7 +57,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
 
   const { salon } = p;
   const boje = { ...salon.boje, naPrimarnoj: tekstNa(salon.boje.primarna) };
-  const kontakt = `mailto:${DEMO_EMAIL}?subject=${encodeURIComponent(`${salon.ime} — aplikacija`)}`;
+  const kontakt = `mailto:${DEMO_EMAIL}?subject=${encodeURIComponent(`${salon.ime}: aplikacija`)}`;
 
   return (
     <div>
@@ -190,7 +190,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
             Upišite svoje usluge i odmah ih vidite u aplikaciji.
           </h2>
           <p className="mt-4 max-w-2xl text-lg text-ink-soft">
-            Ovo je naš prijedlog — promijenite nazive i cijene, dodajte ili uklonite usluge.
+            Ovo je naš prijedlog. Promijenite nazive i cijene, dodajte ili uklonite usluge.
           </p>
           <div className="mt-10">
             <Cjenovnik slug={p.slug} salon={salon.ime} pocetne={p.usluge} boje={boje} email={DEMO_EMAIL} />
@@ -203,7 +203,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Kako ide dalje</h2>
         <p className="mt-4 max-w-2xl text-lg text-ink-soft">
           Ovo što vidite je <strong className="text-ink">početna verzija</strong>, napravljena po javnim podacima o
-          salonu. Sve ostalo dorađujemo zajedno — uživo u salonu ili preko Google Meet poziva, kako vam odgovara.
+          salonu. Sve ostalo dorađujemo zajedno, uživo u salonu ili preko Google Meet poziva, kako vam odgovara.
         </p>
         <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {koraci.map(({ ikona: Ikona, naslov, tekst }, i) => (
@@ -262,7 +262,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
             Da klijenti {salon.genitiv} zakazuju sami?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-white/80">
-            Javite se i dogovorimo kratak sastanak — u salonu ili preko Google Meeta. Pokažemo aplikaciju uživo i
+            Javite se i dogovorimo kratak sastanak, u salonu ili preko Google Meeta. Pokažemo aplikaciju uživo i
             dogovorimo sve izmjene.
           </p>
           <a
@@ -287,7 +287,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
             se razlikovati i dorađuju se u dogovoru sa vama.
           </li>
           <li>
-            Opisane koristi su mogućnosti aplikacije, ne garancija rezultata — broj termina, nedolazaka i prihod
+            Opisane koristi su mogućnosti aplikacije, ne garancija rezultata. Broj termina, nedolazaka i prihod
             zavise od salona i njegovih klijenata.
           </li>
           <li>

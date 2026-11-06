@@ -18,7 +18,7 @@ export function Ekran({
   return (
     <Image
       src={snimak.src}
-      alt={snimak.opis ? `${snimak.naslov} — ${snimak.opis}` : snimak.naslov}
+      alt={snimak.opis ? `${snimak.naslov}: ${snimak.opis}` : snimak.naslov}
       width={snimak.sirina}
       height={snimak.visina}
       sizes={sizes}

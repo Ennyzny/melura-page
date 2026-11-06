@@ -74,9 +74,9 @@ export function Cjenovnik({
 
   const kategorije = [...new Set(usluge.map((u) => u.kategorija.trim() || "Ostalo"))];
   const tekst = usluge
-    .map((u) => `${u.kategorija} — ${u.naziv}: ${u.cijena} KM, ${trajanjeTekst(u.trajanje)}`)
+    .map((u) => `${u.kategorija}, ${u.naziv}: ${u.cijena} KM, ${trajanjeTekst(u.trajanje)}`)
     .join("\n");
-  const mailto = `mailto:${email}?subject=${encodeURIComponent(`Cjenovnik — ${salon}`)}&body=${encodeURIComponent(
+  const mailto = `mailto:${email}?subject=${encodeURIComponent(`Cjenovnik: ${salon}`)}&body=${encodeURIComponent(
     `Naše usluge za aplikaciju:\n\n${tekst}\n`,
   )}`;
 
@@ -167,7 +167,7 @@ export function Cjenovnik({
         </div>
 
         <div className="mt-8 rounded-3xl bg-fog p-6">
-          <p className="text-lg font-bold">Ovako izgleda — pošaljite nam i ubacujemo ga u aplikaciju.</p>
+          <p className="text-lg font-bold">Ovako izgleda. Pošaljite nam i ubacujemo ga u aplikaciju.</p>
           <p className="mt-1 text-[15px] text-ink-soft">
             Izmjene se čuvaju samo u vašem browseru dok ih ne pošaljete. Kasnije ih mijenjate sami, iz Melure.
           </p>

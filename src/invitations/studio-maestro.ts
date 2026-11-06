@@ -46,25 +46,25 @@ export const studioMaestro: Pozivnica = {
   koristi: [
     {
       naslov: "Klijenti zakazuju sami",
-      danas: "Termini se dogovaraju pozivom i porukama na 061 372 353 — često dok imate makaze u rukama.",
-      sa: "Klijent u aplikaciji vidi slobodne termine i zakaže sam, i u nedjelju uveče. Termin se potvrđuje automatski — ili ga vi potvrdite kad stignete, kako podesite.",
+      danas: "Termini se dogovaraju pozivom i porukama na 061 372 353, često dok imate makaze u rukama.",
+      sa: "Klijent u aplikaciji vidi slobodne termine i zakaže sam, i u nedjelju uveče. Termin se potvrđuje automatski, ili ga vi potvrdite kad stignete, kako podesite.",
       snimak: tel("app-flow-termin", "Izbor termina", "Samo stvarno slobodna vremena"),
     },
     {
-      naslov: "Manje nedolazaka, otkazani termin se popuni",
-      danas: "Kad neko zaboravi bojanje ili pramenove, prazna je stolica sat i po do dva.",
-      sa: "Aplikacija sama šalje podsjetnik dan prije i nekoliko sati prije termina, bez SMS troškova. Kad neko otkaže, klijent sa liste čekanja odmah dobije obavijest.",
+      naslov: "Zaboravljeni termini više ne moraju ostati prazni",
+      danas: "Kad neko zaboravi bojanje ili pramenove, stolica ostane prazna sat i po do dva.",
+      sa: "Aplikacija automatski šalje podsjetnik dan prije i nekoliko sati prije termina, bez SMS troškova. A kad neko otkaže, klijenti sa liste čekanja odmah dobiju obavijest da se oslobodio termin.",
       snimak: tel("app-notifications", "Obavijesti", "Potvrda i podsjetnik"),
     },
     {
       naslov: "Znate svoje klijente",
-      danas: "Ko dolazi redovno, ko je zadnji put izostao i šta je tražio — to se pamti ili piše u svesku.",
+      danas: "Ko dolazi redovno, ko je zadnji put izostao i šta je tražio, to se pamti ili piše u svesku.",
       sa: "Svaki klijent ima istoriju dolazaka i broj nedolazaka, a napomenu uz termin („samo vrhove“) vidite prije nego sjedne u stolicu.",
       snimak: racunar("melura-clients", "Klijenti u Meluri", "Istorija dolazaka i nedolasci"),
     },
     {
       naslov: "Cijeli dan na jednom ekranu",
-      danas: "Raspored je u telefonu, svesci i glavi — i svaka izmjena je novi poziv.",
+      danas: "Raspored je u telefonu, svesci i glavi, a svaka izmjena je novi poziv.",
       sa: "U Meluri vidite ko dolazi, šta čeka potvrdu, ko je u smjeni, naplaćeno i prognozu dana. Smjene, pauze i blokade (seminar, isporuka robe) postavite jednom.",
       snimak: racunar("melura-today", "Danas u Meluri", "Pregled dana salona"),
     },
@@ -99,14 +99,14 @@ export const studioMaestro: Pozivnica = {
 
   zakazivanje: [
     tel("app-flow-usluga", "1. Usluga", "Klijent bira šta želi."),
-    tel("app-flow-radnik", "2. Frizer", "Kod koga dolazi — ili „bilo ko od nas“."),
+    tel("app-flow-radnik", "2. Frizer", "Kod koga dolazi, ili „bilo ko od nas“."),
     tel("app-flow-termin", "3. Termin", "Samo stvarno slobodna vremena."),
     tel("app-book-success", "4. Poslano", "Vi potvrđujete, klijent dobija obavijest."),
   ],
 
   zastoVi:
-    "Sanine, Studiju Maestro se javljamo prvom. Barberski seminari, edukacije i certifikati vaših polaznika pokazuju da u frizerstvu ovog kraja vi postavljate trend — i želimo da novi način zakazivanja u Vitezu i regiji krene upravo od vas.",
+    "Sanine, Studiju Maestro se javljamo prvom. Barberski seminari, edukacije i certifikati vaših polaznika pokazuju da u frizerstvu ovog kraja vi postavljate trend i želimo da novi način zakazivanja u Vitezu i regiji krene upravo od vas.",
 
   napomena:
-    "Ime, logo, boje, fotografije i telefon su sa javnih profila Studija Maestro. Cjenovnik, imena radnika osim vlasnika, klijenti i termini na snimcima su primjer — sve to upisujete vi.",
+    "Ime, logo, boje, fotografije i telefon su sa javnih profila Studija Maestro. Cjenovnik, imena radnika osim vlasnika, klijenti i termini na snimcima su primjer. Sve to upisujete vi.",
 };
