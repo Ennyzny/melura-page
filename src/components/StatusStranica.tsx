@@ -1,17 +1,20 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
+import { StatusIlustracija, type VrstaIlustracije } from "./StatusIlustracija";
 
 type Akcija = { href?: string; onClick?: () => void; label: string };
 
 // Zajednički izgled za 404 i greške: bez navigacije sajta (stoje van (sajt) layouta), sa
 // znakom, velikim kodom i najviše dvije akcije.
 export function StatusStranica({
+  ilustracija,
   kod,
   naslov,
   tekst,
   glavna,
   sporedna,
 }: {
+  ilustracija: VrstaIlustracije;
   kod: string;
   naslov: string;
   tekst: string;
@@ -41,8 +44,9 @@ export function StatusStranica({
         </Link>
       </div>
       <div className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center py-20 text-center">
-        <p className="text-[96px] font-bold leading-none tracking-tight text-coral sm:text-[128px]">{kod}</p>
-        <h1 className="mt-6 text-3xl font-bold tracking-tight sm:text-4xl">{naslov}</h1>
+        <StatusIlustracija vrsta={ilustracija} className="h-44 w-44 sm:h-52 sm:w-52" />
+        <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-coral-text">{kod}</p>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{naslov}</h1>
         <p className="mt-4 text-lg leading-relaxed text-ink-soft">{tekst}</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {dugme(glavna, true)}

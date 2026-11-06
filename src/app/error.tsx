@@ -7,7 +7,8 @@ import { StatusStranica } from "@/components/StatusStranica";
 export default function Greska({ retry }: { error: unknown; retry: () => void }) {
   return (
     <StatusStranica
-      kod="Ups"
+      ilustracija="greska"
+      kod="Greška"
       naslov="Nešto nije prošlo kako treba."
       tekst="Stranica se nije učitala do kraja. Pokušajte ponovo, a ako se ponovi, javite nam se."
       glavna={{ onClick: () => retry(), label: "Pokušaj ponovo" }}

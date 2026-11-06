@@ -7,7 +7,8 @@ export const metadata: Metadata = { title: "Pozivnica nije pronađena" };
 export default function PozivnicaNotFound() {
   return (
     <StatusStranica
-      kod="404"
+      ilustracija="koverat"
+      kod="Greška 404"
       naslov="Ova pozivnica ne postoji."
       tekst="Link je možda nepotpun ili je pozivnica povučena. Ako ste ga dobili od nas, odgovorite na email i poslaćemo novi."
       glavna={{ href: "/", label: "Šta je Melura" }}
