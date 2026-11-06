@@ -11,13 +11,13 @@ export type Clan = {
 export const tim: Clan[] = [
   {
     ime: "Hamza Tuco",
-    uloga: "Proizvod i razvoj",
-    opis: "Softverski inženjer u Symphonyju i student četvrte godine softverskog inženjerstva na FIT-u u Mostaru.",
+    uloga: "Arhitekta rješenja",
+    opis: "Student četvrte godine softverskog inženjerstva na Fakultetu informacijskih tehnologija u Mostaru.",
     slika: "/invitations/tim/hamza.webp",
   },
   {
     ime: "Eniz Dajić",
-    uloga: "Razvoj aplikacije",
+    uloga: "Programer aplikacija",
     opis: "Student softverskog inženjerstva na Politehničkom fakultetu Univerziteta u Zenici.",
     slika: "/invitations/tim/eniz.webp",
   },
