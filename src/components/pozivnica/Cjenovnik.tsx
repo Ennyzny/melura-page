@@ -201,7 +201,7 @@ export function Cjenovnik({
       <div className="lg:sticky lg:top-8" aria-label="Pregled u aplikaciji">
         <div>
           <div
-            className="flex h-[640px] flex-col overflow-hidden rounded-[1.75rem] text-white shadow-[0_30px_60px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/10"
+            className="flex h-[640px] flex-col overflow-hidden text-white shadow-[0_30px_60px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/10"
             style={{ background: boje.tamna }}
           >
             <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 pt-5">

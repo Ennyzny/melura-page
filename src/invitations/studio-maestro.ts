@@ -46,44 +46,40 @@ export const studioMaestro: Pozivnica = {
 
   koristi: [
     {
-      naslov: "Telefon prestaje zvoniti usred bojanja",
-      danas:
-        "Termin se danas traži pozivom ili porukom na 061 372 353. Dok nanosite boju, ne možete se javiti — a klijentica koja ne dobije odgovor zove sljedeći salon.",
-      sa: "Klijent sam vidi samo stvarno slobodne termine i zakaže za manje od minute. Vi pogledate zahtjeve kad završite sa klijentom.",
+      naslov: "Klijenti zakazuju sami",
+      danas: "Termini se dogovaraju pozivom i porukama na 061 372 353 — često dok imate boju u rukama.",
+      sa: "Klijent u aplikaciji vidi slobodne termine i zakaže sam, i u nedjelju uveče. Vi samo potvrdite kad stignete.",
       snimak: tel("app-flow-termin", "Izbor termina", "Samo stvarno slobodna vremena"),
     },
     {
-      naslov: "Pratioci postaju termini — i u 23 h",
-      danas:
-        "Studio Maestro prati 3,9 hiljada ljudi na Facebooku. Kad uveče vide novu frizuru u objavi, salon je zatvoren i termin se ostavlja „za sutra“.",
-      sa: "Link za zakazivanje u objavi i u opisu stranice vodi pravo u vašu aplikaciju. Ko želi termin, zakaže ga odmah, dok mu je želja svježa.",
+      naslov: "Manje nedolazaka, otkazani termin se popuni",
+      danas: "Kad neko zaboravi bojanje ili pramenove, prazna je stolica sat i po do dva.",
+      sa: "Aplikacija sama šalje podsjetnik dan prije i nekoliko sati prije termina, bez SMS troškova. Kad neko otkaže, klijent sa liste čekanja odmah dobije obavijest.",
+      snimak: tel("app-notifications", "Obavijesti", "Potvrda i podsjetnik"),
+    },
+    {
+      naslov: "Znate svoje klijente",
+      danas: "Ko dolazi redovno, ko je zadnji put izostao i šta je tražio — to se pamti ili piše u svesku.",
+      sa: "Svaki klijent ima istoriju dolazaka i broj nedolazaka, a napomenu uz termin („samo vrhove“) vidite prije nego sjedne u stolicu.",
+      snimak: racunar("melura-clients", "Klijenti u Meluri", "Istorija dolazaka i nedolasci"),
+    },
+    {
+      naslov: "Cijeli dan na jednom ekranu",
+      danas: "Raspored je u telefonu, svesci i glavi — i svaka izmjena je novi poziv.",
+      sa: "U Meluri vidite ko dolazi, šta čeka potvrdu, ko je u smjeni, naplaćeno i prognozu dana. Smjene, pauze i blokade (seminar, isporuka robe) postavite jednom.",
+      snimak: racunar("melura-today", "Danas u Meluri", "Pregled dana salona"),
+    },
+    {
+      naslov: "Facebook vodi pravo u termin",
+      danas: "Studio Maestro prati 3,9 hiljada ljudi. Ko vidi objavu, a želi termin, mora zvati ili pisati.",
+      sa: "Link za zakazivanje stavite u objave i opis stranice. Od objave do termina je par dodira.",
       dokaz: "3,9 hilj. pratilaca na Facebooku",
       snimak: tel("app-pocetna", "Početna aplikacije", "Ime, cjenovnik i dugme za termin"),
     },
     {
-      naslov: "Manje praznih stolica kod dugih tretmana",
-      danas:
-        "Bojanje i pramenovi traju sat i po do dva. Kad takva klijentica zaboravi termin, propadne pola dana jednog frizera — a neko drugi bi ga rado uzeo.",
-      sa: "Aplikacija šalje podsjetnik dan prije i nekoliko sati prije termina (vi birate koliko). Kad neko otkaže, lista čekanja odmah javlja klijentu koji je čekao.",
-      snimak: tel("app-notifications", "Obavijesti", "Potvrda i podsjetnik"),
-    },
-    {
-      naslov: "Vi odlučujete ko dolazi i kada",
-      danas: "Raspored drži telefon, sveska ili pamćenje — i svako mijenjanje termina je novi poziv.",
-      sa: "Svaki zahtjev potvrđujete jednim klikom ili uključite automatsku potvrdu. Smjene i pauze po frizeru, blokade za seminar ili isporuku robe — klijent nikad ne vidi termin koji ne možete ispoštovati.",
-      snimak: racunar("melura-requests", "Zahtjevi u Meluri", "Potvrda jednim klikom"),
-    },
-    {
-      naslov: "Cijeli dan salona na jednom ekranu",
-      danas: "Koliko je dan popunjen, ko kasni i koliko je naplaćeno, znate tek na kraju dana.",
-      sa: "Melura na telefonu ili računaru pokazuje ko dolazi, šta čeka potvrdu, naplaćeno i prognozu dana, popunjenost svakog frizera i najveću rupu u rasporedu.",
-      snimak: racunar("melura-today", "Danas u Meluri", "Pregled dana salona"),
-    },
-    {
-      naslov: "Vaš brend, ne tuđa platforma",
-      danas:
-        "Ocjena 4,8 na Google Mapama je vaš kapital. Na platformama za zakazivanje vaš salon stoji u listi pored konkurencije, a provizija ide od svakog termina.",
-      sa: "Aplikacija se zove Studio Maestro, sa vašim logom u App Storeu i Google Playu. Klijent vidi samo vas — vaše fotografije, vaš tim, vaše recenzije. Bez provizije po terminu.",
+      naslov: "Aplikacija sa vašim imenom",
+      danas: "Na platformama za zakazivanje salon stoji u listi pored konkurencije, a od termina ide provizija.",
+      sa: "U App Storeu i Google Playu piše Studio Maestro, sa vašim logom, fotografijama i recenzijama. Klijent vidi samo vas. Bez provizije po terminu.",
       dokaz: "4,8 ★ na Google Mapama",
       snimak: tel("app-about", "O nama", "Fotografije, radno vrijeme, kontakt"),
     },

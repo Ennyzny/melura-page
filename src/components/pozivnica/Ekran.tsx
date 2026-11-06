@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { Snimak } from "@/invitations";
 
 // Snimak ekrana bez okvira uređaja: cijeli i neizmijenjen, u svom omjeru, samo zaobljen i
-// sa sjenom. Telefon i računar se razlikuju jedino po zaobljenju.
+// sa sjenom. Telefon ide pravih uglova (zaobljen izgleda kao lažni uređaj), računar blago zaobljen.
 export function Ekran({
   snimak,
   sizes = "(min-width: 1024px) 320px, 80vw",
@@ -24,7 +24,7 @@ export function Ekran({
       sizes={sizes}
       preload={preload}
       className={`block h-auto w-full ring-1 ring-black/10 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.45)] ${
-        telefon ? "rounded-[1.75rem]" : "rounded-xl"
+        telefon ? "" : "rounded-xl"
       } ${className}`}
     />
   );

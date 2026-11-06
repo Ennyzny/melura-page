@@ -105,9 +105,9 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
 
       {/* Fokus: zašto se isplati. */}
       <section id="zasto" className="mx-auto max-w-[1200px] scroll-mt-6 px-4 py-20 sm:px-6 sm:py-28">
-        <p className="font-semibold text-coral-text">Zašto se {salon.dativ} isplati</p>
+        <p className="font-semibold text-coral-text">Šta {salon.dativ} donosi</p>
         <h2 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
-          Aplikacija radi posao koji vam danas uzima telefon, vrijeme i termine.
+          Manje vremena na termine, više na klijente.
         </h2>
 
         <ol className="mt-16 grid gap-20 sm:gap-28">
@@ -118,7 +118,11 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
                 <Reveal>
                   <div
                     className={`grid items-center gap-10 ${
-                      telefon ? "lg:grid-cols-[1fr_300px]" : "lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+                      !telefon
+                        ? "lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+                        : i % 2
+                          ? "lg:grid-cols-[300px_1fr]"
+                          : "lg:grid-cols-[1fr_300px]"
                     }`}
                   >
                     <div className={i % 2 && telefon ? "lg:order-2" : ""}>
@@ -138,7 +142,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
                           <dd className="mt-1 text-lg leading-relaxed text-ink-soft">{k.danas}</dd>
                         </div>
                         <div className="border-l-4 pl-4" style={{ borderColor: boje.primarna }}>
-                          <dt className="text-[13px] font-semibold uppercase tracking-[0.12em]">Sa aplikacijom</dt>
+                          <dt className="text-[13px] font-semibold uppercase tracking-[0.12em]">Sa Melurom</dt>
                           <dd className="mt-1 text-lg font-medium leading-relaxed">{k.sa}</dd>
                         </div>
                       </dl>
