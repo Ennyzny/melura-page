@@ -65,7 +65,7 @@ export type Pozivnica = {
 
   /**
    * Naslov uvoda: obraćanje vlasniku po imenu (lično, pogodi odmah) + problem koji mu
-   * rješavamo, rečen njegovim jezikom („Sanine, došli smo da vam skinemo telefon s uha.").
+   * rješavamo, rečen njegovim jezikom i sa malo duha („Sanine, sveska za termine može u penziju.").
    * Bez slogana i bez „vlastita aplikacija".
    */
   naslov: string;
