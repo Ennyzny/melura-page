@@ -23,7 +23,7 @@ export const tim: Clan[] = [
   {
     ime: "Eniz Dajić",
     uloga: "Programer aplikacija",
-    zaSalon: (s) => `Razvija aplikaciju koju će koristiti klijenti ${s.genitiv}.`,
+    zaSalon: (s) => `Gradi aplikaciju ekran po ekran i pazi da klijenti ${s.genitiv} termin zakažu bez ijednog pitanja.`,
     opis: "Student softverskog inženjerstva na Politehničkom fakultetu Univerziteta u Zenici.",
     slika: "/invitations/tim/eniz.webp",
   },
