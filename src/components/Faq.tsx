@@ -1,6 +1,8 @@
 import { Plus } from "lucide-react";
+import { CIJENE } from "@/lib/flags";
 
-// Odgovori prate ponudu iz MVP specifikacije (paketi, Linija A/B, Faza 1).
+// Odgovori prate ponudu iz MVP specifikacije (paketi, Linija A/B, Faza 1). Dok je cjenovnik
+// ugašen (CIJENE), odgovori ne spominju pakete ni uslove ugovora — ni na stranici ni u JSON-LD-u.
 const faqs = [
   {
     q: "Da li klijent mora instalirati aplikaciju?",
@@ -12,15 +14,17 @@ const faqs = [
   },
   {
     q: "Šta uključuje postavljanje?",
-    a: "Aplikaciju s imenom, ikonom, logom i bojama vašeg salona, unos usluga, cijena, radnika i radnog vremena, te objavu u Google Playu (u Pro paketu i u App Storeu). Aplikacija ide pod našim developer nalogom, pa vi ne otvarate nikakav nalog. Na kraju vama i timu uživo pokažemo kako se radi u adminu.",
+    a: `Aplikaciju s imenom, ikonom, logom i bojama vašeg salona, unos usluga, cijena, radnika i radnog vremena, te objavu u Google Playu${CIJENE ? " (u Pro paketu i u App Storeu)" : " i App Storeu"}. Aplikacija ide pod našim developer nalogom, pa vi ne otvarate nikakav nalog. Na kraju vama i timu uživo pokažemo kako se radi u adminu.`,
   },
   {
     q: "Na kojim uređajima radi?",
-    a: "Klijenti koriste Android aplikaciju, iPhone aplikaciju (Pro paket) ili web link u bilo kojem pregledniku. Vi termine vodite iz Melura admina na Android telefonu ili iPhoneu.",
+    a: `Klijenti koriste Android aplikaciju, iPhone aplikaciju${CIJENE ? " (Pro paket)" : ""} ili web link u bilo kojem pregledniku. Vi termine vodite iz Melura admina na Android telefonu ili iPhoneu.`,
   },
   {
     q: "Kakvi su uslovi ugovora?",
-    a: "Postoje dva modela. Bez setup troška plaćate samo mjesečno, uz ugovor na najmanje 12 mjeseci. Uz jednokratni setup mjesečna cijena je niža. U oba modela nema provizije po terminu ni SMS troškova. Tačne uslove dobijate u pisanoj ponudi nakon demoa.",
+    a: CIJENE
+      ? "Postoje dva modela. Bez setup troška plaćate samo mjesečno, uz ugovor na najmanje 12 mjeseci. Uz jednokratni setup mjesečna cijena je niža. U oba modela nema provizije po terminu ni SMS troškova. Tačne uslove dobijate u pisanoj ponudi nakon demoa."
+      : "Plan cijena i uslove objavljujemo uskoro. Do tada svaki salon dobija ponudu po mjeri nakon kratkog demoa. Nema provizije po terminu ni SMS troškova.",
   },
   {
     q: "Mogu li sam mijenjati usluge, cijene i radno vrijeme?",

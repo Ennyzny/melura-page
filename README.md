@@ -38,6 +38,14 @@ zahtjevom — bez backenda. Adresa primaoca je u `src/lib/site.ts` (`DEMO_EMAIL`
 Na produkciji postaviti `NEXT_PUBLIC_SITE_URL` (npr. `https://melura.ba`) — koristi se za
 preview pri dijeljenju linka, `sitemap.xml` i `robots.txt`.
 
+Cjenovnik je iza feature flaga (`src/lib/flags.ts`): bez `NEXT_PUBLIC_CIJENE=1` sekcija
+`#cijene` najavljuje plan cijena, a FAQ i funkcije ne spominju pakete ni uslove ugovora.
+
+Pozivnice salonima su na `/invitations/<slug>` (van menija, `noindex`): sadržaj u
+`src/invitations/`, slike u `public/invitations/`. Ikone su fajlovi u `src/app/`
+(`favicon.ico`, `icon.svg`, `apple-icon.png`) uz `manifest.ts`; 404 i greške su
+`not-found.tsx`, `error.tsx` i `global-error.tsx`.
+
 Tvrdnje na stranici prate `docs/01-mvp-spec.md`: funkcije, djelatnosti i stavke paketa koje
 specifikacija stavlja u Fazu 2 ili kasnije označene su sa „Uskoro“.
 
