@@ -38,7 +38,7 @@ export const studioMaestro: Pozivnica = {
     boje: { primarna: "#34F0E0", tamna: "#0D0D0D" },
   },
 
-  naslov: "Vlastita aplikacija za zakazivanje Studija Maestro.",
+  naslov: "Sanine, napravili smo aplikaciju za Studio Maestro.",
 
   uvod:
     "U vašim bojama, sa vašim logom, uslugama i timom. Klijenti zakazuju sami, u bilo koje doba, a vi termine pratite u Meluri — bez telefona u ruci.",
