@@ -64,8 +64,9 @@ export type Pozivnica = {
   uvod: string;
 
   /**
-   * Naslov uvoda: obraćanje vlasniku po imenu (lično, pogodi odmah) + konkretna rečenica,
-   * bez slogana („Sanine, napravili smo aplikaciju za Studio Maestro.").
+   * Naslov uvoda: obraćanje vlasniku po imenu (lično, pogodi odmah) + problem koji mu
+   * rješavamo, rečen njegovim jezikom („Sanine, došli smo da vam skinemo telefon s uha.").
+   * Bez slogana i bez „vlastita aplikacija".
    */
   naslov: string;
 
