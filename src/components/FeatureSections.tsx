@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { CIJENE } from "@/lib/flags";
 
 type Feature = { title: string; text: string; planned?: boolean };
 
@@ -81,7 +82,7 @@ const sections: Section[] = [
       },
       {
         title: "Android i iOS",
-        text: "Native aplikacija u Google Playu, a u Pro paketu i u App Storeu.",
+        text: CIJENE ? "Native aplikacija u Google Playu, a u Pro paketu i u App Storeu." : "Native aplikacija u Google Playu i App Storeu.",
       },
       {
         title: "Web booking link",
@@ -97,7 +98,7 @@ const sections: Section[] = [
       },
       {
         title: "Galerija radova",
-        text: "Pokažite svoje radove direktno u aplikaciji salona (Pro paket).",
+        text: `Pokažite svoje radove direktno u aplikaciji salona${CIJENE ? " (Pro paket)" : ""}.`,
       },
     ],
   },
