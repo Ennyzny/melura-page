@@ -232,9 +232,10 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
               {p.zastoVi}
             </p>
           </div>
-          <ul className="grid grid-cols-2 gap-5">
+          {/* Subgrid: ime, uloga, opis i studij stoje u istom redu u obje kartice. */}
+          <ul className="grid grid-cols-2 gap-x-5">
             {tim.map((c) => (
-              <li key={c.ime}>
+              <li key={c.ime} className="row-span-5 grid grid-rows-subgrid gap-y-0">
                 <Image
                   src={c.slika}
                   alt={c.ime}
@@ -246,7 +247,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
                 <p className="mt-3 text-lg font-bold">{c.ime}</p>
                 <p className="text-[14px] font-semibold text-coral-text">{c.uloga}</p>
                 <p className="mt-2 text-[15px] leading-relaxed">{c.zaSalon(salon)}</p>
-                <p className="mt-2 text-[13px] leading-relaxed text-muted">{c.opis}</p>
+                <p className="mt-3 self-start text-[13px] leading-relaxed text-muted">{c.opis}</p>
               </li>
             ))}
           </ul>

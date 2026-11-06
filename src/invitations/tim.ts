@@ -16,16 +16,14 @@ export const tim: Clan[] = [
   {
     ime: "Hamza Tuco",
     uloga: "Arhitekta rješenja",
-    zaSalon: (s) =>
-      `Sa vama dogovara sve što ${s.genitiv} čini posebnim — usluge, tim, radno vrijeme i izgled aplikacije — i brine da sve radi zajedno, od zakazivanja do Melure.`,
+    zaSalon: (s) => `Postavlja aplikaciju ${s.genitiv} i vaš je kontakt za sve izmjene.`,
     opis: "Student četvrte godine softverskog inženjerstva na Fakultetu informacijskih tehnologija u Mostaru.",
     slika: "/invitations/tim/hamza.webp",
   },
   {
     ime: "Eniz Dajić",
     uloga: "Programer aplikacija",
-    zaSalon: (s) =>
-      `Gradi aplikaciju koju će klijenti ${s.genitiv} imati na telefonu i pazi da zakazivanje bude brzo i jednostavno — i za one koji aplikacije inače ne vole.`,
+    zaSalon: (s) => `Razvija aplikaciju koju će koristiti klijenti ${s.genitiv}.`,
     opis: "Student softverskog inženjerstva na Politehničkom fakultetu Univerziteta u Zenici.",
     slika: "/invitations/tim/eniz.webp",
   },
