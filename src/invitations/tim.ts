@@ -1,9 +1,13 @@
 // „A ko smo to mi?" — isto u svakoj pozivnici. Po salonu se mijenja samo `zastoVi` u
 // podacima pozivnice. Izvori: hamza-tuco.vercel.app i GitHub profili (2026-11-06).
 
+type Salon = { ime: string; genitiv: string; dativ: string };
+
 export type Clan = {
   ime: string;
   uloga: string;
+  /** Šta konkretno radi za salon iz pozivnice — rečenica se sklapa sa imenom salona. */
+  zaSalon: (s: Salon) => string;
   opis: string;
   slika: string;
 };
@@ -12,12 +16,16 @@ export const tim: Clan[] = [
   {
     ime: "Hamza Tuco",
     uloga: "Arhitekta rješenja",
+    zaSalon: (s) =>
+      `Sa vama dogovara sve što ${s.genitiv} čini posebnim — usluge, tim, radno vrijeme i izgled aplikacije — i brine da sve radi zajedno, od zakazivanja do Melure.`,
     opis: "Student četvrte godine softverskog inženjerstva na Fakultetu informacijskih tehnologija u Mostaru.",
     slika: "/invitations/tim/hamza.webp",
   },
   {
     ime: "Eniz Dajić",
     uloga: "Programer aplikacija",
+    zaSalon: (s) =>
+      `Gradi aplikaciju koju će klijenti ${s.genitiv} imati na telefonu i pazi da zakazivanje bude brzo i jednostavno — i za one koji aplikacije inače ne vole.`,
     opis: "Student softverskog inženjerstva na Politehničkom fakultetu Univerziteta u Zenici.",
     slika: "/invitations/tim/eniz.webp",
   },

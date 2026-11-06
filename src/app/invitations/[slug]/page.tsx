@@ -245,7 +245,8 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
                 />
                 <p className="mt-3 text-lg font-bold">{c.ime}</p>
                 <p className="text-[14px] font-semibold text-coral-text">{c.uloga}</p>
-                <p className="mt-1 text-[15px] leading-relaxed text-ink-soft">{c.opis}</p>
+                <p className="mt-2 text-[15px] leading-relaxed">{c.zaSalon(salon)}</p>
+                <p className="mt-2 text-[13px] leading-relaxed text-muted">{c.opis}</p>
               </li>
             ))}
           </ul>
