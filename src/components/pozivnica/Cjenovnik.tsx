@@ -199,15 +199,12 @@ export function Cjenovnik({
 
       {/* Živi pregled: isti raspored kao ekran „Usluge" u aplikaciji salona. */}
       <div className="lg:sticky lg:top-8" aria-label="Pregled u aplikaciji">
-        <div className="rounded-[2.6rem] bg-[#1a1b1e] p-[7px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] ring-1 ring-black/30">
+        <div>
           <div
-            className="flex h-[640px] flex-col overflow-hidden rounded-[2.2rem] text-white"
+            className="flex h-[640px] flex-col overflow-hidden rounded-[1.75rem] text-white shadow-[0_30px_60px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/10"
             style={{ background: boje.tamna }}
           >
-            <div className="relative h-9 shrink-0">
-              <span className="absolute left-1/2 top-2 h-[22px] w-[84px] -translate-x-1/2 rounded-full bg-black" />
-            </div>
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-6">
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 pt-5">
               <p className="font-serif text-[28px] leading-tight">Usluge</p>
               <p className="mt-0.5 text-[12px] text-white/75">Dodirnite uslugu za direktno zakazivanje.</p>
               {kategorije.map((k) => (
@@ -218,7 +215,12 @@ export function Cjenovnik({
                       .filter((u) => (u.kategorija.trim() || "Ostalo") === k)
                       .map((u, i) => (
                         <li key={i} className="flex items-center gap-3 border border-white/15 p-2.5">
-                          <span className="h-11 w-11 shrink-0 bg-gradient-to-br from-white/25 to-white/5" />
+                          {u.slika ? (
+                            // eslint-disable-next-line @next/next/no-img-element -- sličica 44 px u pregledu
+                            <img src={u.slika} alt="" className="h-11 w-11 shrink-0 object-cover" />
+                          ) : (
+                            <span className="h-11 w-11 shrink-0 bg-gradient-to-br from-white/25 to-white/5" />
+                          )}
                           <span className="min-w-0 flex-1">
                             <span className="block text-[14px] font-semibold leading-snug">
                               {u.naziv || "Nova usluga"}

@@ -8,6 +8,8 @@ export type Usluga = {
   cijena: number;
   /** minute */
   trajanje: number;
+  /** Sličica u pregledu cjenovnika; nova usluga je nema i dobija praznu ploču. */
+  slika?: string;
 };
 
 /** Snimak ekrana iz demo builda tenanta, u `public/invitations/<slug>/`. */
@@ -18,6 +20,17 @@ export type Snimak = {
   visina: number;
   naslov: string;
   opis?: string;
+};
+
+export type Korist = {
+  naslov: string;
+  /** Kako je danas u salonu — konkretno, njegovim riječima. */
+  danas: string;
+  /** Šta se mijenja sa aplikacijom. */
+  sa: string;
+  /** Činjenica koja potkrepljuje (ocjena, broj pratilaca, trajanje usluge). */
+  dokaz?: string;
+  snimak: Snimak;
 };
 
 export type Pozivnica = {
@@ -31,6 +44,8 @@ export type Pozivnica = {
     vokativ: string;
     /** Ime salona u genitivu („aplikacija Studija Maestro"). */
     genitiv: string;
+    /** Ime salona u dativu („zašto se Studiju Maestro isplati"). */
+    dativ: string;
     vlasnik: string;
     vrsta: string;
     grad: string;
@@ -50,20 +65,24 @@ export type Pozivnica = {
   /** Uvodna rečenica ispod naslova. */
   uvod: string;
 
-  /** „Šta smo primijetili" — kratke tvrdnje sa javnih izvora, svaka sa brojem ili činjenicom. */
-  zapazanja: { vrijednost: string; opis: string }[];
+  /** Kratko obećanje u naslovu uvoda, poslije vokativa („manje poziva, više termina"). */
+  obecanje: string;
+
+  /**
+   * Fokus stranice: zašto se ovom salonu isplati. Svaka korist polazi od njegove situacije
+   * (sa javnih izvora ili iz vrste posla), kaže šta aplikacija mijenja i pokazuje snimak.
+   * Tvrdnja o funkciji mora postojati u aplikaciji — ništa iz „uskoro".
+   */
+  koristi: Korist[];
 
   /** Prijedlog cjenovnika: polazna tačka koju vlasnik mijenja na stranici. */
   usluge: Usluga[];
 
-  snimci: {
-    /** Klijentska aplikacija salona, telefon. */
-    aplikacija: Snimak[];
-    /** Melura na računaru. */
-    meluraRacunar: Snimak[];
-    /** Melura na telefonu. */
-    meluraTelefon: Snimak[];
-  };
+  /** Snimak za uvod (početna aplikacije salona). */
+  naslovniSnimak: Snimak;
+
+  /** „Kako klijent zakazuje" — koraci booking flowa, redom. */
+  zakazivanje: Snimak[];
 
   /** Šta je na snimcima izmišljeno — ide u podnožje, da pitch ne tvrdi ništa netačno. */
   napomena: string;
