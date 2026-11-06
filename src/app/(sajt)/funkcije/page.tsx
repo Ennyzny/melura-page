@@ -17,6 +17,7 @@ const description =
 
 export const metadata: Metadata = {
   title: "Funkcije",
+  alternates: { canonical: "/funkcije" },
   description,
   openGraph: {
     type: "website",
