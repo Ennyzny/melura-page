@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
+import { CIJENE } from "@/lib/flags";
 
 type Plan = {
   name: string;
@@ -58,7 +59,36 @@ const plans: Plan[] = [
   },
 ];
 
+// Paketi se crtaju samo uz NEXT_PUBLIC_CIJENE=1 (src/lib/flags.ts). Sekcija ostaje na istom
+// sidru #cijene, pa linkovi iz navigacije i footera vode na najavu umjesto u prazno.
 export function Pricing() {
+  return CIJENE ? <Paketi /> : <CijeneUskoro />;
+}
+
+function CijeneUskoro() {
+  return (
+    <section id="cijene" className="py-24 sm:py-32">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
+        <div className="mx-auto max-w-3xl rounded-[2rem] bg-fog px-6 py-14 text-center sm:px-12">
+          <p className="font-semibold text-coral-text">Cijene</p>
+          <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Plan cijena stiže uskoro.</h2>
+          <p className="mx-auto mt-5 max-w-xl text-lg text-ink-soft">
+            Završavamo pakete za frizerske i beauty salone, fizioterapiju i ostale djelatnosti. Do tada svaki
+            salon dobija ponudu po mjeri nakon kratkog demoa. Bez provizije po terminu i bez SMS troškova.
+          </p>
+          <a
+            href="#demo"
+            className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-ink px-7 text-[17px] font-semibold text-white transition-colors hover:bg-ink-soft"
+          >
+            Zatražite ponudu <ArrowRight className="h-5 w-5" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Paketi() {
   const [mode, setMode] = useState<"monthly" | "setup">("monthly");
 
   return (

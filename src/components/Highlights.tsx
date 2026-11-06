@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { ArrowRight, BellRing, CalendarCheck2, QrCode, Smartphone } from "lucide-react";
+import { CIJENE } from "@/lib/flags";
 
 const items = [
   {
     icon: Smartphone,
     title: "Vaša aplikacija u storeu",
-    text: "Klijenti skidaju aplikaciju s imenom, ikonom i bojama vašeg salona. Android je u svakom paketu, iPhone u Pro paketu.",
+    text: `Klijenti skidaju aplikaciju s imenom, ikonom i bojama vašeg salona${CIJENE ? ". Android je u svakom paketu, iPhone u Pro paketu." : ", na Androidu i iPhoneu."}`,
   },
   {
     icon: QrCode,
