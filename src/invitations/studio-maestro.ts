@@ -47,8 +47,8 @@ export const studioMaestro: Pozivnica = {
   koristi: [
     {
       naslov: "Klijenti zakazuju sami",
-      danas: "Termini se dogovaraju pozivom i porukama na 061 372 353 — često dok imate boju u rukama.",
-      sa: "Klijent u aplikaciji vidi slobodne termine i zakaže sam, i u nedjelju uveče. Vi samo potvrdite kad stignete.",
+      danas: "Termini se dogovaraju pozivom i porukama na 061 372 353 — često dok imate makaze u rukama.",
+      sa: "Klijent u aplikaciji vidi slobodne termine i zakaže sam, i u nedjelju uveče. Termin se potvrđuje automatski — ili ga vi potvrdite kad stignete, kako podesite.",
       snimak: tel("app-flow-termin", "Izbor termina", "Samo stvarno slobodna vremena"),
     },
     {

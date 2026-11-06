@@ -239,6 +239,36 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
 
       <footer className="mx-auto max-w-[1200px] px-4 py-10 text-[14px] leading-relaxed text-muted sm:px-6">
         <p>{p.napomena}</p>
+        <ul className="mt-4 grid list-disc gap-1.5 pl-5 text-[13px]">
+          <li>
+            Ova stranica je neobavezujuća ponuda pripremljena za {salon.ime}, a ne ugovor. Konačne funkcije, rokovi
+            i cijene dogovaraju se i utvrđuju ugovorom.
+          </li>
+          <li>
+            Snimci ekrana su iz demo verzije aplikacije sa primjer podacima. Izgled i funkcije u verziji za salon mogu
+            se razlikovati i dorađuju se u dogovoru sa vama.
+          </li>
+          <li>
+            Opisane koristi su mogućnosti aplikacije, ne garancija rezultata — broj termina, nedolazaka i prihod
+            zavise od salona i njegovih klijenata.
+          </li>
+          <li>
+            Podaci o salonu (ime, logo, fotografije, ocjena, broj pratilaca, telefon) preuzeti su sa javno dostupnih
+            profila na dan {new Date(p.datum).toLocaleDateString("bs-BA")}, isključivo za potrebe ove ponude. Sva
+            prava pripadaju salonu i autorima; na vaš zahtjev ih odmah uklanjamo.
+          </li>
+          <li>
+            Melura nije povezana sa salonom niti nastupa u njegovo ime. Nazivi i znakovi Kérastase, App Store, Google
+            Play, Google Maps i Facebook pripadaju njihovim vlasnicima.
+          </li>
+          <li>
+            Objava aplikacije u App Storeu i Google Playu podliježe pravilima i pregledu Applea i Googlea.
+          </li>
+          <li>
+            Cjenovnik koji upišete na ovoj stranici čuva se samo u vašem browseru i šalje se tek kad kliknete
+            „Pošalji cjenovnik“. Stranica nije javno objavljena ni indeksirana u pretraživačima.
+          </li>
+        </ul>
         <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
           <span>
             {salon.ime} · {salon.vrsta} · {salon.adresa ? `${salon.adresa}, ` : ""}
