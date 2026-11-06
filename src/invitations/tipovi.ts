@@ -40,8 +40,6 @@ export type Pozivnica = {
 
   salon: {
     ime: string;
-    /** Ime kako se obraćamo vlasniku u naslovu, u vokativu („Sanine"). */
-    vokativ: string;
     /** Ime salona u genitivu („aplikacija Studija Maestro"). */
     genitiv: string;
     /** Ime salona u dativu („zašto se Studiju Maestro isplati"). */
@@ -65,8 +63,8 @@ export type Pozivnica = {
   /** Uvodna rečenica ispod naslova. */
   uvod: string;
 
-  /** Kratko obećanje u naslovu uvoda, poslije vokativa („manje poziva, više termina"). */
-  obecanje: string;
+  /** Naslov uvoda — opisno, bez obraćanja po imenu i bez slogana. */
+  naslov: string;
 
   /**
    * Fokus stranice: zašto se ovom salonu isplati. Svaka korist polazi od njegove situacije

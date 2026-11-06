@@ -26,7 +26,6 @@ export const studioMaestro: Pozivnica = {
 
   salon: {
     ime: "Studio Maestro",
-    vokativ: "Sanine",
     genitiv: "Studija Maestro",
     dativ: "Studiju Maestro",
     vlasnik: "Sanin Fazlić",
@@ -39,10 +38,10 @@ export const studioMaestro: Pozivnica = {
     boje: { primarna: "#34F0E0", tamna: "#0D0D0D" },
   },
 
-  obecanje: "manje poziva, više termina",
+  naslov: "Vlastita aplikacija za zakazivanje Studija Maestro.",
 
   uvod:
-    "Napravili smo Studiju Maestro vlastitu aplikaciju — sa vašim imenom, logom i bojama. Klijenti zakazuju sami, u bilo koje doba, a vi radite bez telefona u ruci.",
+    "U vašim bojama, sa vašim logom, uslugama i timom. Klijenti zakazuju sami, u bilo koje doba, a vi termine pratite u Meluri — bez telefona u ruci.",
 
   koristi: [
     {

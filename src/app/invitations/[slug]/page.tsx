@@ -80,7 +80,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
               Pozivnica za {salon.ime}
             </p>
             <h1 className="mt-4 text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-              {salon.vokativ}, {p.obecanje}.
+              {p.naslov}
             </h1>
             <p className="mt-6 max-w-xl text-lg text-white/85 sm:text-xl">{p.uvod}</p>
             <div className="mt-8 flex flex-wrap gap-3">
