@@ -11,20 +11,8 @@ export const frizerPozivnica = opsta({
 
   salon: { ime: "vaš salon", genitiv: "vašeg salona", dativ: "vašem salonu" },
 
-  oznaka: "Rješenje za frizerske salone i barber shopove",
-
-  naslov: "Sveska za termine može u penziju.",
-
-  pismo: {
-    naslov: "Pripremili smo ovo za vas.",
-    tekst: [
-      "Važni su nam saloni poput vašeg. Iza stolice se svaki dan vode ljudi, termini i sve oko njih, a rijetko ko pravi alat baš za taj posao.",
-      "Zato smo napravili Meluru, a ovu stranicu smo pripremili da je upoznate bez pritiska. Pogledajte primjer, prepišite svoj cjenovnik i javite nam se kad vam odgovara. Ako vam se svidi, sve ostalo radimo zajedno s vama.",
-    ],
-  },
-
   uvod:
-    "Znamo kako izgleda dan iza stolice: telefon zvoni usred šišanja, a termini su u svesci, u poruci ili u glavi. Melura je alat za vođenje cijelog salona: kartoteka klijenata sa historijom dolazaka, raspored tima, pregled dana i zarade, i aplikacija u kojoj klijenti zakazuju sami, pod imenom vašeg salona. Ispod je primjer kako to izgleda, a cjenovnik možete odmah prepisati po svome.",
+    "Sveska za termine može u penziju. Iza stolice se svaki dan vode ljudi, termini i sve oko njih, a rijetko ko pravi alat baš za taj posao. Zato smo napravili Meluru: kartoteku klijenata, raspored tima, pregled dana i zarade i aplikaciju u kojoj klijenti zakazuju sami, pod imenom vašeg salona. Pogledajte primjer i javite nam se kad vam odgovara.",
 
   koristi: [
     {
