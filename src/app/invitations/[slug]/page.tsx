@@ -84,7 +84,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
           </div>
           <div>
             <p className="text-lg font-semibold" style={{ color: boje.primarna }}>
-              Pozivnica za {salon.ime}
+              {p.oznaka ?? `Pozivnica za ${salon.ime}`}
             </p>
             <h1 className="mt-4 text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
               {p.naslov}

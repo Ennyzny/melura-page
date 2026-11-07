@@ -14,10 +14,12 @@ export const masazaPozivnica = opsta({
 
   rjecnik: { usluge: "Tretmani", zakazi: "Rezerviši tretman" },
 
+  oznaka: "Rješenje za masažu i SPA studije",
+
   naslov: "Telefon ne mora zvoniti usred tretmana.",
 
   uvod:
-    "Melura je alat za vođenje cijelog studija: kartoteka klijenata sa historijom dolazaka, raspored terapeuta, pregled dana i zarade, i aplikacija u kojoj klijenti sami rezervišu tretman, pod imenom vašeg studija. Ispod je primjer kako to izgleda, a cjenovnik možete odmah prepisati po svome.",
+    "Tretman traži mir, a telefon i poruke ga prekidaju. Melura je alat za vođenje cijelog studija: kartoteka klijenata sa historijom dolazaka, raspored terapeuta, pregled dana i zarade, i aplikacija u kojoj klijenti sami rezervišu tretman kod terapeuta koga izaberu, pod imenom vašeg studija. Ispod je primjer kako to izgleda, a cjenovnik možete odmah prepisati po svome.",
 
   koristi: [
     {
