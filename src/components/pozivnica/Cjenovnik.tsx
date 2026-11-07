@@ -3,6 +3,7 @@
 import { useState, useSyncExternalStore } from "react";
 import { Check, Copy, Mail, Plus, RotateCcw, Trash2 } from "lucide-react";
 import type { Usluga } from "@/invitations";
+import { WEB3FORMS_KEY } from "@/lib/site";
 
 // Vlasnik uređuje prijedlog cjenovnika, a telefon pored crta isti ekran „Usluge" kao
 // aplikacija (kategorije, trajanje, cijena) u bojama salona. Izmjene ostaju samo u
@@ -49,6 +50,7 @@ export function Cjenovnik({
   const sacuvano = useSyncExternalStore(pretplati, () => procitaj(slug), () => null);
   const [uMemoriji, setUMemoriji] = useState<Usluga[] | null>(null);
   const [kopirano, setKopirano] = useState(false);
+  const [poslano, setPoslano] = useState("");
 
   let usluge = uMemoriji ?? pocetne;
   if (!uMemoriji && sacuvano) {
@@ -76,9 +78,6 @@ export function Cjenovnik({
   const tekst = usluge
     .map((u) => `${u.kategorija}, ${u.naziv}: ${u.cijena} KM, ${trajanjeTekst(u.trajanje)}`)
     .join("\n");
-  const mailto = `mailto:${email}?subject=${encodeURIComponent(`Cjenovnik: ${salon}`)}&body=${encodeURIComponent(
-    `Naše usluge za aplikaciju:\n\n${tekst}\n`,
-  )}`;
 
   return (
     <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -172,13 +171,28 @@ export function Cjenovnik({
             Izmjene se čuvaju samo u vašem browseru dok ih ne pošaljete. Kasnije ih mijenjate sami, iz Melure.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <a
-              href={mailto}
+            <button
+              type="button"
+              onClick={async () => {
+                const formData = new FormData();
+                formData.append("access_key", WEB3FORMS_KEY);
+                formData.append("subject", `Cjenovnik: ${salon}`);
+                formData.append("salon", salon);
+                formData.append("cjenovnik", tekst);
+                setPoslano("Šaljemo…");
+                try {
+                  const response = await fetch("https://api.web3forms.com/submit", { method: "POST", body: formData });
+                  const data = await response.json();
+                  setPoslano(data.success ? "Hvala! Cjenovnik je stigao." : `Slanje nije uspjelo. Pišite nam na ${email}.`);
+                } catch {
+                  setPoslano(`Slanje nije uspjelo. Pišite nam na ${email}.`);
+                }
+              }}
               className="inline-flex min-h-12 items-center gap-2 rounded-full px-6 text-[17px] font-semibold transition-opacity hover:opacity-90"
               style={{ background: boje.tamna, color: "#fff" }}
             >
               <Mail className="h-5 w-5" aria-hidden="true" /> Pošalji cjenovnik
-            </a>
+            </button>
             <button
               type="button"
               onClick={async () => {
@@ -194,6 +208,11 @@ export function Cjenovnik({
               {kopirano ? "Kopirano" : "Kopiraj za Viber / WhatsApp"}
             </button>
           </div>
+          {poslano && (
+            <p aria-live="polite" className="mt-3 text-[14px] font-semibold">
+              {poslano}
+            </p>
+          )}
         </div>
       </div>
 
