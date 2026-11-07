@@ -42,7 +42,9 @@ Cjenovnik je iza feature flaga (`src/lib/flags.ts`): bez `NEXT_PUBLIC_CIJENE=1` 
 `#cijene` najavljuje plan cijena, a FAQ i funkcije ne spominju pakete ni uslove ugovora.
 
 Pozivnice salonima su na `/invitations/<slug>` (van menija, `noindex`): sadržaj u
-`src/invitations/`, slike u `public/invitations/`. Ikone su fajlovi u `src/app/`
+`src/invitations/`, slike u `public/invitations/`. `/invitations/salon` je opšta pozivnica za male
+salone (`opsta: true`: bez imena i logotipa, Melurine boje, snimci demo salona sa landinga, cjenovnik
+traži ime salona i kontakt); lične pozivnice su za velike salone. Ikone su fajlovi u `src/app/`
 (`favicon.ico`, `icon.svg`, `apple-icon.png`) uz `manifest.ts`; 404 i greške su
 `not-found.tsx`, `error.tsx` i `global-error.tsx`.
 

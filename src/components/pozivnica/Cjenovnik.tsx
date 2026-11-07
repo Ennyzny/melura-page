@@ -42,7 +42,8 @@ export function Cjenovnik({
   email,
 }: {
   slug: string;
-  salon: string;
+  /** Ime salona iz lične pozivnice; `null` u opštoj, gdje ga vlasnik upiše sam uz kontakt. */
+  salon: string | null;
   pocetne: Usluga[];
   boje: { primarna: string; tamna: string; naPrimarnoj: string };
   email: string;
@@ -51,6 +52,9 @@ export function Cjenovnik({
   const [uMemoriji, setUMemoriji] = useState<Usluga[] | null>(null);
   const [kopirano, setKopirano] = useState(false);
   const [poslano, setPoslano] = useState("");
+  const [imeSalona, setImeSalona] = useState("");
+  const [kontakt, setKontakt] = useState("");
+  const opsta = salon === null;
 
   let usluge = uMemoriji ?? pocetne;
   if (!uMemoriji && sacuvano) {
@@ -169,15 +173,44 @@ export function Cjenovnik({
           <p className="text-lg font-bold">Ovako izgleda. Pošaljite nam i ubacujemo ga u aplikaciju.</p>
           <p className="mt-1 text-[15px] text-ink-soft">
             Izmjene se čuvaju samo u vašem browseru dok ih ne pošaljete. Kasnije ih mijenjate sami, iz Melure.
+            {opsta && " Ime salona i kontakt koristimo samo da vam odgovorimo."}
           </p>
+          {opsta && (
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <label className="grid gap-1 text-[13px] font-semibold text-muted">
+                Ime salona
+                <input
+                  value={imeSalona}
+                  onChange={(e) => setImeSalona(e.target.value)}
+                  autoComplete="organization"
+                  className="h-11 w-full rounded-xl border border-line bg-white px-3 text-base text-ink focus:border-ink"
+                />
+              </label>
+              <label className="grid gap-1 text-[13px] font-semibold text-muted">
+                Telefon ili email
+                <input
+                  value={kontakt}
+                  onChange={(e) => setKontakt(e.target.value)}
+                  autoComplete="tel"
+                  className="h-11 w-full rounded-xl border border-line bg-white px-3 text-base text-ink focus:border-ink"
+                />
+              </label>
+            </div>
+          )}
           <div className="mt-4 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={async () => {
+                const ime = salon ?? imeSalona.trim();
+                if (opsta && (!ime || !kontakt.trim())) {
+                  setPoslano("Upišite ime salona i telefon ili email, da vam možemo odgovoriti.");
+                  return;
+                }
                 const formData = new FormData();
                 formData.append("access_key", WEB3FORMS_KEY);
-                formData.append("subject", `Cjenovnik: ${salon}`);
-                formData.append("salon", salon);
+                formData.append("subject", `Cjenovnik: ${ime}`);
+                formData.append("salon", ime);
+                if (opsta) formData.append("kontakt", kontakt.trim());
                 formData.append("cjenovnik", tekst);
                 setPoslano("Šaljemo…");
                 try {

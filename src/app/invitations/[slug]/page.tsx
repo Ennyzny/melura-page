@@ -6,7 +6,7 @@ import { pozivnica, sviSlugovi } from "@/invitations";
 import { oNama, tim } from "@/invitations/tim";
 import { Ekran } from "@/components/pozivnica/Ekran";
 import { Cjenovnik } from "@/components/pozivnica/Cjenovnik";
-import { Logo } from "@/components/Logo";
+import { Logo, MeluraMark } from "@/components/Logo";
 import { Reveal } from "@/components/Reveal";
 import { DEMO_EMAIL } from "@/lib/site";
 
@@ -19,11 +19,14 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/invitations/[slug]">): Promise<Metadata> {
   const p = pozivnica((await params).slug);
   if (!p) return {};
-  const naslov = `${p.salon.ime}: vaša aplikacija`;
+  const naslov = p.opsta ? "Melura: alat i aplikacija za vaš salon" : `${p.salon.ime}: vaša aplikacija`;
+  // Opšta pozivnica nema svoju sliku: preview je isti kao na naslovnoj (`app/opengraph-image`).
+  // Eksplicitan `images` je nužan, jer `openGraph` iz ove funkcije inače briše sliku iz fajla.
+  const slika = p.salon.fotografija ?? p.salon.logo ?? "/opengraph-image";
   return {
     title: naslov,
     description: p.uvod,
-    openGraph: { title: naslov, description: p.uvod, images: [{ url: p.salon.fotografija ?? p.salon.logo }] },
+    openGraph: { title: naslov, description: p.uvod, images: [{ url: slika }] },
   };
 }
 
@@ -72,8 +75,12 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
         <div className="relative mx-auto grid max-w-[1200px] items-center gap-12 px-4 pb-20 pt-8 sm:px-6 lg:grid-cols-[1fr_340px] lg:pb-28">
           <div className="flex items-center gap-3 text-[15px] font-semibold text-white/80 lg:col-span-2">
             <Logo variant="light" />
-            <span aria-hidden="true">×</span>
-            <Image src={salon.logo} alt={salon.ime} width={44} height={44} className="h-11 w-11 rounded-full" />
+            {salon.logo && (
+              <>
+                <span aria-hidden="true">×</span>
+                <Image src={salon.logo} alt={salon.ime} width={44} height={44} className="h-11 w-11 rounded-full" />
+              </>
+            )}
           </div>
           <div>
             <p className="text-lg font-semibold" style={{ color: boje.primarna }}>
@@ -192,7 +199,13 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
             Ovo je naš prijedlog. Promijenite nazive i cijene, dodajte ili uklonite usluge.
           </p>
           <div className="mt-10">
-            <Cjenovnik slug={p.slug} salon={salon.ime} pocetne={p.usluge} boje={boje} email={DEMO_EMAIL} />
+            <Cjenovnik
+              slug={p.slug}
+              salon={p.opsta ? null : salon.ime}
+              pocetne={p.usluge}
+              boje={boje}
+              email={DEMO_EMAIL}
+            />
           </div>
         </div>
       </section>
@@ -201,8 +214,17 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
       <section className="mx-auto max-w-[1200px] px-4 py-20 sm:px-6">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Kako ide dalje</h2>
         <p className="mt-4 max-w-2xl text-lg text-ink-soft">
-          Ovo što vidite je <strong className="text-ink">početna verzija</strong>, napravljena po javnim podacima o
-          salonu. Sve ostalo dorađujemo zajedno, uživo u salonu ili preko Google Meet poziva, kako vam odgovara.
+          {p.opsta ? (
+            <>
+              Ovo što vidite je <strong className="text-ink">primjer</strong>. Vašu verziju pravimo zajedno, uživo u
+              salonu ili preko Google Meet poziva, kako vam odgovara.
+            </>
+          ) : (
+            <>
+              Ovo što vidite je <strong className="text-ink">početna verzija</strong>, napravljena po javnim podacima o
+              salonu. Sve ostalo dorađujemo zajedno, uživo u salonu ili preko Google Meet poziva, kako vam odgovara.
+            </>
+          )}
         </p>
         <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {koraci.map(({ ikona: Ikona, naslov, tekst }, i) => (
@@ -227,9 +249,11 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
                 {t}
               </p>
             ))}
-            <p className="mt-6 border-l-4 pl-4 text-lg font-medium leading-relaxed" style={{ borderColor: boje.primarna }}>
-              {p.zastoVi}
-            </p>
+            {p.zastoVi && (
+              <p className="mt-6 border-l-4 pl-4 text-lg font-medium leading-relaxed" style={{ borderColor: boje.primarna }}>
+                {p.zastoVi}
+              </p>
+            )}
           </div>
           {/* Subgrid: ime, uloga, opis i studij stoje u istom redu u obje kartice. */}
           <ul className="grid grid-cols-2 gap-x-5">
@@ -256,7 +280,11 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
       {/* Završni poziv */}
       <section className="relative overflow-hidden text-white" style={{ background: boje.tamna }}>
         <div className="mx-auto max-w-[1200px] px-4 py-20 text-center sm:px-6">
-          <Image src={salon.logo} alt="" width={96} height={96} className="mx-auto h-24 w-24 rounded-full" />
+          {salon.logo ? (
+            <Image src={salon.logo} alt="" width={96} height={96} className="mx-auto h-24 w-24 rounded-full" />
+          ) : (
+            <MeluraMark className="mx-auto h-24 w-24" />
+          )}
           <h2 className="mx-auto mt-6 max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl">
             Da cijeli {salon.ime} vodite sa jednog mjesta?
           </h2>
@@ -265,7 +293,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
             dogovorimo sve izmjene.
           </p>
           <a
-            href={`mailto:${DEMO_EMAIL}?subject=${encodeURIComponent(`${salon.ime}: Melura`)}`}
+            href={`mailto:${DEMO_EMAIL}?subject=${encodeURIComponent(p.opsta ? "Melura" : `${salon.ime}: Melura`)}`}
             className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-full px-7 text-[17px] font-semibold transition-opacity hover:opacity-90"
             style={{ background: boje.primarna, color: boje.naPrimarnoj }}
           >
@@ -290,15 +318,21 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
             Opisane koristi su mogućnosti aplikacije, ne garancija rezultata. Broj termina, nedolazaka i prihod
             zavise od salona i njegovih klijenata.
           </li>
-          <li>
-            Podaci o salonu (ime, logo, fotografije, ocjena, broj pratilaca, telefon) preuzeti su sa javno dostupnih
-            profila na dan {new Date(p.datum).toLocaleDateString("bs-BA")}, isključivo za potrebe ove ponude. Sva
-            prava pripadaju salonu i autorima; na vaš zahtjev ih odmah uklanjamo.
-          </li>
-          <li>
-            Melura nije povezana sa salonom niti nastupa u njegovo ime. Nazivi i znakovi Kérastase, App Store, Google
-            Play, Google Maps i Facebook pripadaju njihovim vlasnicima.
-          </li>
+          {p.opsta ? (
+            <li>Nazivi i znakovi App Store, Google Play i Facebook pripadaju njihovim vlasnicima.</li>
+          ) : (
+            <>
+              <li>
+                Podaci o salonu (ime, logo, fotografije, ocjena, broj pratilaca, telefon) preuzeti su sa javno dostupnih
+                profila na dan {new Date(p.datum).toLocaleDateString("bs-BA")}, isključivo za potrebe ove ponude. Sva
+                prava pripadaju salonu i autorima; na vaš zahtjev ih odmah uklanjamo.
+              </li>
+              <li>
+                Melura nije povezana sa salonom niti nastupa u njegovo ime. Nazivi i znakovi Kérastase, App Store, Google
+                Play, Google Maps i Facebook pripadaju njihovim vlasnicima.
+              </li>
+            </>
+          )}
           <li>
             Aplikacija je u završnoj fazi isporuke. Objava u App Storeu i Google Playu, pa time i datum isporuke,
             zavise od pregleda i odobrenja Applea i Googlea.
@@ -309,10 +343,12 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
           </li>
         </ul>
         <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-          <span>
-            {salon.ime} · {salon.vrsta} · {salon.adresa ? `${salon.adresa}, ` : ""}
-            {salon.grad}
-          </span>
+          {!p.opsta && (
+            <span>
+              {salon.ime} · {salon.vrsta} · {salon.adresa ? `${salon.adresa}, ` : ""}
+              {salon.grad}
+            </span>
+          )}
           {salon.telefon && (
             <span className="inline-flex items-center gap-1">
               <Phone className="h-3.5 w-3.5" aria-hidden="true" /> {salon.telefon}
