@@ -21,6 +21,9 @@ export const beautyPozivnica = opsta({
   uvod:
     "Poruke za termin stižu na Instagram, Viber i telefon, i to baš kad su vam ruke u farbi ili laku. Sa Melurom klijentica vidi slobodne termine i sama rezerviše, vi potvrdite jednim dodirom, a podsjetnik joj stiže prije dolaska. Nijedna poruka više ne čeka na odgovor.",
 
+  zakljucak:
+    "Melura je tu da vam olakša vođenje salona, termina i klijentica. Pogledajte ispod šta sve dobijate.",
+
   pozadina: "/invitations/beauty/hero.webp",
 
   koristi: [

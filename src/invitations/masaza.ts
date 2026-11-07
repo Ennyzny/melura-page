@@ -22,6 +22,9 @@ export const masazaPozivnica = opsta({
   uvod:
     "Klijent otkaže sat prije, a soba ostane prazna jer niko nije stigao pozvati sljedećeg. Sa Melurom klijenti sa liste čekanja odmah dobiju obavijest da se termin oslobodio, a nove rezervacije stižu same, i dok traje tretman. Vi ostajete uz klijenta, bez telefona u ruci.",
 
+  zakljucak:
+    "Melura je tu da vam olakša vođenje studija, termina i klijenata. Pogledajte ispod šta sve dobijate.",
+
   pozadina: "/invitations/masaza/hero.webp",
 
   koristi: [

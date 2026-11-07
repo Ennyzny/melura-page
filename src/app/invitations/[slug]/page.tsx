@@ -109,6 +109,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
               )}
             </h1>
             <p className="mt-6 max-w-xl text-lg text-white/85 sm:text-xl">{p.uvod}</p>
+            {p.zakljucak && <p className="mt-5 max-w-xl text-lg font-semibold text-white sm:text-xl">{p.zakljucak}</p>}
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="#zasto"
