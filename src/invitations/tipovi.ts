@@ -99,6 +99,9 @@ export type Pozivnica = {
   /** Uvodna rečenica ispod naslova. */
   uvod: string;
 
+  /** Zaključna rečenica hera, odmah iznad dugmadi: šta Melura radi i poziv da se pogleda dalje. */
+  zakljucak?: string;
+
   /**
    * Naslov uvoda: obraćanje vlasniku po imenu (lično, pogodi odmah) + problem koji mu
    * rješavamo, rečen njegovim jezikom i sa malo duha („Sanine, sveska za termine može u penziju.").

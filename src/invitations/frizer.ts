@@ -19,6 +19,9 @@ export const frizerPozivnica = opsta({
   uvod:
     "Klijenti zaborave termin, telefon zvoni usred šišanja, a raspored živi u svesci. Sa Melurom klijenti sami zakazuju samo slobodne termine, podsjetnik im stiže dan prije, a kad neko otkaže, klijenti sa liste čekanja odmah dobiju obavijest. Vi samo šišate.",
 
+  zakljucak:
+    "Melura je tu da vam olakša vođenje salona, termina i klijenata. Pogledajte ispod šta sve dobijate.",
+
   pozadina: "/invitations/frizer/hero.webp",
 
   koristi: [
