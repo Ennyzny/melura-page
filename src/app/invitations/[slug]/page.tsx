@@ -49,7 +49,7 @@ const koraci = [
     naslov: "Aplikacija je vaša",
     tekst: "U App Storeu i Google Playu pod vašim imenom, plus web link i QR kod za izlog i Facebook.",
   },
-  { ikona: CalendarCheck, naslov: "Klijenti zakazuju sami", tekst: "Vi termine vidite i potvrđujete u Meluri, na telefonu ili računaru." },
+  { ikona: CalendarCheck, naslov: "Salon vodite iz Melure", tekst: "Termini, klijenti, tim i pregled dana, na telefonu ili računaru. Klijenti zakazuju sami." },
 ];
 
 export default async function PozivnicaPage({ params }: PageProps<"/invitations/[slug]">) {
@@ -108,7 +108,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
       <section id="zasto" className="mx-auto max-w-[1200px] scroll-mt-6 px-4 py-20 sm:px-6 sm:py-28">
         <p className="font-semibold text-coral-text">Šta {salon.dativ} donosi</p>
         <h2 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
-          Manje vremena na termine, više na klijente.
+          Cijeli salon na jednom mjestu.
         </h2>
 
         <ol className="mt-16 grid gap-20 sm:gap-28">
@@ -259,7 +259,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
         <div className="mx-auto max-w-[1200px] px-4 py-20 text-center sm:px-6">
           <Image src={salon.logo} alt="" width={96} height={96} className="mx-auto h-24 w-24 rounded-full" />
           <h2 className="mx-auto mt-6 max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl">
-            Da klijenti {salon.genitiv} zakazuju sami?
+            Da cijeli {salon.ime} vodite sa jednog mjesta?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-white/80">
             Javite se i dogovorimo kratak sastanak, u salonu ili preko Google Meeta. Pokažemo aplikaciju uživo i
