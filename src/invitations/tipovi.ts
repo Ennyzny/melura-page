@@ -82,6 +82,12 @@ export type Pozivnica = {
   };
 
   /**
+   * Dio `naslova` koji se ističe bojom brenda (mora biti njegov tačan podniz). Naslov udara
+   * u jedan konkretan problem, a istaknut je ono što ga čini pitanjem ili obećanjem.
+   */
+  naglasak?: string;
+
+  /**
    * Mala oznaka iznad naslova: kome je stranica namijenjena. Bez nje piše „Pozivnica za
    * {ime salona}", što u ličnoj pozivnici i treba, a u opštoj govori premalo.
    */

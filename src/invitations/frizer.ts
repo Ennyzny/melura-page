@@ -11,12 +11,13 @@ export const frizerPozivnica = opsta({
 
   salon: { ime: "vaš salon", genitiv: "vašeg salona", dativ: "vašem salonu" },
 
-  oznaka: "Dobar dan, frizeri i barberi",
+  oznaka: "Za frizere i barbere",
 
-  naslov: "Sveska za termine može u penziju.",
+  naslov: "Koliko vas je ove sedmice koštala prazna stolica?",
+  naglasak: "prazna stolica",
 
   uvod:
-    "Gledao sam kako se termini u salonima i dalje dogovaraju pozivima, porukama i svescima, pa smo napravili Meluru: kartoteku klijenata, raspored tima, pregled dana i zarade i aplikaciju u kojoj klijenti zakazuju sami, pod imenom vašeg salona. Pogledajte primjer i javite se kad vam odgovara.",
+    "Zaboravljeni termini, pozivi usred šišanja i sveska koju razumijete samo vi. Melura vodi cijeli salon umjesto vas: klijente, tim, zaradu i termine koje klijenti zakazuju sami. Pokazat ću vam kako to izgleda: ispod je primjer, a cjenovnik možete odmah prepisati po svome.",
 
   koristi: [
     {

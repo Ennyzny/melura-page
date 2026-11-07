@@ -83,11 +83,22 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
             )}
           </div>
           <div>
-            <p className="text-lg font-semibold" style={{ color: boje.primarna }}>
+            <p
+              className="inline-flex rounded-full px-4 py-1.5 text-[13px] font-bold uppercase tracking-[0.14em]"
+              style={{ background: `${boje.primarna}26`, color: boje.primarna }}
+            >
               {p.oznaka ?? `Pozivnica za ${salon.ime}`}
             </p>
-            <h1 className="mt-4 text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-              {p.naslov}
+            <h1 className="mt-6 text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-[4.25rem]">
+              {p.naglasak && p.naslov.includes(p.naglasak) ? (
+                <>
+                  {p.naslov.slice(0, p.naslov.indexOf(p.naglasak))}
+                  <span style={{ color: boje.primarna }}>{p.naglasak}</span>
+                  {p.naslov.slice(p.naslov.indexOf(p.naglasak) + p.naglasak.length)}
+                </>
+              ) : (
+                p.naslov
+              )}
             </h1>
             <p className="mt-6 max-w-xl text-lg text-white/85 sm:text-xl">{p.uvod}</p>
             <div className="mt-8 flex flex-wrap gap-3">

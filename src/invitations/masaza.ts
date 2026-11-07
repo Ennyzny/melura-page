@@ -14,12 +14,13 @@ export const masazaPozivnica = opsta({
 
   rjecnik: { usluge: "Tretmani", zakazi: "Rezerviši tretman" },
 
-  oznaka: "Dobar dan, masažni i SPA studiji",
+  oznaka: "Za masažu i SPA studije",
 
-  naslov: "Neka u sobi ostane mir.",
+  naslov: "Otkazani termin ne mora ostati prazan.",
+  naglasak: "ne mora ostati prazan",
 
   uvod:
-    "Tretman traži mir, a pozivi i poruke za termine ga prekidaju. Zato bih vam rado pokazao Meluru: kartoteku klijenata, raspored terapeuta, pregled dana i zarade i aplikaciju u kojoj klijenti sami rezervišu tretman kod terapeuta koga izaberu, pod imenom vašeg studija. Pogledajte primjer i javite se kad vam odgovara.",
+    "Klijent otkaže u zadnji čas i soba ostane prazna, a neko bi rado došao. Melura javi klijentima sa liste čekanja čim se termin oslobodi, i vodi cijeli studio umjesto vas: klijente, terapeute, zaradu i rezervacije. Pokazat ću vam kako to izgleda: ispod je primjer, a cjenovnik možete odmah prepisati po svome.",
 
   koristi: [
     {
