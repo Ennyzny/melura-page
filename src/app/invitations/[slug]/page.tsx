@@ -65,8 +65,15 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
     <div>
       {/* Uvod — u bojama salona, preko fotografije salona. */}
       <section className="relative overflow-hidden text-white" style={{ background: boje.tamna }}>
-        {salon.fotografija && (
-          <Image src={salon.fotografija} alt="" fill preload sizes="100vw" className="object-cover opacity-30" />
+        {(p.pozadina ?? salon.fotografija) && (
+          <Image
+            src={(p.pozadina ?? salon.fotografija)!}
+            alt=""
+            fill
+            preload
+            sizes="100vw"
+            className="object-cover opacity-30"
+          />
         )}
         <div
           className="absolute inset-0"
@@ -84,9 +91,10 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
           </div>
           <div>
             <p
-              className="inline-flex rounded-full px-4 py-1.5 text-[13px] font-bold uppercase tracking-[0.14em]"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[15px] font-semibold"
               style={{ background: `${boje.primarna}26`, color: boje.primarna }}
             >
+              <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
               {p.oznaka ?? `Pozivnica za ${salon.ime}`}
             </p>
             <h1 className="mt-6 text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-[4.25rem]">

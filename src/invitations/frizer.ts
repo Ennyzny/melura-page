@@ -9,15 +9,17 @@ import { opsta, racunar, telefon } from "./opsta";
 export const frizerPozivnica = opsta({
   slug: "frizer",
 
-  salon: { ime: "vaš salon", genitiv: "vašeg salona", dativ: "vašem salonu" },
+  salon: { ime: "vaš salon", genitiv: "vašeg salona", dativ: "vašem salonu", boje: { primarna: "#c9a961", tamna: "#111111" } },
 
-  oznaka: "Za frizere i barbere",
+  oznaka: "Pozvani ste: dopustite da vam olakšamo posao",
 
   naslov: "Koliko vas je ove sedmice koštala prazna stolica?",
   naglasak: "prazna stolica",
 
   uvod:
-    "Zaboravljeni termini, pozivi usred šišanja i sveska koju razumijete samo vi. Melura vodi cijeli salon umjesto vas: klijente, tim, zaradu i termine koje klijenti zakazuju sami. Pokazat ću vam kako to izgleda: ispod je primjer, a cjenovnik možete odmah prepisati po svome.",
+    "Klijenti zaborave termin, telefon zvoni usred šišanja, a raspored živi u svesci. Sa Melurom klijenti sami zakazuju samo slobodne termine, podsjetnik im stiže dan prije, a kad neko otkaže, klijenti sa liste čekanja odmah dobiju obavijest. Vi samo šišate.",
+
+  pozadina: "/invitations/frizer/hero.webp",
 
   koristi: [
     {
