@@ -7,8 +7,7 @@ import type { Pozivnica, Snimak } from "./tipovi";
 const BOJE = { primarna: "#ee6c4d", tamna: "#1a1b1e" };
 const DATUM = "2026-11-07";
 
-type Sadrzaj = Omit<Pozivnica, "datum" | "opsta" | "salon" | "naslov" | "oznaka" | "potpis"> &
-  Partial<Pick<Pozivnica, "naslov" | "oznaka" | "potpis">> & {
+type Sadrzaj = Omit<Pozivnica, "datum" | "opsta" | "salon"> & {
   /** Kako se vertikala obraća „svom" salonu: „vaš salon", „vaš studio". */
   salon: { ime: string; genitiv: string; dativ: string };
 };
@@ -17,10 +16,6 @@ export const opsta = ({ salon, ...ostalo }: Sadrzaj): Pozivnica => ({
   datum: DATUM,
   opsta: true,
   salon: { ...salon, boje: BOJE },
-  // Isti pozdrav u svim opštim pozivnicama; po vertikali se mijenja uvod.
-  oznaka: "Pripremili smo ovo za vas",
-  naslov: "Važni su nam saloni poput vašeg.",
-  potpis: "Hamza i Eniz",
   ...ostalo,
 });
 

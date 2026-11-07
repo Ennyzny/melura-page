@@ -87,12 +87,6 @@ export type Pozivnica = {
    */
   oznaka?: string;
 
-  /**
-   * Potpis ispod uvoda („Hamza i Eniz"), za pozivnice koje se šalju mnogima: toplinu nosi ton i
-   * potpis, a ne lažna tvrdnja da je stranica rađena samo za jedan salon.
-   */
-  potpis?: string;
-
   /** Uvodna rečenica ispod naslova. */
   uvod: string;
 
