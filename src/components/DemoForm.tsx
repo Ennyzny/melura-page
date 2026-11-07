@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { DEMO_EMAIL } from "@/lib/site";
+import { DEMO_EMAIL, WEB3FORMS_KEY } from "@/lib/site";
 
 const fields = [
   { name: "ime", label: "Ime i prezime", type: "text", autoComplete: "name", required: true },
@@ -14,24 +14,25 @@ const fields = [
 export function DemoForm({
   className = "mx-auto mt-10 grid max-w-xl gap-4 rounded-3xl bg-white p-6 text-left text-ink shadow-2xl sm:grid-cols-2 sm:p-8",
 }: { className?: string }) {
-  const [sent, setSent] = useState(false);
+  const [result, setResult] = useState("");
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const v = (k: string) => String(data.get(k) ?? "").trim();
-    const subject = `Zahtjev za demo — ${v("salon")}`;
-    const body = [
-      `Ime i prezime: ${v("ime")}`,
-      `Salon: ${v("salon")}`,
-      `Telefon / email: ${v("kontakt")}`,
-      v("grad") && `Grad: ${v("grad")}`,
-      v("poruka") && `\n${v("poruka")}`,
-    ]
-      .filter(Boolean)
-      .join("\n");
-    window.location.href = `mailto:${DEMO_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    formData.append("access_key", WEB3FORMS_KEY);
+    formData.append("subject", `Zahtjev za demo: ${formData.get("salon")}`);
+    setResult("Šaljemo…");
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", { method: "POST", body: formData });
+      const data = await response.json();
+      if (data.success) {
+        setResult("Hvala! Zahtjev je stigao, javljamo vam se u toku dana.");
+        form.reset();
+      } else setResult(`Slanje nije uspjelo. Pišite nam na ${DEMO_EMAIL}.`);
+    } catch {
+      setResult(`Slanje nije uspjelo. Pišite nam na ${DEMO_EMAIL}.`);
+    }
   }
 
   return (
@@ -72,15 +73,15 @@ export function DemoForm({
         Zakaži demo <ArrowRight className="h-5 w-5" />
       </button>
       <p aria-live="polite" className="text-center text-sm text-ink-soft sm:col-span-2">
-        {sent ? (
-          <>Otvorili smo vaš email s popunjenim zahtjevom — samo ga pošaljite. Ako se nije otvorio, pišite na </>
-        ) : (
-          <>Forma otvara vaš email s popunjenim zahtjevom. Možete pisati i direktno na </>
+        {result || (
+          <>
+            Možete pisati i direktno na{" "}
+            <a href={`mailto:${DEMO_EMAIL}`} className="font-semibold text-ink underline">
+              {DEMO_EMAIL}
+            </a>
+            .
+          </>
         )}
-        <a href={`mailto:${DEMO_EMAIL}`} className="font-semibold text-ink underline">
-          {DEMO_EMAIL}
-        </a>
-        .
       </p>
     </form>
   );
