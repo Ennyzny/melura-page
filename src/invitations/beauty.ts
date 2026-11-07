@@ -13,12 +13,13 @@ export const beautyPozivnica = opsta({
 
   rjecnik: { usluge: "Usluge", zakazi: "Rezerviši termin" },
 
-  oznaka: "Dobar dan, beauty saloni",
+  oznaka: "Za beauty salone",
 
-  naslov: "Neka se kalendar puni i dok radite.",
+  naslov: "Dok vi radite, klijentica piše. Ko joj odgovara?",
+  naglasak: "Ko joj odgovara?",
 
   uvod:
-    "Vidio sam da termini u beauty salonima stižu porukama na Instagram, Viber i telefon, i to usred tretmana, kad su ruke zauzete. Zato vam rado pokazujem Meluru: kartoteku klijentica, raspored tima, pregled dana i zarade i aplikaciju u kojoj klijentice same rezervišu termin, pod imenom vašeg salona. Pogledajte primjer i javite se kad vam odgovara.",
+    "Poruke na Instagramu, Viberu i telefonu stižu usred tretmana, a odgovor čeka. Melura vodi cijeli salon umjesto vas: klijentice, tim, zaradu i termine koje same rezervišu, i dok su vam ruke zauzete. Pokazat ću vam kako to izgleda: ispod je primjer, a cjenovnik možete odmah prepisati po svome.",
 
   koristi: [
     {
