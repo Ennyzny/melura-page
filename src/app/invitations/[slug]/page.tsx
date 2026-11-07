@@ -204,6 +204,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
               salon={p.opsta ? null : salon.ime}
               pocetne={p.usluge}
               boje={boje}
+              rjecnik={p.rjecnik}
               email={DEMO_EMAIL}
             />
           </div>

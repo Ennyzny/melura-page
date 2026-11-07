@@ -39,6 +39,7 @@ export function Cjenovnik({
   salon,
   pocetne,
   boje,
+  rjecnik = { usluge: "Usluge", zakazi: "Zakaži termin" },
   email,
 }: {
   slug: string;
@@ -46,6 +47,8 @@ export function Cjenovnik({
   salon: string | null;
   pocetne: Usluga[];
   boje: { primarna: string; tamna: string; naPrimarnoj: string };
+  /** Riječi vertikale u pregledu telefona. */
+  rjecnik?: { usluge: string; zakazi: string };
   email: string;
 }) {
   const sacuvano = useSyncExternalStore(pretplati, () => procitaj(slug), () => null);
@@ -257,8 +260,8 @@ export function Cjenovnik({
             style={{ background: boje.tamna }}
           >
             <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 pt-5">
-              <p className="font-serif text-[28px] leading-tight">Usluge</p>
-              <p className="mt-0.5 text-[12px] text-white/75">Dodirnite uslugu za direktno zakazivanje.</p>
+              <p className="font-serif text-[28px] leading-tight">{rjecnik.usluge}</p>
+              <p className="mt-0.5 text-[12px] text-white/75">Dodirnite stavku za direktno zakazivanje.</p>
               {kategorije.map((k) => (
                 <div key={k}>
                   <p className="mb-2 mt-5 text-[11px] font-semibold tracking-[0.12em] text-white/80">{k}</p>
@@ -291,7 +294,7 @@ export function Cjenovnik({
                 className="block py-2.5 text-center text-[14px] font-semibold"
                 style={{ background: boje.primarna, color: boje.naPrimarnoj }}
               >
-                Zakaži termin
+                {rjecnik.zakazi}
               </span>
             </div>
           </div>
