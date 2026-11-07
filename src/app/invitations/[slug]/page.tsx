@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowDown, CalendarCheck, Mail, Phone, Smartphone, Video } from "lucide-react";
+import { ArrowDown, ArrowRight, CalendarCheck, Mail, Phone, Smartphone, Video } from "lucide-react";
 import { pozivnica, sviSlugovi } from "@/invitations";
 import { oNama, tim } from "@/invitations/tim";
 import { Ekran } from "@/components/pozivnica/Ekran";
@@ -9,7 +9,6 @@ import { Cjenovnik } from "@/components/pozivnica/Cjenovnik";
 import { Logo } from "@/components/Logo";
 import { Reveal } from "@/components/Reveal";
 import { DEMO_EMAIL } from "@/lib/site";
-import { DemoForm } from "@/components/DemoForm";
 
 // Shell pozivnice: sav sadržaj dolazi iz `src/invitations/<slug>.ts`. Uz `cacheComponents`
 // nema `dynamicParams = false`, pa nepoznat slug (i goli /invitations) ide na notFound().
@@ -265,7 +264,14 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
             Javite se i dogovorimo kratak sastanak, u salonu ili preko Google Meeta. Pokažemo aplikaciju uživo i
             dogovorimo sve izmjene.
           </p>
-          <DemoForm />
+          <a
+            href={`mailto:${DEMO_EMAIL}?subject=${encodeURIComponent(`${salon.ime}: Melura`)}`}
+            className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-full px-7 text-[17px] font-semibold transition-opacity hover:opacity-90"
+            style={{ background: boje.primarna, color: boje.naPrimarnoj }}
+          >
+            Javite nam se <ArrowRight className="h-5 w-5" aria-hidden="true" />
+          </a>
+          <p className="mt-4 text-sm text-white/70">{DEMO_EMAIL}</p>
         </div>
       </section>
 
