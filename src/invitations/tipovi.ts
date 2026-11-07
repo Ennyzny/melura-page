@@ -3,6 +3,7 @@
 //
 // Dvije vrste: lična (jedan salon, njegovo ime, logo, boje i fotografije sa javnih profila) i
 // opšta (`opsta: true`, za male salone: bez imena, logotipa i ličnog pasusa, u Melurinim bojama).
+// Opštih ima po vertikali (`frizer`, `beauty`, `masaza`), a sve se prave kroz `opsta()`.
 
 export type Usluga = {
   naziv: string;
@@ -69,8 +70,37 @@ export type Pozivnica = {
     };
   };
 
+  /**
+   * Riječi vertikale u pregledu cjenovnika (telefon pored crta ekran „Usluge" iz aplikacije).
+   * Bez ovoga su „Usluge" i „Zakaži termin", kao u frizerskom i barber salonu.
+   */
+  rjecnik?: {
+    /** Naslov ekrana: „Usluge", „Tretmani". */
+    usluge: string;
+    /** Dugme za zakazivanje: „Zakaži termin", „Rezerviši termin", „Rezerviši tretman". */
+    zakazi: string;
+  };
+
+  /**
+   * Dio `naslova` koji se ističe bojom brenda (mora biti njegov tačan podniz). Naslov udara
+   * u jedan konkretan problem, a istaknut je ono što ga čini pitanjem ili obećanjem.
+   */
+  naglasak?: string;
+
+  /**
+   * Mala oznaka iznad naslova: kome je stranica namijenjena. Bez nje piše „Pozivnica za
+   * {ime salona}", što u ličnoj pozivnici i treba, a u opštoj govori premalo.
+   */
+  oznaka?: string;
+
+  /** Fotografija iza hera (zatamnjena), ako se razlikuje od fotografije salona. */
+  pozadina?: string;
+
   /** Uvodna rečenica ispod naslova. */
   uvod: string;
+
+  /** Zaključna rečenica hera, odmah iznad dugmadi: šta Melura radi i poziv da se pogleda dalje. */
+  zakljucak?: string;
 
   /**
    * Naslov uvoda: obraćanje vlasniku po imenu (lično, pogodi odmah) + problem koji mu

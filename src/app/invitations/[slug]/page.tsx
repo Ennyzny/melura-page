@@ -65,8 +65,15 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
     <div>
       {/* Uvod — u bojama salona, preko fotografije salona. */}
       <section className="relative overflow-hidden text-white" style={{ background: boje.tamna }}>
-        {salon.fotografija && (
-          <Image src={salon.fotografija} alt="" fill preload sizes="100vw" className="object-cover opacity-30" />
+        {(p.pozadina ?? salon.fotografija) && (
+          <Image
+            src={(p.pozadina ?? salon.fotografija)!}
+            alt=""
+            fill
+            preload
+            sizes="100vw"
+            className="object-cover opacity-30"
+          />
         )}
         <div
           className="absolute inset-0"
@@ -83,13 +90,26 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
             )}
           </div>
           <div>
-            <p className="text-lg font-semibold" style={{ color: boje.primarna }}>
-              Pozivnica za {salon.ime}
+            <p
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[15px] font-semibold"
+              style={{ background: `${boje.primarna}26`, color: boje.primarna }}
+            >
+              <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
+              {p.oznaka ?? `Pozivnica za ${salon.ime}`}
             </p>
-            <h1 className="mt-4 text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-              {p.naslov}
+            <h1 className="mt-6 text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-[4.25rem]">
+              {p.naglasak && p.naslov.includes(p.naglasak) ? (
+                <>
+                  {p.naslov.slice(0, p.naslov.indexOf(p.naglasak))}
+                  <span style={{ color: boje.primarna }}>{p.naglasak}</span>
+                  {p.naslov.slice(p.naslov.indexOf(p.naglasak) + p.naglasak.length)}
+                </>
+              ) : (
+                p.naslov
+              )}
             </h1>
             <p className="mt-6 max-w-xl text-lg text-white/85 sm:text-xl">{p.uvod}</p>
+            {p.zakljucak && <p className="mt-5 max-w-xl text-lg font-semibold text-white sm:text-xl">{p.zakljucak}</p>}
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="#zasto"
@@ -204,6 +224,7 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
               salon={p.opsta ? null : salon.ime}
               pocetne={p.usluge}
               boje={boje}
+              rjecnik={p.rjecnik}
               email={DEMO_EMAIL}
             />
           </div>
