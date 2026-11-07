@@ -88,11 +88,10 @@ export type Pozivnica = {
   oznaka?: string;
 
   /**
-   * Kratko lično pismo od nas, odmah ispod uvoda: opšta pozivnica ne može biti pisana za
-   * jedan salon, pa se toplina nosi tonom i potpisom. Ništa što nije tačno (npr. „napravili
-   * smo ovo samo za vas"): stranica je ista za sve salone te vrste.
+   * Potpis ispod uvoda („Hamza i Eniz"), za pozivnice koje se šalju mnogima: toplinu nosi ton i
+   * potpis, a ne lažna tvrdnja da je stranica rađena samo za jedan salon.
    */
-  pismo?: { naslov: string; tekst: string[] };
+  potpis?: string;
 
   /** Uvodna rečenica ispod naslova. */
   uvod: string;
