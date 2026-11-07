@@ -3,6 +3,7 @@
 //
 // Dvije vrste: lična (jedan salon, njegovo ime, logo, boje i fotografije sa javnih profila) i
 // opšta (`opsta: true`, za male salone: bez imena, logotipa i ličnog pasusa, u Melurinim bojama).
+// Opštih ima po vertikali (`frizer`, `beauty`, `masaza`), a sve se prave kroz `opsta()`.
 
 export type Usluga = {
   naziv: string;
@@ -67,6 +68,17 @@ export type Pozivnica = {
       /** Tamna podloga brenda. */
       tamna: string;
     };
+  };
+
+  /**
+   * Riječi vertikale u pregledu cjenovnika (telefon pored crta ekran „Usluge" iz aplikacije).
+   * Bez ovoga su „Usluge" i „Zakaži termin", kao u frizerskom i barber salonu.
+   */
+  rjecnik?: {
+    /** Naslov ekrana: „Usluge", „Tretmani". */
+    usluge: string;
+    /** Dugme za zakazivanje: „Zakaži termin", „Rezerviši termin", „Rezerviši tretman". */
+    zakazi: string;
   };
 
   /** Uvodna rečenica ispod naslova. */
