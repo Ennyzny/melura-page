@@ -17,6 +17,14 @@ export const beautyPozivnica = opsta({
 
   naslov: "Neka se kalendar puni i dok radite.",
 
+  pismo: {
+    naslov: "Pripremili smo ovo za vas.",
+    tekst: [
+      "Važni su nam saloni poput vašeg. Između tretmana se odgovara na poruke, pamti ko voli šta i vodi cijeli salon, a rijetko ko pravi alat baš za taj posao.",
+      "Zato smo napravili Meluru, a ovu stranicu smo pripremili da je upoznate bez pritiska. Pogledajte primjer, prepišite svoj cjenovnik i javite nam se kad vam odgovara. Ako vam se svidi, sve ostalo radimo zajedno s vama.",
+    ],
+  },
+
   uvod:
     "Ruke su vam zauzete, a pitanja za termin stižu na Instagram, Viber i telefon. Melura sve to skuplja na jedno mjesto: kartoteka klijentica sa historijom dolazaka, raspored tima, pregled dana i zarade, i aplikacija u kojoj klijentice same rezervišu termin, pod imenom vašeg salona. Ispod je primjer kako to izgleda, a cjenovnik možete odmah prepisati po svome.",
 

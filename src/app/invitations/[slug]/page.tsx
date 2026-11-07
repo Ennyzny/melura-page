@@ -110,6 +110,36 @@ export default async function PozivnicaPage({ params }: PageProps<"/invitations/
         </div>
       </section>
 
+      {/* Lično pismo: opšta pozivnica nosi toplinu tonom i potpisom, ne lažnom ličnom izradom. */}
+      {p.pismo && (
+        <section className="mx-auto max-w-[1200px] px-4 pt-16 sm:px-6 sm:pt-24">
+          <div className="grid gap-8 rounded-3xl bg-fog p-8 sm:p-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div>
+              <p className="font-semibold text-coral-text">Poruka od nas</p>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{p.pismo.naslov}</h2>
+              {p.pismo.tekst.map((t) => (
+                <p key={t} className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-soft">
+                  {t}
+                </p>
+              ))}
+              <p className="mt-6 text-lg font-bold">{tim.map((c) => c.ime.split(" ")[0]).join(" i ")}</p>
+            </div>
+            <div className="flex -space-x-3" aria-hidden="true">
+              {tim.map((c) => (
+                <Image
+                  key={c.ime}
+                  src={c.slika}
+                  alt=""
+                  width={160}
+                  height={160}
+                  className="h-24 w-24 rounded-full object-cover ring-4 ring-fog sm:h-32 sm:w-32"
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Fokus: zašto se isplati. */}
       <section id="zasto" className="mx-auto max-w-[1200px] scroll-mt-6 px-4 py-20 sm:px-6 sm:py-28">
         <p className="font-semibold text-coral-text">Šta {salon.dativ} donosi</p>

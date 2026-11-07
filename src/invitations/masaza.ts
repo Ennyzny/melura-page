@@ -18,6 +18,14 @@ export const masazaPozivnica = opsta({
 
   naslov: "Telefon ne mora zvoniti usred tretmana.",
 
+  pismo: {
+    naslov: "Pripremili smo ovo za vas.",
+    tekst: [
+      "Važni su nam saloni poput vašeg. U sobi je tišina, a iza vrata se vode klijenti, termini i raspored, i rijetko ko pravi alat baš za taj posao.",
+      "Zato smo napravili Meluru, a ovu stranicu smo pripremili da je upoznate bez pritiska. Pogledajte primjer, prepišite svoj cjenovnik i javite nam se kad vam odgovara. Ako vam se svidi, sve ostalo radimo zajedno s vama.",
+    ],
+  },
+
   uvod:
     "Tretman traži mir, a telefon i poruke ga prekidaju. Melura je alat za vođenje cijelog studija: kartoteka klijenata sa historijom dolazaka, raspored terapeuta, pregled dana i zarade, i aplikacija u kojoj klijenti sami rezervišu tretman kod terapeuta koga izaberu, pod imenom vašeg studija. Ispod je primjer kako to izgleda, a cjenovnik možete odmah prepisati po svome.",
 
