@@ -10,17 +10,19 @@ const p = "/invitations/masaza";
 export const masazaPozivnica = opsta({
   slug: "masaza",
 
-  salon: { ime: "vaš studio", genitiv: "vašeg studija", dativ: "vašem studiju" },
+  salon: { ime: "vaš studio", genitiv: "vašeg studija", dativ: "vašem studiju", boje: { primarna: "#a5bc96", tamna: "#131a15" } },
 
   rjecnik: { usluge: "Tretmani", zakazi: "Rezerviši tretman" },
 
-  oznaka: "Za masažu i SPA studije",
+  oznaka: "Pozvani ste: dopustite da vam olakšamo posao",
 
   naslov: "Otkazani termin ne mora ostati prazan.",
   naglasak: "ne mora ostati prazan",
 
   uvod:
-    "Klijent otkaže u zadnji čas i soba ostane prazna, a neko bi rado došao. Melura javi klijentima sa liste čekanja čim se termin oslobodi, i vodi cijeli studio umjesto vas: klijente, terapeute, zaradu i rezervacije. Pokazat ću vam kako to izgleda: ispod je primjer, a cjenovnik možete odmah prepisati po svome.",
+    "Klijent otkaže sat prije, a soba ostane prazna jer niko nije stigao pozvati sljedećeg. Sa Melurom klijenti sa liste čekanja odmah dobiju obavijest da se termin oslobodio, a nove rezervacije stižu same, i dok traje tretman. Vi ostajete uz klijenta, bez telefona u ruci.",
+
+  pozadina: "/invitations/masaza/hero.webp",
 
   koristi: [
     {

@@ -9,17 +9,19 @@ const p = "/invitations/beauty";
 export const beautyPozivnica = opsta({
   slug: "beauty",
 
-  salon: { ime: "vaš salon", genitiv: "vašeg salona", dativ: "vašem salonu" },
+  salon: { ime: "vaš salon", genitiv: "vašeg salona", dativ: "vašem salonu", boje: { primarna: "#b76e79", tamna: "#1d1316" } },
 
   rjecnik: { usluge: "Usluge", zakazi: "Rezerviši termin" },
 
-  oznaka: "Za beauty salone",
+  oznaka: "Pozvani ste: dopustite da vam olakšamo posao",
 
   naslov: "Dok vi radite, klijentica piše. Ko joj odgovara?",
   naglasak: "Ko joj odgovara?",
 
   uvod:
-    "Poruke na Instagramu, Viberu i telefonu stižu usred tretmana, a odgovor čeka. Melura vodi cijeli salon umjesto vas: klijentice, tim, zaradu i termine koje same rezervišu, i dok su vam ruke zauzete. Pokazat ću vam kako to izgleda: ispod je primjer, a cjenovnik možete odmah prepisati po svome.",
+    "Poruke za termin stižu na Instagram, Viber i telefon, i to baš kad su vam ruke u farbi ili laku. Sa Melurom klijentica vidi slobodne termine i sama rezerviše, vi potvrdite jednim dodirom, a podsjetnik joj stiže prije dolaska. Nijedna poruka više ne čeka na odgovor.",
+
+  pozadina: "/invitations/beauty/hero.webp",
 
   koristi: [
     {

@@ -93,6 +93,9 @@ export type Pozivnica = {
    */
   oznaka?: string;
 
+  /** Fotografija iza hera (zatamnjena), ako se razlikuje od fotografije salona. */
+  pozadina?: string;
+
   /** Uvodna rečenica ispod naslova. */
   uvod: string;
 
