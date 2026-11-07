@@ -33,6 +33,6 @@ export const oNama = {
   naslov: "Dvojica studenata iz Viteza i jedna ideja.",
   prica: [
     "Mi smo Hamza i Eniz, studenti softverskog inženjerstva iz Viteza. Gledali smo kako se termini kod frizera, u beauty salonima i kod fizioterapeuta i dalje dogovaraju pozivima i porukama, a na domaćem tržištu nismo našli rješenje koje to radi kako treba.",
-    "Zato smo napravili Meluru: platformu na kojoj svaki salon dobija aplikaciju sa svojim imenom, a vlasnik jedno mjesto za cijeli raspored. Svuda gdje se zakazuje termin.",
+    "Zato smo napravili Meluru: alat u kojem vlasnik vodi cijeli salon, od kartoteke klijenata i rasporeda tima do pregleda zarade, a klijenti dobijaju aplikaciju sa imenom salona. Svuda gdje se radi sa terminima.",
   ],
 };
