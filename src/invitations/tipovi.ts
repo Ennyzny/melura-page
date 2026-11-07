@@ -81,6 +81,12 @@ export type Pozivnica = {
     zakazi: string;
   };
 
+  /**
+   * Mala oznaka iznad naslova: kome je stranica namijenjena. Bez nje piše „Pozivnica za
+   * {ime salona}", što u ličnoj pozivnici i treba, a u opštoj govori premalo.
+   */
+  oznaka?: string;
+
   /** Uvodna rečenica ispod naslova. */
   uvod: string;
 
