@@ -6,6 +6,7 @@ import { racunar, telefon } from "./opsta";
 // 15.11.2026). Javni izvori: Google Mape, Facebook stranica „Salon ljepote by Hadis" i
 // Instagram hair_salon_by_hadis (2026-11-09). Snimci su iz demo salona sa izmišljenim
 // klijentima, radnicima (osim vlasnika), uslugama i cijenama, u `public/invitations/hadis/`.
+// Poslije deploya provjeriti: 200, noindex i `og:image` na produkcijskoj domeni.
 
 const p = "/invitations/hadis";
 
