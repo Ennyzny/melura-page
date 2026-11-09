@@ -1,12 +1,13 @@
 import type { Pozivnica } from "./tipovi";
 import { beautyPozivnica } from "./beauty";
 import { frizerPozivnica } from "./frizer";
+import { hadisPozivnica } from "./hadis";
 import { masazaPozivnica } from "./masaza";
 
 // Registar pozivnica. Slug je i adresa: /invitations/<slug>. `frizer`, `beauty` i `masaza` su
 // opšte pozivnice za male salone po vertikali (sve kroz `opsta()`); lične pozivnice za velike
-// dodaje skill `/platform-pitch` u platformskom repou.
-const pozivnice: Pozivnica[] = [frizerPozivnica, beautyPozivnica, masazaPozivnica];
+// (`hadis`) dodaje skill `/platform-pitch` u platformskom repou.
+const pozivnice: Pozivnica[] = [frizerPozivnica, beautyPozivnica, masazaPozivnica, hadisPozivnica];
 
 export const sviSlugovi = () => pozivnice.map((p) => p.slug);
 
