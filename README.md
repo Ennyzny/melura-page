@@ -57,7 +57,12 @@ specifikacija stavlja u Fazu 2 ili kasnije označene su sa „Uskoro“.
 
 `src/components/ScrollScenes.tsx` slaže tri scene na početnoj: 3D iPhone (`Phone3D`), 3D MacBook
 (`MacbookScene`, paket `rigged-macbook-3d`) i tri telefona (`ScrollScene`). Kadrovi idu po
-koraku teksta, a na užim ekranima zum je blaži ili ga nema.
+koraku teksta, a na užim ekranima zum je blaži ili ga nema. U sceni sa tri telefona lijevi i desni
+izlaze iza srednjeg na skrol; svaki telefon je jedan sloj koji se samo pomjera.
+
+Na telefonima je skrol osjetljiv, pa u toku skrola nema slanja tekstura na GPU: ekrani iPhonea i
+laptopa idu na GPU jednom, prije sekcije, a smjenu radi shader. Oba platna crtaju samo kad se nešto
+pomjera (`frameloop="demand"`). Ako mijenjaš kako ekran izgleda, uporedi snimke sa starom verzijom.
 
 Modeli su u `public/models/`, Draco dekoder u `public/draco/`:
 - MacBook — "MacBook Pro M3 16-inch 2024", jackbaeten, CC-BY 4.0.

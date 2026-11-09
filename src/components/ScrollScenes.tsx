@@ -47,10 +47,6 @@ export function ScrollScenes() {
       />
       <ScrollScene
         scena={saloni as SceneData}
-        fokus={1}
-        obrnuto
-        raspored="sredina"
-        samoUredjaj
         duzina={3}
         koraci={[
           { kicker: "Jedna platforma", naslov: "Isti sistem iza svakog salona…" },
