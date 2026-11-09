@@ -16,11 +16,16 @@ const SVE_SLIKE = [
 export function ScrollScenes() {
   // Tamni blok sa svim scenama, zaobljen gore i dole prema svijetlim sekcijama;
   // uređaji se pretapaju na ulazu i izlazu, pa između scena nema reza.
+  // Uglove nose dvije trake gore i dole, a ne zaobljen okvir oko cijelog bloka:
+  // takav okvir bi telefon maskirao u svakom kadru skrola preko 3D scena.
   // data-tamno čita Navbar da pređe u tamnu varijantu.
   return (
-    <div data-tamno className="relative overflow-clip rounded-[2.5rem] bg-night">
+    <div data-tamno className="relative">
       <Preducitaj slike={SVE_SLIKE} />
-      <div aria-hidden className="h-[14svh]" />
+      <div aria-hidden className="h-10 rounded-t-[2.5rem] bg-night" />
+      {/* -mt-px: preklop od jednog piksela, da se između traka i bloka ne vidi šav */}
+      <div className="-mt-px bg-night">
+      <div aria-hidden className="h-[calc(14svh-2.5rem+1px)]" />
       <Phone3D
         slike={IPHONE}
         duzina={5}
@@ -42,17 +47,15 @@ export function ScrollScenes() {
       />
       <ScrollScene
         scena={saloni as SceneData}
-        fokus={1}
-        obrnuto
-        raspored="sredina"
-        samoUredjaj
         duzina={3}
         koraci={[
           { kicker: "Jedna platforma", naslov: "Isti sistem iza svakog salona…" },
           { naslov: "…a svaki salon sa svojom aplikacijom.", tekst: "Barber, beauty ili fizio — vaše ime, vaše boje i vaš rječnik." },
         ]}
       />
-      <div aria-hidden className="h-[10svh]" />
+      <div aria-hidden className="h-[calc(10svh-2.5rem+1px)]" />
+      </div>
+      <div aria-hidden className="-mt-px h-10 rounded-b-[2.5rem] bg-night" />
     </div>
   );
 }

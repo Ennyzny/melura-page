@@ -73,7 +73,8 @@ export function Navbar() {
       data-tema={tamno && !open ? "tamna" : "svijetla"}
       className={`group/nav sticky top-0 z-50 transition-colors duration-300 ${
         tamno && !open
-          ? "bg-night/55 text-white backdrop-blur-md"
+          ? // na telefonu bez blura: preko 3D scene bi se računao u svakom kadru
+            "bg-night/55 text-white backdrop-blur-md max-[899px]:bg-night/90 max-[899px]:backdrop-blur-none"
           : scrolled || open
             ? "bg-white/85 backdrop-blur-md"
             : "bg-fog"
