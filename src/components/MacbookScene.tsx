@@ -17,8 +17,9 @@ import { zagrijScenu } from "@/lib/zagrij";
  * na ekranu se smjenjuju pravi screenshoti Melure.
  *
  * Ne koristi <MacbookScroll>: on ekran prima kao URL, pa svaka smjena ekrana
- * ponovo pravi model i izgubi pozu. Ovdje je ekran jedna CanvasTexture na koju
- * crtamo screenshote, a poza dolazi iz istog journeyState koji paket koristi.
+ * ponovo pravi model i izgubi pozu. Ovdje svaki screenshot ide na GPU jednom,
+ * pretapanje radi shader (bez crtanja platna i slanja teksture u toku skrola),
+ * a poza dolazi iz istog journeyState koji paket koristi.
  */
 
 type Props = { slike: string[]; koraci: Korak[] };
@@ -43,7 +44,7 @@ const TW = 1600;
 const TH = 1033;
 const TRAKA = Math.round(TH * 0.035);
 
-type Stanje = { p: number; ulaz: number; korak: number; siroko: boolean; prostor: number };
+type Stanje = { p: number; ulaz: number; korak: number; siroko: boolean; prostor: number; omjer: number };
 
 // Kadar po tekstu: zum i pomak laptopa (svjetske jedinice). Uvod i „Danas"
 // cijeli laptop; „Sedmica" kamera priđe ekranu; „Svaki klijent" priđe listi
@@ -63,29 +64,72 @@ const KADROVI = [
   { zum: 3.1, dx: -1.15, dy: -0.95 },
 ];
 
-// three.js teksture se mijenjaju na mjestu, van React stanja
-function osvjezi(t: THREE.Texture) {
-  t.needsUpdate = true;
+// Dok screenshot ne stigne na GPU, ekran je ove boje.
+const POZADINA = new THREE.DataTexture(new Uint8Array([246, 246, 247, 255]), 1, 1);
+POZADINA.colorSpace = THREE.SRGBColorSpace;
+POZADINA.needsUpdate = true;
+
+// Isto što je bio MeshBasicMaterial sa platnom: slika bez svjetla, a pretapanje
+// u sRGB prostoru, kao globalAlpha na platnu.
+function materijalEkrana() {
+  return new THREE.ShaderMaterial({
+    uniforms: { mapA: { value: POZADINA }, mapB: { value: POZADINA }, uPrelaz: { value: 0 } },
+    toneMapped: false,
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`,
+    fragmentShader: `
+      uniform sampler2D mapA;
+      uniform sampler2D mapB;
+      uniform float uPrelaz;
+      varying vec2 vUv;
+      void main() {
+        vec3 c = texture2D(mapA, vUv).rgb;
+        if (uPrelaz > 0.0) {
+          vec3 b = texture2D(mapB, vUv).rgb;
+          c = pow(mix(pow(c, vec3(1.0 / 2.2)), pow(b, vec3(1.0 / 2.2)), uPrelaz), vec3(2.2));
+        }
+        gl_FragColor = vec4(c, 1.0);
+        #include <colorspace_fragment>
+      }`,
+  });
 }
 
-function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; slike: string[]; onSpreman: () => void }) {
+function Rig({ stanje, slike, onSpreman, osvjeziRef }: {
+  stanje: React.RefObject<Stanje>;
+  slike: string[];
+  onSpreman: () => void;
+  osvjeziRef: React.RefObject<(() => void) | null>;
+}) {
   // Kad je model učitan, par kadrova van ekrana kompajlira shadere, napravi
   // okolinu i pošalje teksture GPU-u — prije nego korisnik dođe do sekcije.
   const advance = useThree((st) => st.advance);
   const grije = useRef(0);
-  // Pauziranje van ekrana radimo sami, direktno na platnu: paketovo pauziranje
-  // (pauseWhenOffscreen) mijenja React stanje, pa se pri ulasku u sekciju
-  // ponovo iscrta i svjetlo (Environment) — mapa okoline se pravi iznova, svi
-  // materijali se rekompajliraju i kadar trzne ~200 ms.
-  const setFrameloop = useThree((st) => st.setFrameloop);
-  const platno = useThree((st) => st.gl.domElement);
+  // Kadar se crta samo kad petlja ispod javi da se nešto pomjerilo. Bez paketovog
+  // pauziranja (pauseWhenOffscreen): ono mijenja React stanje, pa se pri ulasku u
+  // sekciju ponovo iscrta i svjetlo (Environment) i kadar trzne ~200 ms.
+  const invalidate = useThree((st) => st.invalidate);
   useEffect(() => {
-    const io = new IntersectionObserver(([e]) => setFrameloop(e.isIntersecting ? "always" : "never"), { rootMargin: "200px 0px" });
-    io.observe(platno);
-    return () => io.disconnect();
-  }, [setFrameloop, platno]);
-  const { gl, scene: scene3, camera } = useThree();
+    osvjeziRef.current = () => invalidate();
+    return () => {
+      osvjeziRef.current = null;
+    };
+  }, [osvjeziRef, invalidate]);
+  const gl = useThree((st) => st.gl);
+  const scene3 = useThree((st) => st.scene);
+  const camera = useThree((st) => st.camera);
+  const grupa = useRef<THREE.Group>(null);
+  const materijal = useRef<THREE.ShaderMaterial | null>(null);
   const zagrij = useCallback(() => {
+    // Paket ekranu daje svoj materijal; mijenjamo ga prije kompajliranja.
+    const ekran = grupa.current?.getObjectByName("Screen") as THREE.Mesh | undefined;
+    if (ekran) {
+      materijal.current = materijalEkrana();
+      ekran.material = materijal.current;
+    }
     onSpreman();
     // Okolina (Environment) se napravi u prvom kadru i tada materijali dobiju
     // novi shader; zato zagrijavanje ide u tri talasa, da se i ti shaderi
@@ -111,33 +155,23 @@ function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; sl
       clearTimeout(t2);
     };
   }, [onSpreman, advance, gl, scene3, camera]);
-  const grupa = useRef<THREE.Group>(null);
-  const [ekran] = useState(() => {
-    const c = document.createElement("canvas");
-    c.width = TW;
-    c.height = TH;
-    const t = new THREE.CanvasTexture(c);
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = 8;
-    return { c, t };
-  });
   const [slikeEl] = useState(() =>
     slike.map((src) => {
       const i = new Image();
+      i.decoding = "async";
       i.src = src;
       return i;
     }),
   );
-  const zadnje = useRef(-1);
   // Svaki screenshot jednom složen u platno veličine ekrana (traka gore za
-  // notch + slika ispod). Slaganje (skaliranje 2880 → 1600) je skupo, pa ide
-  // kad browser odahne čim slika stigne — ne u prvom kadru kad sekcija naiđe.
-  const gotovi = useRef<(HTMLCanvasElement | null)[]>(slike.map(() => null));
-  const gotoviEkrani = () => gotovi.current;
-  const invalidate = useThree((st) => st.invalidate);
+  // notch + slika ispod) i poslan na GPU. Slaganje (skaliranje 2880 → 1600) i
+  // slanje su skupi, pa idu kad browser odahne, a ne u toku skrola.
+  const teksture = useRef<(THREE.Texture | null)[]>(slike.map(() => null));
   useEffect(() => {
+    const nastale: THREE.Texture[] = [];
+    let otkazano = false;
     const slozi = (img: HTMLImageElement, k: number) => {
-      if (gotovi.current[k] || !img.naturalWidth) return;
+      if (otkazano || teksture.current[k] || !img.naturalWidth) return;
       const c = document.createElement("canvas");
       c.width = TW;
       c.height = TH;
@@ -146,17 +180,24 @@ function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; sl
       // traka iznad (gdje je notch) produžava gornji red aplikacije, pa tamni
       // bočni meni ide do vrha ekrana, a ostatak je bijel
       g.drawImage(img, 0, 0, img.naturalWidth, 2, 0, 0, TW, TRAKA);
-      gotovi.current[k] = c;
+      const t = new THREE.CanvasTexture(c);
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.anisotropy = 8;
+      gl.initTexture(t);
+      nastale.push(t);
+      teksture.current[k] = t;
       invalidate();
     };
     const idle = (cb: () => void) =>
       "requestIdleCallback" in window ? window.requestIdleCallback(cb, { timeout: 2000 }) : setTimeout(cb, 200);
     slikeEl.forEach((img, k) => {
-      const kad = () => idle(() => slozi(img, k));
-      if (img.complete && img.naturalWidth) kad();
-      else img.addEventListener("load", kad, { once: true });
+      img.decode().catch(() => {}).then(() => idle(() => slozi(img, k)));
     });
-  }, [slikeEl, invalidate]);
+    return () => {
+      otkazano = true;
+      nastale.forEach((t) => t.dispose());
+    };
+  }, [slikeEl, invalidate, gl]);
 
   useFrame(() => {
     const s = stanje.current;
@@ -184,40 +225,29 @@ function Rig({ stanje, slike, onSpreman }: { stanje: React.RefObject<Stanje>; sl
     const dy = lerp(K[ka].dy, K[kb].dy, kf) * jacina;
     // kamera paketa je za 16:10; na uskom (uspravnom) ekranu vidljiva širina je
     // manja, pa se laptop smanjuje srazmjerno omjeru
-    const omjer = s.siroko ? 1 : Math.min(1, (window.innerWidth / window.innerHeight) * 1.02);
+    const omjer = s.siroko ? 1 : Math.min(1, s.omjer * 1.02);
     g.scale.setScalar(j.pose.scale * zum * omjer);
     g.rotation.set(j.pose.pitch, j.pose.yaw + lerp(-0.5, 0, u) + okret * (2 - zum) * 0.7, 0);
     g.position.set(j.pose.x + lerp(2.4, 0, u) + dx, j.pose.y + dy, 0);
 
-    // pretapanje između susjednih ekrana
+    // pretapanje između susjednih ekrana: samo se biraju teksture i udio,
+    // ništa se ne šalje na GPU
     const n = slike.length;
     const x = clamp((s.p - EKRANI[0]) / (EKRANI[1] - EKRANI[0])) * (n - 1);
-    // Kanvas se crta samo dok traje pretapanje (i kad stigne nova slika), a ne
-    // u svakom kadru skrola; slike su unaprijed složene u punu veličinu ekrana,
-    // pa je pretapanje samo kopiranje bez skaliranja.
-    const a = Math.floor(x);
-    const prelaz = clamp((x - a - 0.4) / 0.2);
-    const gotove = gotoviEkrani();
-    const kljuc = a * 1000 + Math.round(prelaz * 120) + gotove.filter(Boolean).length * 100000;
-    if (kljuc === zadnje.current) return;
-    zadnje.current = kljuc;
-    const ctx = ekran.c.getContext("2d")!;
-    ctx.fillStyle = "#f6f6f7";
-    ctx.fillRect(0, 0, TW, TH);
-    [[a, 1], [a + 1, prelaz]].forEach(([k, alfa]) => {
-      const gotov = gotove[k];
-      if (!gotov || !alfa) return;
-      ctx.globalAlpha = alfa;
-      ctx.drawImage(gotov, 0, 0);
-    });
-    ctx.globalAlpha = 1;
-    osvjezi(ekran.t);
+    const a = Math.min(Math.floor(x), n - 1);
+    const sljedeca = teksture.current[a + 1];
+    const m = materijal.current;
+    if (m) {
+      m.uniforms.mapA.value = teksture.current[a] ?? POZADINA;
+      m.uniforms.mapB.value = sljedeca ?? POZADINA;
+      m.uniforms.uPrelaz.value = sljedeca ? clamp((x - a - 0.4) / 0.2) : 0;
+    }
   });
 
   return (
     <group ref={grupa}>
       <Macbook
-        screen={ekran.t}
+        screen={POZADINA}
         modelSrc="/models/macbook.glb"
         open={1}
         brightness={1}
@@ -234,7 +264,8 @@ export function MacbookScene({ slike, koraci }: Props) {
   const tekstovi = useRef<(HTMLDivElement | null)[]>([]);
   const [spreman, setSpreman] = useState(false);
   const naSpreman = useCallback(() => setSpreman(true), []);
-  const stanje = useRef<Stanje>({ p: 0, ulaz: 0, korak: 0, siroko: true, prostor: 1 });
+  const stanje = useRef<Stanje>({ p: 0, ulaz: 0, korak: 0, siroko: true, prostor: 1, omjer: 1 });
+  const osvjezi = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     if (!capable) return;
@@ -242,6 +273,11 @@ export function MacbookScene({ slike, koraci }: Props) {
     let last = performance.now();
     const brzina = { current: 0 };
     const mjera = omotac.current ? pratiElement(omotac.current) : null;
+    // kadar se crta, i u DOM se piše, samo kad se nešto stvarno promijenilo
+    const staro = { p: -1, ulaz: -1, korak: -1, siroko: false, prostor: -1, omjer: -1 };
+    const opacity = koraci.map(() => "");
+    const transform = koraci.map(() => "");
+    let prozirnost = "";
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
       const dt = Math.min((now - last) / 1000, 0.05);
@@ -254,17 +290,26 @@ export function MacbookScene({ slike, koraci }: Props) {
       const s = stanje.current;
       s.siroko = r.vw >= 900;
       s.prostor = clamp((r.vw / r.vh - 1.2) / 0.4);
+      s.omjer = r.vw / r.vh;
       // ista prigušena vožnja kao u paketu: točkić miša postaje glatki pokret
       s.p = Math.abs(s.p - cilj) < 1e-4 ? cilj : smoothDamp(s.p, cilj, brzina, 0.35, dt, 1.2);
 
       // ulaz: dok vrh sekcije ide od dna prozora do vrha
       s.ulaz = clamp(1 - r.top / r.vh);
-      if (pozornica.current) pozornica.current.style.opacity = String(clamp(s.ulaz * 2) * (1 - clamp((s.p - 0.94) / 0.06)));
+      const pr = String(clamp(s.ulaz * 2) * (1 - clamp((s.p - 0.94) / 0.06)));
+      if (pozornica.current && pr !== prozirnost) {
+        pozornica.current.style.opacity = pr;
+        prozirnost = pr;
+      }
       const n = koraci.length;
       const x = s.p < EKRANI[0] ? (s.p / EKRANI[0]) * 0.5 : 0.5 + ((s.p - EKRANI[0]) / (EKRANI[1] - EKRANI[0])) * (n - 1.5);
       // kadar kamere stoji dok je tekst pun, pa pređe na sljedeći između tekstova
       const j0 = Math.floor(Math.max(0, x));
       s.korak = j0 + glatko(clamp((Math.max(0, x) - j0 - 0.25) / 0.5));
+      if (s.p !== staro.p || s.ulaz !== staro.ulaz || s.korak !== staro.korak || s.siroko !== staro.siroko || s.prostor !== staro.prostor || s.omjer !== staro.omjer) {
+        Object.assign(staro, s);
+        osvjezi.current?.();
+      }
       const nestaje = 1 - clamp((s.p - TIMELINE.recede[0]) / 0.04);
       koraci.forEach((_, k) => {
         const d = tekstovi.current[k];
@@ -272,8 +317,18 @@ export function MacbookScene({ slike, koraci }: Props) {
         const od = k === 0 ? -1 : k - 0.5;
         const doo = k === n - 1 ? Infinity : k + 0.5;
         const v = Math.min(clamp((x - od) / 0.2), clamp((doo - x) / 0.2)) * nestaje * (k === 0 ? clamp(s.ulaz * 2 - 0.8) : 1);
-        d.style.opacity = String(v);
-        d.style.transform = `translateY(${(1 - v) * 16}px)`;
+        const o = String(v);
+        if (o !== opacity[k]) {
+          d.style.opacity = o;
+          opacity[k] = o;
+        }
+        if (v > 0) {
+          const tr = `translateY(${(1 - v) * 16}px)`;
+          if (tr !== transform[k]) {
+            d.style.transform = tr;
+            transform[k] = tr;
+          }
+        }
       });
     };
     raf = requestAnimationFrame(tick);
@@ -312,7 +367,7 @@ export function MacbookScene({ slike, koraci }: Props) {
             <img src="/scroll/laptop/ekran-0-0-mala.webp" alt="" className="block w-full" />
           </div>
           {capable && (
-            <MacbookStage dpr={[1, 1.5]} pauseWhenOffscreen={false} className={`transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`}>
+            <MacbookStage dpr={[1, 1.5]} frameloop="demand" pauseWhenOffscreen={false} className={`transition-opacity duration-700 ${spreman ? "opacity-100" : "opacity-0"}`}>
               {/* neutralno bijelo svjetlo (preseti paketa su plavkasti) */}
               <MacbookLighting>
                 <ambientLight intensity={0.45} />
@@ -323,7 +378,7 @@ export function MacbookScene({ slike, koraci }: Props) {
                   <Lightformer form="rect" intensity={0.25} position={[0, 9, -2]} rotation={[Math.PI / 2, 0, 0]} scale={[10, 3, 1]} />
                 </Environment>
               </MacbookLighting>
-              <Rig stanje={stanje} slike={slike} onSpreman={naSpreman} />
+              <Rig stanje={stanje} slike={slike} onSpreman={naSpreman} osvjeziRef={osvjezi} />
             </MacbookStage>
           )}
         </div>
@@ -331,9 +386,10 @@ export function MacbookScene({ slike, koraci }: Props) {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[34svh] bg-gradient-to-t from-night via-night/90 to-transparent min-[900px]:hidden" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 grid px-6 pb-[7svh] text-white min-[900px]:inset-y-0 min-[900px]:left-[5vw] min-[900px]:right-auto min-[900px]:w-[28vw] min-[900px]:items-center min-[900px]:px-0 min-[900px]:pb-0">
           {koraci.map((k, j) => (
-            <div key={k.naslov} ref={(d) => { tekstovi.current[j] = d; }} className={`col-start-1 row-start-1 opacity-0 ${
+            <div key={k.naslov} ref={(d) => { tekstovi.current[j] = d; }} className={`col-start-1 row-start-1 opacity-0 will-change-[transform,opacity] ${
                 // zadnji kadar je zum na profil klijenta, pa je ispod teksta bijeli ekran
-                j === koraci.length - 1 ? "-mx-7 rounded-3xl bg-night/85 px-7 py-6 shadow-2xl backdrop-blur-md" : ""
+                // (na telefonu bez blura: preko 3D scene bi se računao u svakom kadru)
+                j === koraci.length - 1 ? "-mx-7 rounded-3xl bg-night/85 px-7 py-6 shadow-2xl backdrop-blur-md max-[899px]:bg-night/90 max-[899px]:backdrop-blur-none" : ""
               }`}>
               <Tekst korak={k} />
             </div>
